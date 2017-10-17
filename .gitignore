@@ -1,0 +1,4 @@
+# ignore database state
+db.*
+core/migrations/*
+__pycache__/
