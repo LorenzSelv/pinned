@@ -1,8 +1,7 @@
 import django
 from django.test import TestCase
+from django.utils import timezone
 from core.models import User, Event, Location, Tag, Join, Comment
-
-import datetime
 
 
 def create_user(username):
@@ -25,13 +24,24 @@ def get_users_interested_in(tag_name):
     return Tag.objects.get(name=tag_name).interested_users.all()
 
 
-def create_event(name, location, event_owner, max_num_participants=5):
+def create_event(name, location, event_owner, date_time, max_num_participants=5):
     description = name + ' -- The best sport event on campus'
     return Event.objects.create(name=name,
                                 description=description,
                                 location=location,
                                 event_owner=event_owner,
+                                date_time=date_time,
                                 max_num_participants=max_num_participants)
+
+
+# def create_event_with_date(name, location, event_owner, date_time, max_num_participants=5):
+#     description = name + ' -- The best sport event on campus'
+#     return Event.objects.create(name=name,
+#                                 description=description,
+#                                 location=location,
+#                                 event_owner=event_owner,
+#                                 max_num_participants=max_num_participants,
+#                                 date_time=date_time)
 
 
 class UserModelTests (TestCase):
@@ -122,7 +132,7 @@ class EventModelTests (TestCase):
         federico = create_user('Federico')
 
         ILC = Location.objects.create(name='ILC')
-        pp = create_event('Ping pong', ILC, lorenzo, max_num_participants=2)
+        pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
 
         # pp.participants.add(lorenzo)  # NOT POSSIBLE: through='Join'
         Join.objects.create(user=lorenzo, event=pp)
@@ -138,7 +148,7 @@ class EventModelTests (TestCase):
         federico = create_user('Federico')
 
         ILC = Location.objects.create(name='ILC')
-        pp = create_event('Ping pong', ILC, lorenzo, max_num_participants=2)
+        pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=lorenzo, event=pp)
         Join.objects.create(user=federico, event=pp)
@@ -149,10 +159,9 @@ class EventModelTests (TestCase):
     def test_events_date(self):
         lorenzo = create_user('Lorenzo')
         ILC = Location.objects.create(name='ILC')
-        pp = create_event('Ping pong', ILC, lorenzo, max_num_participants=2)
+        pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
         # Ignore milliseconds
-        self.assertEqual(pp.date_time.strftime("%Y-%m-%d %H:%M:%S"),
-                         datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+        self.assertEqual(pp.creation_date.strftime("%Y-%m-%d %H:%M:%S"), timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # TODO: test overlapping events at the same location
     # TODO: test event dates with different time zones
@@ -165,7 +174,7 @@ class EventUserInteractionTests (TestCase):
         f = create_user('Federico')
 
         ILC = Location.objects.create(name='ILC')
-        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
         Join.objects.create(user=f, event=pp)
@@ -180,7 +189,7 @@ class EventUserInteractionTests (TestCase):
         l = create_user('Lorenzo')
 
         ILC = Location.objects.create(name='ILC')
-        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
         Join.objects.get(id=l.id).delete()
@@ -190,7 +199,7 @@ class EventUserInteractionTests (TestCase):
         l = create_user('Lorenzo')
 
         ILC = Location.objects.create(name='ILC')
-        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         l.delete()
         # The event should be deleted
@@ -201,10 +210,11 @@ class EventUserInteractionTests (TestCase):
         l = create_user('Lorenzo')
 
         ILC = Location.objects.create(name='ILC')
-        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         pp.delete()
         self.assertEqual(User.objects.get(id=l.id), l)
+
 
 
 

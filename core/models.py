@@ -40,7 +40,7 @@ class Event (models.Model):
     description = models.CharField(max_length=1000)
     # TODO check that events can't have the same date_time AND location
     # TODO end_date_time? -> change the above so no events overlap and have the same location
-    date_time   = models.DateTimeField(auto_now_add=True, blank=True)
+    date_time   = models.DateTimeField()
     location    = models.ForeignKey('Location', on_delete=models.CASCADE)
 
     # TODO event type: private, public --> hierarchy in django
