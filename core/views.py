@@ -1,15 +1,14 @@
-from django.http import HttpResponse
+
+from django.shortcuts import render
 
 from django.views import generic
 from .models import Event, User
 
 
 class MapView(generic.View):
-    # TODO verify
-    # template_name = 'core/map.html'
 
     def get(self, request, *args, **kwargs):
-        return HttpResponse("<h2> Map.. </h2>")
+        return render(request, 'core/map.html')
 
 
 class EventsView(generic.ListView):
