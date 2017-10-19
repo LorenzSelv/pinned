@@ -24,24 +24,18 @@ def get_users_interested_in(tag_name):
     return Tag.objects.get(name=tag_name).interested_users.all()
 
 
-def create_event(name, location, event_owner, date_time, max_num_participants=5):
+def create_event(name, location, event_owner, start_date_time, end_date_time=None, max_num_participants=5):
     description = name + ' -- The best sport event on campus'
+    if end_date_time is None:  # default to 90 minutes
+        end_date_time = start_date_time + timezone.timedelta(minutes=90)
+
     return Event.objects.create(name=name,
                                 description=description,
                                 location=location,
                                 event_owner=event_owner,
-                                date_time=date_time,
+                                start_date_time=start_date_time,
+                                end_date_time=end_date_time,
                                 max_num_participants=max_num_participants)
-
-
-# def create_event_with_date(name, location, event_owner, date_time, max_num_participants=5):
-#     description = name + ' -- The best sport event on campus'
-#     return Event.objects.create(name=name,
-#                                 description=description,
-#                                 location=location,
-#                                 event_owner=event_owner,
-#                                 max_num_participants=max_num_participants,
-#                                 date_time=date_time)
 
 
 class UserModelTests (TestCase):
@@ -163,7 +157,7 @@ class EventModelTests (TestCase):
         # Ignore milliseconds
         self.assertEqual(pp.creation_date.strftime("%Y-%m-%d %H:%M:%S"), timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    # TODO: test overlapping events at the same location
+    # TODO: test overlapping events at the same location, as soon as we have defined what a location is (Google MAP API)
     # TODO: test event dates with different time zones
 
 

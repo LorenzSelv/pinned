@@ -25,11 +25,6 @@ class User (models.Model):
     def __str__(self):
         return self.username
 
-# store the follow date?
-# class Follow (models.Model):
-#     followed = models.ForeignKey(User)
-#     following = models.ForeignKey(User)
-
 
 # class Rating (models.Model):
 #     pass
@@ -39,8 +34,9 @@ class Event (models.Model):
     name        = models.CharField(max_length=150)
     description = models.CharField(max_length=1000)
     # TODO check that events can't have the same date_time AND location
-    # TODO end_date_time? -> change the above so no events overlap and have the same location
-    date_time   = models.DateTimeField()
+    # TODO ensure that the end_date_time > start_date_time. Is it possible to do at the model level?
+    start_date_time = models.DateTimeField()
+    end_date_time   = models.DateTimeField()
     location    = models.ForeignKey('Location', on_delete=models.CASCADE)
 
     # TODO event type: private, public --> hierarchy in django
