@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator, MinValueValidator
 # TODO text field vs char field
 
 class User (models.Model):
+    # Add a check to ensure max_length isn't exceeded? (for all classes)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)  # (widget=forms.PasswordInput)
     email    = models.EmailField()
@@ -37,6 +38,8 @@ class User (models.Model):
 class Event (models.Model):
     name        = models.CharField(max_length=150)
     description = models.CharField(max_length=1000)
+    # TODO check that events can't have the same date_time AND location
+    # TODO end_date_time? -> change the above so no events overlap and have the same location
     date_time   = models.DateTimeField(auto_now_add=True, blank=True)
     location    = models.ForeignKey('Location', on_delete=models.CASCADE)
 
@@ -72,6 +75,7 @@ class Location (models.Model):
     # Note: change the field according to Google maps API specs
     name = models.CharField(max_length=200, unique=True)
     description = models.CharField(max_length=1000)
+    # TODO location coordinates w/ google API
     # TODO location images
     # TODO link google reviews?
 

@@ -2,6 +2,8 @@ import django
 from django.test import TestCase
 from core.models import User, Event, Location, Tag, Join, Comment
 
+import datetime
+
 
 def create_user(username):
     password = username + 'Pass'
@@ -40,11 +42,15 @@ class UserModelTests (TestCase):
 
         users = User.objects.all()
 
-        self.assertIn(l, users)
-        self.assertIn(a, users)
         self.assertEqual(len(users), 2)
+        self.assertIn(l, users)
         self.assertEqual(l.username, 'Lorenzo')
+        self.assertEqual(l.password, 'LorenzoPass')
+        self.assertEqual(l.email, 'Lorenzo@ucsc.edu')
+        self.assertIn(a, users)
+        self.assertEqual(a.username, 'Andrea')
         self.assertEqual(a.password, 'AndreaPass')
+        self.assertEqual(a.email, 'Andrea@ucsc.edu')
 
     def test_follower_following(self):
         l = create_user('Lorenzo')
@@ -82,6 +88,7 @@ class UserModelTests (TestCase):
         a.interest_tags.add(tags[2])
 
         self.assertEqual(list(l.interest_tags.all()), [tags[0], tags[1]])
+        self.assertEqual(list(a.interest_tags.all()), [tags[1], tags[2]])
 
         users_interested_in_0 = get_users_interested_in(tags[0].name)
         self.assertEqual(len(users_interested_in_0), 1)
@@ -98,15 +105,19 @@ class UserModelTests (TestCase):
 
 class TagModelTests (TestCase):
 
-    def test_unique_username(self):
+    def test_unique_name(self):
+        l1 = Tag.objects.create(name='Gym')
         with self.assertRaises(django.db.utils.IntegrityError):
-            l1 = Tag.objects.create(name='Gym')
             l2 = Tag.objects.create(name='Gym')
+
+    def test_long_name(self):
+        l1 = Tag.objects.create(name='abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz')
+        print(l1)
 
 
 class EventModelTests (TestCase):
 
-    def test_insert_events(self):
+    def test_insert_event(self):
         lorenzo = create_user('Lorenzo')
         federico = create_user('Federico')
 
@@ -135,17 +146,67 @@ class EventModelTests (TestCase):
         with self.assertRaises(django.db.utils.IntegrityError):
             Join.objects.create(user=federico, event=pp)
 
-    def test_filter_events_date(self):
-        pass
+    def test_events_date(self):
+        lorenzo = create_user('Lorenzo')
+        ILC = Location.objects.create(name='ILC')
+        pp = create_event('Ping pong', ILC, lorenzo, max_num_participants=2)
+        # Ignore milliseconds
+        self.assertEqual(pp.date_time.strftime("%Y-%m-%d %H:%M:%S"),
+                         datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+
+    # TODO: test overlapping events at the same location
+    # TODO: test event dates with different time zones
 
 
 class EventUserInteractionTests (TestCase):
 
     def test_delete_participant(self):
-        pass
+        l = create_user('Lorenzo')
+        f = create_user('Federico')
+
+        ILC = Location.objects.create(name='ILC')
+        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+
+        Join.objects.create(user=l, event=pp)
+        Join.objects.create(user=f, event=pp)
+        self.assertIn(f, pp.participants.all())
+        Join.objects.get(id=f.id).delete()
+        self.assertNotIn(f, pp.participants.all())
+        # Lorenzo is still a participant
+        self.assertIn(l, pp.participants.all())
+
+    # Should this work? Discuss..
+    def test_delete_event_owner_as_participant(self):
+        l = create_user('Lorenzo')
+
+        ILC = Location.objects.create(name='ILC')
+        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+
+        Join.objects.create(user=l, event=pp)
+        Join.objects.get(id=l.id).delete()
+        self.assertNotIn(l, pp.participants.all())
 
     def test_delete_event_owner(self):
-        pass
+        l = create_user('Lorenzo')
+
+        ILC = Location.objects.create(name='ILC')
+        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+
+        l.delete()
+        # The event should be deleted
+        with self.assertRaises(django.core.exceptions.ObjectDoesNotExist):
+            event = Event.objects.get(id=pp.id)
+
+    def test_delete_event_not_symmetric(self):
+        l = create_user('Lorenzo')
+
+        ILC = Location.objects.create(name='ILC')
+        pp = create_event('Ping pong', ILC, l, max_num_participants=2)
+
+        pp.delete()
+        self.assertEqual(User.objects.get(id=l.id), l)
+
+
 
 
 
