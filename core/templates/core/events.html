@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{# Note to @Andrea:#}
-{# Simple example on how to access model data #}
-
-<h1>Events</h1>
-<ul>
-{% for event in event_list %}
-    <li>{{ event.name }} -- {{ event.start_date_time }}</li>
-{% endfor %}
-</ul>
-
-</body>
-</html>
+{% extends "core/generic.html" %}
+{% block title%}Events{% endblock %}
+{% block content %}
+    <h1>Events</h1>
+    <ul>
+    {% for event in event_list %}
+        <li>{{ event.name }} -- {{ event.start_date_time }}</li>
+    {% empty %}
+        <li>No events (for now)!</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

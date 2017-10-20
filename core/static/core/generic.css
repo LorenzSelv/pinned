@@ -1,0 +1,40 @@
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
+h1,h2,h3,h4{
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+/* Navbar styling */
+
+.navbar-brand{
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 2em;
+}
+
+.navbar-brand>i{
+    color: red;
+}
+
+.navbar{
+    z-index: 2;
+    box-shadow: black 0pt 8pt 5pt -5pt;
+}
+
+.navbar-nav .nav-link{
+    line-height: 70px;
+    width: 100px;
+    padding: 0 10pt;
+    border-left: 1pt solid #5c59594d;
+}
+
+.nav-item:hover{
+    background-color: #ececec;
+}
+
+/* Content styling */
+
+.content{
+    margin-top: 20px;
+}
