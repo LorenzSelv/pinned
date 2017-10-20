@@ -34,8 +34,48 @@ h1,h2,h3,h4{
     width: 100px;
     padding: 0 10pt;
     border-left: 1pt solid #5c59594d;
+    transition: border-left 0.1s;
+}
+
+.nav-item{
+    text-align: right;
+    padding-right: 5px;
 }
 
 .nav-item:hover{
     background-color: #ececec;
+}
+
+
+.nav-item:hover .nav-link{
+    border-left: 3pt solid #333;
+
+}
+
+/* Row styling */
+
+.container.content .container .row{
+    margin-bottom: 10px;
+}
+
+/* Event form styling */
+
+#event-form{
+    position: fixed;
+    z-index: 2;
+    border: 1px solid #ededed;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    background-color: white;
+}
+
+.hidden{
+    visibility: hidden;
+}
+
+/* Misc */
+
+#map{
+    height: 500px;
 }
