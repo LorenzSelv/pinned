@@ -1,7 +1,9 @@
+import random
 import django
 from django.test import TestCase
 from django.utils import timezone
 from core.models import User, Event, Location, Tag, Join, Comment
+from django.core.exceptions import ValidationError
 
 
 def create_user(username):
@@ -36,6 +38,25 @@ def create_event(name, location, event_owner, start_date_time, end_date_time=Non
                                 start_date_time=start_date_time,
                                 end_date_time=end_date_time,
                                 max_num_participants=max_num_participants)
+
+
+def get_random_latitude():
+    return random.uniform(-90, +90)
+
+
+def get_random_longitude():
+    return random.uniform(-180, +180)
+
+
+def create_location(name, latitude=None, longitude=None):
+    if not latitude:
+        latitude = get_random_latitude()
+    if not longitude:
+        longitude = get_random_longitude()
+    return Location.objects.create(name=name,
+                                   description=name + ' -- nice place!',
+                                   latitude=latitude,
+                                   longitude=longitude)
 
 
 class UserModelTests (TestCase):
@@ -125,7 +146,7 @@ class EventModelTests (TestCase):
         lorenzo = create_user('Lorenzo')
         federico = create_user('Federico')
 
-        ILC = Location.objects.create(name='ILC')
+        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
 
         # pp.participants.add(lorenzo)  # NOT POSSIBLE: through='Join'
@@ -141,7 +162,7 @@ class EventModelTests (TestCase):
         lorenzo = create_user('Lorenzo')
         federico = create_user('Federico')
 
-        ILC = Location.objects.create(name='ILC')
+        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=lorenzo, event=pp)
@@ -152,7 +173,7 @@ class EventModelTests (TestCase):
 
     def test_events_date(self):
         lorenzo = create_user('Lorenzo')
-        ILC = Location.objects.create(name='ILC')
+        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
         # Ignore milliseconds
         self.assertEqual(pp.creation_date.strftime("%Y-%m-%d %H:%M:%S"), timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -167,7 +188,7 @@ class EventUserInteractionTests (TestCase):
         l = create_user('Lorenzo')
         f = create_user('Federico')
 
-        ILC = Location.objects.create(name='ILC')
+        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
@@ -182,7 +203,7 @@ class EventUserInteractionTests (TestCase):
     def test_delete_event_owner_as_participant(self):
         l = create_user('Lorenzo')
 
-        ILC = Location.objects.create(name='ILC')
+        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
@@ -192,7 +213,7 @@ class EventUserInteractionTests (TestCase):
     def test_delete_event_owner(self):
         l = create_user('Lorenzo')
 
-        ILC = Location.objects.create(name='ILC')
+        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         l.delete()
@@ -203,11 +224,56 @@ class EventUserInteractionTests (TestCase):
     def test_delete_event_not_symmetric(self):
         l = create_user('Lorenzo')
 
-        ILC = Location.objects.create(name='ILC')
+        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         pp.delete()
         self.assertEqual(User.objects.get(id=l.id), l)
+
+
+class LocationTests (TestCase):
+
+    def test_insert_location(self):
+        dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
+        print('name    ', dining_hall.name)
+        print('latitude', dining_hall.latitude)
+        print('latitude', dining_hall.longitude)
+
+    def test_unique_name(self):
+        dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
+        print('name    ', dining_hall.name)
+        print('latitude', dining_hall.latitude)
+        print('latitude', dining_hall.longitude)
+
+        with self.assertRaises(django.db.utils.IntegrityError):
+            create_location('Dining Hall', latitude=0, longitude=0)
+
+    def test_unique_lat_long(self):
+        dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
+        print('name    ', dining_hall.name)
+        print('latitude', dining_hall.latitude)
+        print('latitude', dining_hall.longitude)
+
+        with self.assertRaises(django.db.utils.IntegrityError):
+            create_location('Same place', latitude=37.001435, longitude=-122.057775)
+
+    # Note: this test is not raising an exception as one would expected
+    #       because of the way django handles validators
+    #       See: https://docs.djangoproject.com/en/1.8/ref/validators/#how-validators-are-run
+    # def test_validators_lat_long(self):
+    #
+    #     with self.assertRaises(django.core.exceptions.ValidationError):
+    #         create_location('No-place', latitude=-99., longitude=0.)
+    #
+    #     with self.assertRaises(ValidationError):
+    #         create_location('No-place', latitude=0., longitude=200.)
+    #
+    #     with self.assertRaises(ValidationError):
+    #         create_location('No-place', latitude=99., longitude=-200.)
+
+
+
+
 
 
 
