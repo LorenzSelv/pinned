@@ -241,18 +241,12 @@ class LocationTests (TestCase):
 
     def test_unique_name(self):
         dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
-        print('name    ', dining_hall.name)
-        print('latitude', dining_hall.latitude)
-        print('latitude', dining_hall.longitude)
 
         with self.assertRaises(django.db.utils.IntegrityError):
             create_location('Dining Hall', latitude=0, longitude=0)
 
     def test_unique_lat_long(self):
         dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
-        print('name    ', dining_hall.name)
-        print('latitude', dining_hall.latitude)
-        print('latitude', dining_hall.longitude)
 
         with self.assertRaises(django.db.utils.IntegrityError):
             create_location('Same place', latitude=37.001435, longitude=-122.057775)
