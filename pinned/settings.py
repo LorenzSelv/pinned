@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'core',
+    'colorful',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

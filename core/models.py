@@ -2,6 +2,7 @@ from django.db import models
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from colorful.fields import RGBColorField
 
 
 # TODO text field vs char field
@@ -102,9 +103,10 @@ class Location (models.Model):
 
 class Tag (models.Model):
     name = models.CharField(max_length=20, unique=True)
+    color = RGBColorField()
 
     def __str__(self):
-        return self.name
+        return self.name + ' -- ' + str(self.color)
 
 
 class Comment (models.Model):

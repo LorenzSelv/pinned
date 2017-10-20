@@ -16,10 +16,15 @@ def create_user(username):
                                phone_number=phone_number)
 
 
+def get_random_color():
+    v = '0123456789ABCDEF'
+    return '#' + ''.join([random.choice(v) for _ in range(6)])
+
+
 def create_some_tags():
     tags_name = [
         'Ping Pong', 'Football', 'Gym', 'Tennis']
-    return [Tag.objects.create(name=name) for name in tags_name]
+    return [Tag.objects.create(name=name, color=get_random_color()) for name in tags_name]
 
 
 def get_users_interested_in(tag_name):
@@ -131,13 +136,18 @@ class UserModelTests (TestCase):
 class TagModelTests (TestCase):
 
     def test_unique_name(self):
-        l1 = Tag.objects.create(name='Gym')
+        t1 = Tag.objects.create(name='Gym', color=get_random_color())
         with self.assertRaises(django.db.utils.IntegrityError):
-            l2 = Tag.objects.create(name='Gym')
+            t2 = Tag.objects.create(name='Gym', color=get_random_color())
 
     def test_long_name(self):
-        l1 = Tag.objects.create(name='abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz')
-        print(l1)
+        t1 = Tag.objects.create(name='abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
+                                color=get_random_color())
+        print(t1)
+
+    def test_color(self):
+        t = Tag.objects.create(name='Gym', color=get_random_color())
+        print(t.color)
 
 
 class EventModelTests (TestCase):
