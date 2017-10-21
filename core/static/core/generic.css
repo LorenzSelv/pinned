@@ -29,12 +29,13 @@ h1,h2,h3,h4{
     margin-bottom: 20pt;
 }
 
+.navbar .collapse{
+    justify-content: flex-end;
+}
+
 .navbar-nav .nav-link{
     line-height: 70px;
-    width: 100px;
     padding: 0 10pt;
-    border-left: 1pt solid #5c59594d;
-    transition: border-left 0.1s;
 }
 
 .nav-item{
@@ -44,12 +45,6 @@ h1,h2,h3,h4{
 
 .nav-item:hover{
     background-color: #ececec;
-}
-
-
-.nav-item:hover .nav-link{
-    border-left: 3pt solid #333;
-
 }
 
 /* Row styling */
