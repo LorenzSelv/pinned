@@ -4,12 +4,17 @@
       <div class="col-sm-4">
         <div class="input-group">
           <span class="input-group-addon" id="basic-addon1"><i class="fa fa-futbol-o" aria-hidden="true"></i></span>
-          <select class="selectpicker form-control">
-            <!-- <option style="display: none;" disabled value selected></option> -->
+          <div class="dropdown form-control" style="padding: 0;">
+          <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%; border-radius: 0;">
+            All
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">All</a>
             {% for tag in tags %}
-              <option value="{{ tag.id }}">{{ tag.name }}</option>
+              <a class="dropdown-item" style="background-color: {% firstof tag.color "#fff" %}" href="#">{{ tag.name }}</a>
             {% endfor %}
-          </select>
+          </div>
+        </div>
         </div>
       </div>
       <div class="col-sm-4">
