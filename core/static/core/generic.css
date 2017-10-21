@@ -74,3 +74,7 @@ h1,h2,h3,h4{
 #map{
     height: 500px;
 }
+
+#dropdownMenuButton, #map-filters .dropdown .dropdown-menu, #datepicker{
+    width: 100%;
+}
