@@ -2,13 +2,13 @@
 from django.shortcuts import render
 
 from django.views import generic
-from .models import Event, User
+from .models import Event, User, Tag
 
 
 class MapView(generic.View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'core/pages/map.html')
+        return render(request, 'core/pages/map.html', {"tags" : Tag.objects.all()})
 
 
 class EventsView(generic.ListView):

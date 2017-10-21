@@ -1,0 +1,29 @@
+<form id="map-filters">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="input-group">
+          <span class="input-group-addon" id="basic-addon1"><i class="fa fa-futbol-o" aria-hidden="true"></i></span>
+          <select class="selectpicker form-control">
+            <!-- <option style="display: none;" disabled value selected></option> -->
+            {% for tag in tags %}
+              <option value="{{ tag.id }}">{{ tag.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="input-group">
+          <span class="input-group-addon" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>
+          <input type="text" class="form-control" aria-label="Location"/>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="input-group" id="datepicker">
+          <span class="input-group-addon" id="basic-addon1"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          <input class="form-control" data-provide="datepicker"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

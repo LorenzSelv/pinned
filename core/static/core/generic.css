@@ -65,8 +65,15 @@ h1,h2,h3,h4{
     background-color: white;
 }
 
-.hidden{
-    visibility: hidden;
+/* Map filters styling */
+
+#map-filters .input-group{
+    width: 100%;
+}
+
+#map-filters .col-sm-4{
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 /* Misc */
@@ -75,6 +82,7 @@ h1,h2,h3,h4{
     height: 500px;
 }
 
-#dropdownMenuButton, #map-filters .dropdown .dropdown-menu, #datepicker{
-    width: 100%;
+
+.hidden{
+    visibility: hidden;
 }
