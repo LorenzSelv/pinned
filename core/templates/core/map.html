@@ -11,9 +11,50 @@
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: -34.397, lng: 150.644},
-      zoom: 15
+      zoom: 15,
+      // Remove the Map/Satellite option
+      mapTypeControl: false
     });
     infoWindow = new google.maps.InfoWindow;
+
+    //Google's drawing manager (Marker and Hand tools)
+    var drawingManager = new google.maps.drawing.DrawingManager({
+      drawingControl: true,
+      drawingControlOptions: {
+        position: google.maps.ControlPosition.TOP_LEFT,
+        //Only need a marker from the tools, hand is default
+        drawingModes: ['marker'],
+        draggable: true
+      },
+      //Marker should be draggable
+      markerOptions: {draggable: true}
+    });
+    drawingManager.setMap(map);
+    // Change the text that appears when hovering over the hand or marker
+    $(map.getDiv()).one('mouseover','img[src="https://maps.gstatic.com/mapfiles/drawing.png"]',function(e){
+      $(e.delegateTarget).find('img[src="https://maps.gstatic.com/mapfiles/drawing.png"]').each(function(){
+        $(this).closest('div[title]').attr('title',function(){
+           switch(this.title){
+            case 'Add a marker':
+              return 'Add me to the map and create an event!';
+                break;
+            case 'Stop drawing':
+              return '';
+                break;
+            default:return this.title;
+           }
+        });
+      });
+    });
+    // Function called when marker is placed
+    google.maps.event.addListener(drawingManager, 'markercomplete', function(marker) {
+        // Just printing out the marker's location
+        console.log(marker.getPosition().lat());
+        console.log(marker.getPosition().lng());
+        // Select the 'hand' tool
+        drawingManager.set('drawingMode');
+        // TODO: Bring up prompt to enter event details and create the event
+    });
 
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
@@ -47,6 +88,6 @@
     infoWindow.open(map);
   }
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_xk05N3ropf_O38JXYVvW5yALj09jwuU&callback=initMap">
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_xk05N3ropf_O38JXYVvW5yALj09jwuU&libraries=drawing
+&callback=initMap" async defer></script>
 {% endblock %}
