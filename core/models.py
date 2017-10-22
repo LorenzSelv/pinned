@@ -32,6 +32,16 @@ class User (models.Model):
 #     pass
 
 
+def validate_latitude(latitude):
+    # if not -90 <= latitude <= +90:
+    raise ValidationError('%(latitude) is not in the range [-90, +90]', params={'value': latitude})
+
+
+def validate_longitude(longitude):
+    if not -180 <= longitude <= +180:
+        raise ValidationError('%(longitude) is not in the range [-180, +180]', params={'value': longitude})
+
+
 class Event (models.Model):
     name        = models.CharField(max_length=150)
     description = models.CharField(max_length=1000)
@@ -39,7 +49,12 @@ class Event (models.Model):
     # TODO ensure that the end_date_time > start_date_time. Is it possible to do at the model level?
     start_date_time = models.DateTimeField()
     end_date_time   = models.DateTimeField()
-    location = models.ForeignKey('Location', on_delete=models.CASCADE)
+
+    # location = models.ForeignKey('Location', on_delete=models.CASCADE)
+    latitude = models.DecimalField('Latitude', max_digits=10, decimal_places=8,
+                                   blank=False, validators=[validate_latitude])
+    longitude = models.DecimalField('Longitude', max_digits=11, decimal_places=8,
+                                    blank=False, validators=[validate_longitude])
 
     # TODO event type: private, public --> hierarchy in django
     tags = models.ManyToManyField('Tag', related_name='events')
@@ -67,16 +82,6 @@ class Join (models.Model):
 
     def __str__(self):
         return self.user.username + ' - ' + self.event.name
-
-
-def validate_latitude(latitude):
-    # if not -90 <= latitude <= +90:
-    raise ValidationError('%(latitude) is not in the range [-90, +90]', params={'value': latitude})
-
-
-def validate_longitude(longitude):
-    if not -180 <= longitude <= +180:
-        raise ValidationError('%(longitude) is not in the range [-180, +180]', params={'value': longitude})
 
 
 class Location (models.Model):

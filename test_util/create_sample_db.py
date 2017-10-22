@@ -56,7 +56,8 @@ def create_event(name, location, event_owner, start_date_time, end_date_time=Non
 
     return Event.objects.create(name=name,
                                 description=description,
-                                location=location,
+                                latitude=location.latitude,
+                                longitude=location.latitude,
                                 event_owner=event_owner,
                                 start_date_time=start_date_time,
                                 end_date_time=end_date_time,
