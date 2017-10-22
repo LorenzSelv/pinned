@@ -5,14 +5,7 @@
     <title>Pinned - {% block title %}{% endblock %}</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'core/generic.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans|Roboto" rel="stylesheet"> 
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    {% include "core/collections/css.html" %}
 
 </head>
 <body>
@@ -31,52 +24,6 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <script src="https://use.fontawesome.com/fe4c4c1b1d.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
-    <script type="text/javascript">
-        flag = 0
-        $(window).click(function(){
-            if(window.temp){
-                $("#event-form").addClass("hidden")
-                flag2 = false
-            }
-        })
-
-        $("#event-form").click(function(event){
-            event.stopPropagation()
-        })
-
-        $('#map').on("mousedown",()=>{
-            flag = 0
-        }).on("mousemove", ()=>{
-            flag = 1
-        }).on("mouseup", ()=>{
-            if(flag === 0) {
-                $("#event-form").toggleClass("hidden")
-                if(window.temp){
-                    window.temp.setMap(null)
-                    window.temp = null
-                }
-            }
-        })
-    </script>
-
-
-    <script type="text/javascript">
-      $(".dropdown-menu .dropdown-item").click(function(){
-      var selText = $(this).text();
-      var selColor = $(this).css("background-color")
-      $(this).parents('.input-group').find('#dropdownMenuButton').html(selText+' <span class="caret"></span>').css("background-color", selColor);
-        });
-    </script>
+    {% include "core/collections/js.html" %}
 </body>
 </html>

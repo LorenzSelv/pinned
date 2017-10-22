@@ -57,7 +57,7 @@ h1,h2,h3,h4{
 
 #event-form{
     position: fixed;
-    z-index: 2;
+    z-index: 1000;
     border: 1px solid #ededed;
     padding: 10px;
     border-radius: 4px;
