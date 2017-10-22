@@ -1,0 +1,34 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/upcoming_events.css' %}">
+
+<span style="display:inline-block; height: 50px"></span>
+
+<h2><span class="red_color">U</span>pcoming events...</h2>
+
+<span style="display:inline-block; height: 10px"></span>
+
+<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+  <div class="btn-group mr-2" role="group" aria-label="First group">
+    <button type="button" class="btn btn-secondary">
+      <strong><span class="light_red_color">{{event_list.0}}</span></strong> <br/>
+      {{event_list.0.start_date_time}} <br/>
+      {{event_list.0.location.name}}
+    </button>
+  </div>
+  <div class="btn-group mr-2" role="group" aria-label="Second group">
+    <button type="button" class="btn btn-secondary">
+      <strong><span class="light_red_color">{{event_list.1}}</span></strong> <br/>
+      {{event_list.1.start_date_time}} <br/>
+      {{event_list.1.location.name}}
+    </button>
+  </div>
+  <div class="btn-group" role="group" aria-label="Third group">
+    <button type="button" class="btn btn-secondary">
+      <strong><span class="light_red_color">{{event_list.2}}</span></strong> <br/>
+      {{event_list.2.start_date_time}} <br/>
+      {{event_list.2.location.name}}
+    </button>
+  </div>
+</div>
+
+<span style="display:inline-block; height: 50px"></span>

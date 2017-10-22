@@ -1,7 +1,9 @@
 {% extends "core/generic.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
+
 <div id="map" style="height: 70vh"></div>
+
 <script>
   // Note: This example requires that you consent to location sharing when
   // prompted by your browser. If you see the error "The Geolocation service
@@ -9,34 +11,49 @@
   // locate you.
   var map, infoWindow;
   function initMap() {
+
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: -34.397, lng: 150.644},
       zoom: 15
     });
+    
     infoWindow = new google.maps.InfoWindow;
 
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
+        
         var pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(pos.lat, pos.lng),
           map: map,
           animation: google.maps.Animation.DROP,
           label: 'Pinned HQ.'
         });
+
         marker.setMap(map);
         map.setCenter(pos);
+
       }, function() {
         handleLocationError(true, infoWindow, map.getCenter());
       });
+
     } else {
       // Browser doesn't support Geolocation
       handleLocationError(false, infoWindow, map.getCenter());
     }
+  }
+
+  function add_pin(map, lt, lg){
+    var pos = {lat: lt, lng: lg};
+    var marker = new google.maps.Marker({
+          position: pos,
+          map: map
+        });
   }
 
   function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -47,6 +64,11 @@
     infoWindow.open(map);
   }
 </script>
+
+<!-- Include the upcoming events below the map -->
+{% include "core/upcoming_events.html" %}
+
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_xk05N3ropf_O38JXYVvW5yALj09jwuU&callback=initMap">
 </script>
+
 {% endblock %}
