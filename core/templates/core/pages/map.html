@@ -1,8 +1,25 @@
-{% extends "core/generic.html" %}
+{% extends "core/structures/generic.html" %}
+
 {% block title %}Home{% endblock %}
+
+{% block top_content %} 
+  {% include "core/partials/event_form.html" %}
+{% endblock %}
+
 {% block content %}
 
-<div id="map" style="height: 70vh"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      {% include "core/partials/map_filters.html" %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div id="map"></div>
+    </div>
+  </div>
+</div>
 
 <script>
   // Note: This example requires that you consent to location sharing when
@@ -17,6 +34,7 @@
       zoom: 15,
       // Remove the Map/Satellite option
       mapTypeControl: false
+
     });
     
     infoWindow = new google.maps.InfoWindow;
@@ -76,7 +94,6 @@
           label: 'Pinned HQ.'
         });
 
-        marker.setMap(map);
         map.setCenter(pos);
 
       }, function() {
@@ -87,6 +104,21 @@
       // Browser doesn't support Geolocation
       handleLocationError(false, infoWindow, map.getCenter());
     }
+
+    function createTemporaryMarker(coords){
+      var marker = new google.maps.Marker({
+        position: coords,
+        map: map,
+        animation: google.maps.Animation.DROP
+      })
+      return marker
+    }
+
+    // google.maps.event.addListener(map, 'click', function(event){
+    //   if(!window.temp)
+    //     window.temp = createTemporaryMarker(event.latLng)
+    // })
+
   }
 
   function add_pin(map, lt, lg){

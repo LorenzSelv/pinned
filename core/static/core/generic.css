@@ -26,21 +26,63 @@ h1,h2,h3,h4{
 .navbar{
     z-index: 2;
     box-shadow: black 0pt 8pt 5pt -5pt;
+    margin-bottom: 20pt;
+}
+
+.navbar .collapse{
+    justify-content: flex-end;
 }
 
 .navbar-nav .nav-link{
     line-height: 70px;
-    width: 100px;
     padding: 0 10pt;
-    border-left: 1pt solid #5c59594d;
+}
+
+.nav-item{
+    text-align: right;
+    padding-right: 5px;
 }
 
 .nav-item:hover{
     background-color: #ececec;
 }
 
-/* Content styling */
+/* Row styling */
 
-.content{
-    margin-top: 20px;
+.container.content .container .row{
+    margin-bottom: 10px;
+}
+
+/* Event form styling */
+
+#event-form{
+    position: fixed;
+    z-index: 1000;
+    border: 1px solid #ededed;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    background-color: white;
+}
+
+/* Map filters styling */
+
+#map-filters .input-group{
+    width: 100%;
+}
+
+#map-filters .col-sm-4{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Misc */
+
+#map{
+    height: 500px;
+}
+
+
+.hidden{
+    visibility: hidden;
 }
