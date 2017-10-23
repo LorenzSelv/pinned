@@ -20,11 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
 SECRET_KEY = os.environ['PINNED_DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.getenv('PINNED_DJANGO_DEBUG_MODE', True))
+
+# force https connection when running on the server
+SECURE_SSL_REDIRECT = bool(os.getenv('PINNED_DJANGO_SSL_REDIRECT', False))
 
 ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com']
 
@@ -32,6 +34,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'core',
+    'colorful',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -120,3 +123,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = "/home/pinned/pinned/core/static"

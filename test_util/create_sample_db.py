@@ -8,6 +8,7 @@ Note: since it inserts entries in the database there may be UNIQUE value clashes
       SOLUTION -- run `make db` to clear the database first
 """
 import os
+import random
 import sys
 import django
 
@@ -55,7 +56,8 @@ def create_event(name, location, event_owner, start_date_time, end_date_time=Non
 
     return Event.objects.create(name=name,
                                 description=description,
-                                location=location,
+                                latitude=location.latitude,
+                                longitude=location.latitude,
                                 event_owner=event_owner,
                                 start_date_time=start_date_time,
                                 end_date_time=end_date_time,
@@ -65,6 +67,25 @@ def create_event(name, location, event_owner, start_date_time, end_date_time=Non
 def create_event_helper(name, location, event_owner, hours_from_now):
     return create_event(name, location, event_owner,
                         start_date_time=timezone.now()+timezone.timedelta(hours=hours_from_now))
+
+
+def get_random_latitude():
+    return random.uniform(-90, +90)
+
+
+def get_random_longitude():
+    return random.uniform(-180, +180)
+
+
+def create_location(name, latitude=None, longitude=None):
+    if not latitude:
+        latitude = get_random_latitude()
+    if not longitude:
+        longitude = get_random_longitude()
+    return Location.objects.create(name=name,
+                                   description=name + ' -- nice place!',
+                                   latitude=latitude,
+                                   longitude=longitude)
 
 
 def main():
