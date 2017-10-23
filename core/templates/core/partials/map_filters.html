@@ -11,7 +11,7 @@
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="#">All</a>
             {% for tag in tags %}
-              <a class="dropdown-item" style="background-color: {% firstof tag.color "#fff" %}" href="#">{{ tag.name }}</a>
+              <a class="dropdown-item" style="background-color: #{% firstof tag.color "fff" %}" href="#">{{ tag.name }}</a>
             {% endfor %}
           </div>
         </div>
