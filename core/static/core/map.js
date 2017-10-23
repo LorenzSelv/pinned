@@ -1,4 +1,3 @@
-
 // Note: This example requires that you consent to location sharing when
 // prompted by your browser. If you see the error "The Geolocation service
 // failed.", it means you probably did not give permission for the browser to
@@ -7,6 +6,27 @@ var map, infoWindow;
 
 function initMap() {
 
+    // Create marker given event data
+    function createMarker(name, description, coords) {
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(coords.lat, coords.lng),
+            map: map,
+            animation: google.maps.Animation.DROP
+
+        })
+        var content = "<h1>" + name + "</h1><p>" + description + "</p>"
+        var info = new google.maps.InfoWindow({
+            content: content
+        })
+        marker.addListener('mouseover', function() {
+            info.open(map, marker)
+        })
+        marker.addListener('mouseout', function(){
+            info.close()
+        })
+        return marker
+    }
+
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: -34.397, lng: 150.644 },
         zoom: 15,
@@ -14,6 +34,14 @@ function initMap() {
         mapTypeControl: false
 
     });
+
+    // Call to events api endpoint and draw markers
+    $.ajax('api/events/').done(function(events){
+        for (i = 0; i < events.length; i++) {
+            var data = events[i]
+            createMarker(data.name, data.description, { lat: data.latitude, lng: data.longitude })
+        }
+    })
 
     infoWindow = new google.maps.InfoWindow;
 
@@ -30,6 +58,7 @@ function initMap() {
         markerOptions: { draggable: true }
     });
     drawingManager.setMap(map);
+    
     // Change the text that appears when hovering over the hand or marker
     $(map.getDiv()).one('mouseover', 'img[src="https://maps.gstatic.com/mapfiles/drawing.png"]', function(e) {
         $(e.delegateTarget).find('img[src="https://maps.gstatic.com/mapfiles/drawing.png"]').each(function() {
@@ -86,15 +115,6 @@ function initMap() {
     } else {
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
-    }
-
-    function createTemporaryMarker(coords) {
-        var marker = new google.maps.Marker({
-            position: coords,
-            map: map,
-            animation: google.maps.Animation.DROP
-        })
-        return marker
     }
 
     // google.maps.event.addListener(map, 'click', function(event){

@@ -16,7 +16,16 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from rest_framework import routers
+
+from core import views
+
+# Route to events api endpoint
+router = routers.DefaultRouter()
+router.register(r'api/events', views.EventViewSet)
+
 urlpatterns = [
     url(r'^', include('core.urls')),
+    url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
 ]

@@ -1,9 +1,12 @@
 
 from django.shortcuts import render
 from django.views import generic
+from rest_framework import viewsets
 
 from .models import Event, User, Tag
 from .forms import EventForm
+from .serializers import EventSerializer
+
 # class MapView(generic.ListView):
 #     template_name = 'core/map.html'
 #
@@ -38,7 +41,6 @@ class MapView(generic.View):
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
 
-
 class EventsView(generic.ListView):
     template_name = 'core/pages/events.html'
     model = Event
@@ -52,3 +54,8 @@ class EventsView(generic.ListView):
 class ProfileView(generic.ListView):
     template_name = 'core/pages/profile.html'
     model = User
+
+# Enables access to all events
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
