@@ -1,8 +1,9 @@
 
 from django.shortcuts import render
 from django.views import generic
-from .models import Event, User, Tag
 
+from .models import Event, User, Tag
+from .forms import EventForm
 # class MapView(generic.ListView):
 #     template_name = 'core/map.html'
 #
@@ -12,12 +13,29 @@ from .models import Event, User, Tag
 
 
 class MapView(generic.View):
+    context = {
+        "tags": Tag.objects.all(),
+        "event_list": Event.objects.order_by('-start_date_time').reverse()
+        }
 
+    def post(self, request):
+        form = EventForm(request.POST)
+
+        if(form.is_valid()):
+            form.cleaned_data['event_owner'] = User.objects.get(pk=form.cleaned_data["user"])
+            form.cleaned_data.pop("user", None)
+            e = Event(**form.cleaned_data)
+            self.context['state'] = "saved"
+        else:
+            self.context['state'] = "error"
+            self.context['errors'] = form.errors
+
+        self.context['form'] = EventForm()
+        return render(request, 'core/pages/map.html', context=self.context)
     def get(self, request, *args, **kwargs):
-        context = {"tags": Tag.objects.all(),
-                   "event_list" :Event.objects.order_by('-start_date_time').reverse()
-                   }
-        return render(request, 'core/pages/map.html', context=context)
+        self.context['state'] = "get"
+        self.context['form'] = EventForm()
+        return render(request, 'core/pages/map.html', context=self.context)
 
 
 class EventsView(generic.ListView):
