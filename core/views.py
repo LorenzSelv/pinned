@@ -25,6 +25,7 @@ class MapView(generic.View):
             form.cleaned_data['event_owner'] = User.objects.get(pk=form.cleaned_data["user"])
             form.cleaned_data.pop("user", None)
             e = Event(**form.cleaned_data)
+            e.save()
             self.context['state'] = "saved"
         else:
             self.context['state'] = "error"
@@ -41,6 +42,11 @@ class MapView(generic.View):
 class EventsView(generic.ListView):
     template_name = 'core/pages/events.html'
     model = Event
+
+    def get_context_data(self, **kwargs):
+        context = super(EventsView, self).get_context_data(**kwargs)
+        context['fields'] = Event._meta.get_fields()
+        return context
 
 
 class ProfileView(generic.ListView):
