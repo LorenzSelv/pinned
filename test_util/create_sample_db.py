@@ -21,6 +21,8 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pinned.settings")
 django.setup()
 
+divider = "---------------------------------------------------------------------------"
+
 from django.utils import timezone
 from core.models import User, Event, Location, Tag, Join, Comment
 
@@ -38,7 +40,10 @@ def create_user(username):
 def create_some_tags():
     tags_name = [
         'Ping Pong', 'Football', 'Gym', 'Tennis']
-    return [Tag.objects.create(name=name) for name in tags_name]
+    tags_colors = [
+      '62D0FF', '59DF00', 'FFA8A8', 'FFBB7D'
+    ]
+    return [Tag.objects.create(name=name, color=random.choice(tags_colors)) for name in tags_name]
 
 
 def get_users_interested_in(tag_name):
@@ -64,7 +69,7 @@ def create_event(name, location, event_owner, start_date_time, end_date_time=Non
                                 max_num_participants=max_num_participants)
 
 
-def create_event_helper(name, location, event_owner, hours_from_now):
+def create_event_helper(name, location, event_owner, hours_from_now ):
     return create_event(name, location, event_owner,
                         start_date_time=timezone.now()+timezone.timedelta(hours=hours_from_now))
 
@@ -89,9 +94,19 @@ def create_location(name, latitude=None, longitude=None):
 
 
 def main():
+    tags = create_some_tags()
+
+    print(divider)
+    print('Created tags')
+    print('\n'.join([str(tag) for tag in tags]))
+
     usernames = ['Lorenzo', 'Andrea', 'Henry', 'Mattheo', 'Alessia']
 
     users = [create_user(username) for username in usernames]
+
+    print(divider)
+    print('Created users')
+    print('\n'.join([str(user) for user in users]))
 
     events_data = [('Ping Pong', create_location('ILC'),   users[0], 4),
                    ('Basket',    create_location('court'), users[1], 2),
@@ -101,12 +116,11 @@ def main():
 
     events = [create_event_helper(*event_data) for event_data in events_data]
 
-    print('Created users')
-    print('\n'.join([str(user) for user in users]))
-
+    print(divider)
     print('Created events')
     print('\n'.join([str(event) for event in events]))
 
-
 if __name__ == '__main__':
     main()
+    print(divider)
+    print("Finished sample db creation")
