@@ -6,3 +6,7 @@ __pycache__/
 node_modules/
 
 core/static/core/
+
+package-lock\.json
+
+fonts/

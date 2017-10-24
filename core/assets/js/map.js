@@ -120,7 +120,7 @@ module.exports = {
             console.log(marker.getPosition().lng());
             // Select the 'hand' tool
             drawingManager.set('drawingMode');
-            $("#event-form").removeClass("hidden")
+            $("#event-form").removeClass("invisible")
             $("#event-form #id_latitude").val(marker.getPosition().lat())
             $("#event-form #id_longitude").val(marker.getPosition().lng())
             $("#event-form #id_user").val(1)
