@@ -2,3 +2,7 @@
 db.*
 core/migrations/*
 __pycache__/
+
+node_modules/
+
+core/static/core/
