@@ -7,13 +7,6 @@ from .models import Event, User, Tag
 from .forms import EventForm
 from .serializers import EventSerializer
 
-# class MapView(generic.ListView):
-#     template_name = 'core/map.html'
-#
-#     def get_queryset(self):
-#         return Event.objects.order_by('-start_date_time').reverse()
-# =======
-
 
 class MapView(generic.View):
     context = {
@@ -23,12 +16,13 @@ class MapView(generic.View):
 
     def post(self, request):
         form = EventForm(request.POST)
+        print(form.fields.keys())
 
-        if(form.is_valid()):
-            form.cleaned_data['event_owner'] = User.objects.get(pk=form.cleaned_data["user"])
-            form.cleaned_data.pop("user", None)
-            e = Event(**form.cleaned_data)
-            e.save()
+        if form.is_valid():
+            # e = Event(**form.cleaned_data)
+            form.save()
+            # form.save_m2m()
+            # Event.objects.create(**form.cleaned_data)
             self.context['state'] = "saved"
         else:
             self.context['state'] = "error"
@@ -36,10 +30,12 @@ class MapView(generic.View):
 
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
+
     def get(self, request, *args, **kwargs):
         self.context['state'] = "get"
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
+
 
 class EventsView(generic.ListView):
     template_name = 'core/pages/events.html'
@@ -54,6 +50,7 @@ class EventsView(generic.ListView):
 class ProfileView(generic.ListView):
     template_name = 'core/pages/profile.html'
     model = User
+
 
 # Enables access to all events
 class EventViewSet(viewsets.ModelViewSet):

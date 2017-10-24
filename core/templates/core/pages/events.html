@@ -12,6 +12,7 @@
                     <th>Start</th>
                     <th>End</th>
                     <th>Creator</th>
+                    <th>Tags</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,7 @@
                         <td>{{ event.start_date_time }}</td>
                         <td>{{ event.end_date_time }}</td>
                         <td>{{ event.event_owner }}</td>
+                        <td>{% for tag in event.tags.all %}{{ tag.name }}{% endfor %}</td>
                     </tr>
                 {% endfor %}
             </tbody>

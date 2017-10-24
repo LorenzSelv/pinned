@@ -33,8 +33,8 @@ class User (models.Model):
 
 
 def validate_latitude(latitude):
-    # if not -90 <= latitude <= +90:
-    raise ValidationError('%(latitude) is not in the range [-90, +90]', params={'value': latitude})
+    if not -90 <= latitude <= +90:
+        raise ValidationError('%(latitude) is not in the range [-90, +90]', params={'value': latitude})
 
 
 def validate_longitude(longitude):
@@ -57,12 +57,12 @@ class Event (models.Model):
                                     blank=False, validators=[validate_longitude])
 
     # TODO event type: private, public --> hierarchy in django
-    tags = models.ManyToManyField('Tag', related_name='events')
+    tags = models.ManyToManyField('Tag', related_name='events', blank=True)
 
     event_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
     creation_date = models.DateTimeField(auto_now_add=True)
 
-    participants = models.ManyToManyField('User', through='Join')
+    participants = models.ManyToManyField('User', through='Join', blank=True)
     max_num_participants = models.IntegerField(
         validators=[MinValueValidator(2, message='At least two people are allowed to join')])
 

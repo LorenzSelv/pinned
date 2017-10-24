@@ -84,8 +84,8 @@ function initMap() {
         // Select the 'hand' tool
         drawingManager.set('drawingMode');
         $("#event-form").removeClass("hidden")
-        $("#event-form #id_latitude").val(marker.getPosition().lat())
-        $("#event-form #id_longitude").val(marker.getPosition().lng())
+        $("#event-form #id_latitude").val(marker.getPosition().lat().toFixed(8))
+        $("#event-form #id_longitude").val(marker.getPosition().lng().toFixed(8))
         $("#event-form #id_user").val(1)
         // TODO: Bring up prompt to enter event details and create the event
     });
