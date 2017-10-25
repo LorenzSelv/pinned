@@ -61,13 +61,17 @@ class EventJoinView(generic.View):
             user = User.objects.get(pk=user_id)
             event = Event.objects.get(pk=event_id)
             join_date = timezone.now
+            n_participants = len(event.participants.all())
 
-            Join.objects.create(user=user, event=event, join_date=join_date)
+            if n_participants >= event.max_num_participants: 
+                raise Exception
+            else:
+                Join.objects.create(user=user, event=event, join_date=join_date)
 
             data['result'] = True
 
-            print("{} joined {} ({})".format(user, event, j))
-            
+            print("{} joined {}".format(user, event))
+
         except Exception as e:
             print(str(e))
             data['result'] = False
