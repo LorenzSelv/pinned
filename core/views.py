@@ -2,11 +2,14 @@
 from django.shortcuts import render
 from django.views import generic
 from rest_framework import viewsets
+from django.http import HttpResponse
+from django.utils import timezone
 
-from .models import Event, User, Tag
+from .models import Event, User, Tag, Join
 from .forms import EventForm
 from .serializers import EventSerializer
 
+import json
 
 class MapView(generic.View):
     context = {
@@ -46,6 +49,35 @@ class EventsView(generic.ListView):
         context['fields'] = Event._meta.get_fields()
         return context
 
+class EventJoinView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+        event_id = self.kwargs['event_id']
+        user_id = request.POST['user_id']
+
+        data = {}
+
+        try:
+            user = User.objects.get(pk=user_id)
+            event = Event.objects.get(pk=event_id)
+            join_date = timezone.now
+
+            Join.objects.create(user=user, event=event, join_date=join_date)
+
+            data['result'] = True
+
+            print("{} joined {} ({})".format(user, event, j))
+            
+        except Exception as e:
+            print(str(e))
+            data['result'] = False
+        
+        return HttpResponse(json.dumps(data))
+        #user_id = 
+
+class EventView(generic.DetailView):
+    template_name = 'core/pages/event.html'
+    model = Event
 
 class ProfileView(generic.ListView):
     template_name = 'core/pages/profile.html'

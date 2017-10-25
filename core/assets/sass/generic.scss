@@ -6,8 +6,9 @@ h1,
 h2,
 h3,
 .navbar-brand {
+    text-transform: lowercase;
+    font-family: 'Josefin Sans', sans-serif;
     &:first-letter {
-        text-transform: lowercase;
         color: red;
     }
 }
@@ -76,4 +77,8 @@ h4 {
     border-radius: 4px;
     width: 100%;
     background-color: white;
+}
+
+.event-id{
+    display: none;
 }
