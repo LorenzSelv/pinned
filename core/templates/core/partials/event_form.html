@@ -9,7 +9,7 @@
 </div>
 {% else %}
 {% endif %}
-<form id="event-form" class="hidden" action="/" method="post">
+<form id="event-form" class="invisible" action="/" method="post">
   {% csrf_token %}
   {{ form.errors }}
   <div class="form-group">

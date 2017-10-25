@@ -2,3 +2,11 @@
 db.*
 core/migrations/*
 __pycache__/
+
+node_modules/
+
+core/static/core/
+
+package-lock\.json
+
+fonts/

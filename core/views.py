@@ -18,7 +18,7 @@ from .serializers import EventSerializer
 class MapView(generic.View):
     context = {
         "tags": Tag.objects.all(),
-        "event_list": Event.objects.order_by('-start_date_time').reverse()
+        "event_list": Event.objects.order_by('start_date_time')[:3]
         }
 
     def post(self, request):

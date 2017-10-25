@@ -11,3 +11,7 @@ db: cleandb
 	python manage.py makemigrations core
 	python manage.py migrate
 	python test_util/create_sample_db.py
+frontend:
+	npm run dev
+
+all: db tests frontend
