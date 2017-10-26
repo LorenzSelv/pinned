@@ -59,10 +59,19 @@ module.exports = {
 
             })
 
-            var content = "<h1>" + name + "</h1><p>" + description + "</p>"
+            var content = "<div class='map-tooltip'><h1>" + name + "</h1><hr><div class='description'>" + description + "</div></div>"
 
             var info = new google.maps.InfoWindow({
                 content: content
+            })
+
+            info.addListener('closeclick', function(){
+                info.fixed = false
+            })
+
+            marker.addListener('click', function(){
+                info.fixed = true
+                info.open(this.map, marker)
             })
 
             marker.addListener('mouseover', function() {
@@ -70,7 +79,10 @@ module.exports = {
             })
 
             marker.addListener('mouseout', function() {
-                info.close()
+                if(!info.fixed){
+                    info.fixed = false
+                    info.close()
+                }
             })
 
             return marker
