@@ -1,10 +1,12 @@
 //Bootstrap
-@import '~bootstrap/dist/css/bootstrap';
+@import '~bootstrap/scss/bootstrap';
 
 @import 'font-awesome';
 
 @import 'generic';
 
 @import 'events';
+
+@import 'event-form'
 
 // @import 'upcoming_events';

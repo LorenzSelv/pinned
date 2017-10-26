@@ -10,5 +10,5 @@ $("#map-filters .dropdown-menu").find(".dropdown-item").click(function() {
     $(this).parents('.input-group').find('#dropdownMenuButton').html(selText + ' <span class="caret"></span>').css("background-color", selColor);
 });
 
-// Add style to event-form fields
-$("#event-form").find("input").addClass("form-control")
+// Enable map-filters datetimepicker
+$("#map-filters").find("#datepicker").find("input").flatpickr()

@@ -2,6 +2,9 @@
 // prompted by your browser. If you see the error "The Geolocation service
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
+
+require('./event_form.js')
+
 module.exports = {
     initMap: function() {
         let map = new google.maps.Map(document.getElementById('map'), {
@@ -120,10 +123,12 @@ module.exports = {
             console.log(marker.getPosition().lng());
             // Select the 'hand' tool
             drawingManager.set('drawingMode');
-            $("#event-form").removeClass("invisible")
+            $("#event-input").removeClass("invisible")
             $("#event-form #id_latitude").val(marker.getPosition().lat().toFixed(8))
             $("#event-form #id_longitude").val(marker.getPosition().lng().toFixed(8))
             $("#event-form #id_user").val(1)
+
+            window.currentMarker = marker
             // TODO: Bring up prompt to enter event details and create the event
         });
 

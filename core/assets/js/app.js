@@ -1,6 +1,8 @@
 require('./bootstrap.js')
+const flatpickr = require("flatpickr")
 
-window.map = require('./map.js')
+if($("#map").length)
+    window.map = require('./map.js')
 
 require('./utils.js')
 

@@ -67,18 +67,3 @@ h4 {
 .container.content .container .row {
     margin-bottom: 10px;
 }
-
-// Event form styling
-#event-form {
-    position: fixed;
-    z-index: 1000;
-    border: 1px solid #ededed;
-    padding: 10px;
-    border-radius: 4px;
-    width: 100%;
-    background-color: white;
-}
-
-.event-id{
-    display: none;
-}

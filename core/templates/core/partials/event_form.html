@@ -1,16 +1,19 @@
-{% if state == "saved" %}
-<div class="alert alert-success" role="alert">
-  Event succesfully created!
+<div class="event-output">
+    {% if state == "saved" %}
+    <div class="alert alert-success" role="alert">
+        Event succesfully created!
+    </div>
+    {% elif state == "error" %}
+    <div class="alert alert-danger" role="alert">
+        There was an error while validating event data {{ errors }}
+    </div>
+    {% else %} {% endif %}
 </div>
-{% elif state == "error" %}
-<div class="alert alert-danger" role="alert">
-  There was an error while validating event data
-  {{ errors }}
+<div id="event-input" class="invisible d-flex align-items-center justify-content-center">
+    <form id="event-form" action="/" method="post" class="">
+        {% csrf_token %} {{ form.as_p }}
+        <div class="date_times"></div>
+        <button type="submit" class="btn btn-submit">Submit</button>
+        <button type="button" class="btn btn-cancel">Cancel</button>
+    </form>
 </div>
-{% else %}
-{% endif %}
-<form id="event-form" class="invisible" action="/" method="post">
-  {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
