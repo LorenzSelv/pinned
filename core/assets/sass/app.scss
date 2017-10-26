@@ -1,10 +1,10 @@
 //Bootstrap
 @import '~bootstrap/dist/css/bootstrap';
 
-//Font-Awesome
-@import "~font-awesome/scss/font-awesome";
+@import 'font-awesome';
 
 @import 'generic';
 
+@import 'events';
 
 // @import 'upcoming_events';
