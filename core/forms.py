@@ -1,6 +1,5 @@
 from django import forms
 from .models import Event
-from datetimewidget.widgets import DateTimeWidget
 
 class EventForm(forms.ModelForm):
     class Meta:

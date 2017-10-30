@@ -10,3 +10,5 @@ core/static/core/
 package-lock\.json
 
 fonts/
+
+*.pyc
