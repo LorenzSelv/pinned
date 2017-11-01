@@ -135,10 +135,8 @@ module.exports = {
             console.log(marker.getPosition().lng());
             // Select the 'hand' tool
             drawingManager.set('drawingMode');
-            $("#event-input").removeClass("invisible")
-            $("#event-form #id_latitude").val(marker.getPosition().lat().toFixed(8))
-            $("#event-form #id_longitude").val(marker.getPosition().lng().toFixed(8))
-            $("#event-form #id_user").val(1)
+
+            showEventForm(marker.getPosition().lat(), marker.getPosition().lng())
 
             window.currentMarker = marker
             // TODO: Bring up prompt to enter event details and create the event

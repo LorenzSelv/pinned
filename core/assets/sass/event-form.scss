@@ -1,4 +1,41 @@
 @import '~flatpickr/dist/flatpickr.css';
+@import '~chosen-js/chosen.css';
+
+.chosen{
+    &-container{
+        &-active{
+            .chosen-choices, .chosen-single{
+                border: 0;
+                box-shadow: none;
+            }
+        }
+
+        .chosen-choices{
+            border: 0;
+            background-image: none;
+            .search-choice-close{
+                @extend .fa;
+                @extend .fa-times;
+                font-size: inherit !important;
+                right: 5px !important;
+                top: 1px !important;
+                background: none !important;
+            }
+        }
+        
+        &-single{
+            .chosen-single{
+                border: 0;
+                box-shadow: none;
+                font-size: inherit !important;
+                right: 5px !important;
+                top: 1px !important;
+                background: none !important;
+            }    
+        }
+        
+    }
+}
 
 // Event form styling
 #event {
@@ -15,24 +52,48 @@
         }
     }
 
+    &-output {
+        .error{
+            &-name{
+                font-weight: 600;
+            }
+
+            &-desc{
+                text-transform: lowercase;
+            }
+        }
+    }
 
     &-form {
         position: fixed;
         z-index: 1000;
         border: 1px solid #ededed;
-        padding: 10px;
+        padding: 10px 15px;
 
         border-radius: 4px;
         background-color: white;
-        min-width: 400px;
+        min-width: 500px;
         max-width: 90vw;
         max-height: 90vh;
         overflow-y: auto;
+
+        h1{
+            border-bottom: 1px solid $input-border-color;
+        }
 
         #id_{
             &description{
                 height: 100pt;
             }
+        }
+
+        .date-times{
+            margin-bottom: 15px;
+        }
+
+        .d-flex.flex-row-reverse.order-last .btn {
+            margin: 0 0 0 8px;
+            width: 100px;
         }
     }
 }
