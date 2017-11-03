@@ -1,8 +1,3 @@
-// Enable tooltips
-$(function() {
-    $('[data-toggle="tooltip"]').tooltip()
-})
-
 // Enable map-filters dropdown selection
 $("#map-filters .dropdown-menu").find(".dropdown-item").click(function() {
     var selText = $(this).text();
