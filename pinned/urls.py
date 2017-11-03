@@ -22,7 +22,7 @@ from core import views
 
 # Route to events api endpoint
 router = routers.DefaultRouter()
-router.register(r'api/events', views.EventViewSet)
+router.register(r'events/api', views.EventViewSet)
 
 urlpatterns = [
     url(r'^', include('core.urls')),
