@@ -1,0 +1,14 @@
+.event{
+    &-name{
+        border-bottom: 1px solid $input-border-color;
+    }
+
+    &-description{
+        padding-bottom: 10px;
+        border-bottom: 1px solid $input-border-color;
+        margin-bottom: 10px;
+    }
+    &-participants td:first-child{
+        border-top: none;
+    }
+}

@@ -2,12 +2,19 @@
 
 {% block title%}{{ event.name }}{% endblock %}
 {% block content %}
-    <h1>{{ event.name }}</h1>
-    <table class="table">
+<div class="event">
+    <h1 class="event-name">{{ event.name }}</h1>
+    <p class="event-description text-justify">{{ event.description }}</p>
+    <table class="table event-participants">
         {% for p in event.participants.all %}
         <tr>
             <td>{{ p.username }}</td>
         </tr>
+        {% empty %}
+        <tr>
+            <td>No participant yet!</td>
+        </tr>        
         {% endfor %}
     </table>
+</div>
 {% endblock %}
