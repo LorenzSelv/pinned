@@ -59,7 +59,7 @@ module.exports = {
 
             })
 
-            var content = "<div class='map-tooltip'><h1>" + name + "</h1><hr><div class='description'>" + description + "</div></div>"
+            var content = "<div class='map-tooltip'><h1><a>" + name + "</a></h1><hr><div class='description'>" + description + "</div></div>"
 
             var info = new google.maps.InfoWindow({
                 content: content
@@ -89,7 +89,7 @@ module.exports = {
         }
 
         // Call to events api endpoint and draw markers
-        $.ajax('api/events/').done(function(events) {
+        $.ajax('/events/api').done(function(events) {
             for (i = 0; i < events.length; i++) {
                 var data = events[i]
                 createMarker(data.name, data.description, { lat: data.latitude, lng: data.longitude })
