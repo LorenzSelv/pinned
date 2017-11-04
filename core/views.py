@@ -30,6 +30,9 @@ class MapView(generic.View):
         else:
             self.context['state'] = "error"
             self.context['errors'] = form.errors
+            self.context['other_errors'] = form.non_field_errors()
+            # print(other_errors)
+            # print(type(other_errors))
 
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
@@ -77,11 +80,12 @@ class EventJoinView(generic.View):
             data['result'] = False
         
         return HttpResponse(json.dumps(data))
-        #user_id = 
+
 
 class EventView(generic.DetailView):
     template_name = 'core/pages/event.html'
     model = Event
+
 
 class ProfileView(generic.ListView):
     template_name = 'core/pages/profile.html'

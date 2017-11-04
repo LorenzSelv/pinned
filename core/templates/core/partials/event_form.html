@@ -29,6 +29,9 @@
         {% if errors.end_date_time %} 
             Error in <span class="error-name">end date</span>: <span class="error-desc">{{ errors.end_date_time.0 }}</span><br>
         {% endif %}
+        {% if other_errors %}
+            Error in <span class="error-name">start and end date</span>: <span class="error-desc">{{ other_errors.0 }}</span><br>
+        {% endif %}
 
     </div>
     {% else %} {% endif %}
