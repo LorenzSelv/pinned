@@ -2,8 +2,16 @@
 
 {% block title%}{{ event.name }}{% endblock %}
 {% block content %}
+<script type="text/javascript">
+    window.token = '{{ csrf_token }}'
+</script>
 <div class="event">
     <h1 class="event-name">{{ event.name }}</h1>
+    {% if joined %}
+        <button class="btn btn-leave">Leave</button>
+    {% else %}
+        <button class="btn btn-join">Join</button>
+    {% endif %}
     <p class="event-description text-justify">{{ event.description }}</p>
     <table class="table event-participants">
         {% for p in event.participants.all %}

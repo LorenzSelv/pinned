@@ -6,4 +6,7 @@ if($("#map").length)
 
 require('./utils.js')
 
+if($(".event").length)
+    require("./event.js")
+
 require('./events.js')

@@ -4,12 +4,14 @@ from django.views import generic
 from rest_framework import viewsets
 from django.http import HttpResponse
 from django.utils import timezone
+from django.db.utils import IntegrityError
 
 from .models import Event, User, Tag, Join
 from .forms import EventForm
 from .serializers import EventSerializer
 
 import json
+import django
 
 class MapView(generic.View):
     context = {
@@ -47,9 +49,16 @@ class EventsView(generic.ListView):
     template_name = 'core/pages/events.html'
     model = Event
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs): # Add field names to the context
         context = super(EventsView, self).get_context_data(**kwargs)
+        user_id = 1
+        joined_events = {}
+        for event in context['event_list']:
+            exists = Join.objects.filter(user__pk=user_id, event__pk=event.id).exists()
+            if exists:
+                joined_events[event.id] = True
         context['fields'] = Event._meta.get_fields()
+        context['joined_events'] = joined_events
         return context
 
 class EventJoinView(generic.View):
@@ -67,7 +76,7 @@ class EventJoinView(generic.View):
             n_participants = len(event.participants.all())
 
             if n_participants >= event.max_num_participants: 
-                raise Exception
+                raise IntegrityError("max_num_participants reached")
             else:
                 Join.objects.create(user=user, event=event, join_date=join_date)
 
@@ -75,7 +84,8 @@ class EventJoinView(generic.View):
 
             print("{} joined {}".format(user, event))
 
-        except Exception as e:
+        except IntegrityError as e:
+            print("[Warning] Exception during join")
             print(str(e))
             data['result'] = False
         
@@ -86,6 +96,11 @@ class EventView(generic.DetailView):
     template_name = 'core/pages/event.html'
     model = Event
 
+    def get_context_data(self, **kwargs):
+        user_id = 1 # Change to dynamic user
+        context = super(EventView, self).get_context_data(**kwargs)
+        context['joined'] = Join.objects.filter(user__pk=user_id, event__pk=self.kwargs['pk']).exists()
+        return context    
 
 class ProfileView(generic.ListView):
     template_name = 'core/pages/profile.html'

@@ -11,4 +11,14 @@
     &-participants td:first-child{
         border-top: none;
     }
+
+    .btn{
+        &-join{
+            background-color: green;
+        }
+
+        &-leave{
+            background-color: red;
+        }
+    }
 }
