@@ -105,6 +105,30 @@ class EventJoinView(generic.View):
         return HttpResponse(json.dumps(data))
 
 
+class EventLeaveView(generic.View):
+
+    @method_decorator(login_decorator)
+    def post(self, request, *args, **kwargs):
+        event_id = self.kwargs['event_id']
+        data = {}
+
+        try:
+            event = Event.objects.get(pk=event_id)
+
+            Join.objects.filter(user=request.user, event=event).delete()
+
+            data['result'] = True
+
+            print("{} left {}".format(request.user, event))
+
+        except IntegrityError as e:
+            print("[Warning] Exception during leave")
+            print(str(e))
+            data['result'] = False
+
+        return HttpResponse(json.dumps(data))
+
+
 @method_decorator(login_decorator, name='get')
 class EventView(generic.DetailView):
     template_name = 'core/pages/event.html'
