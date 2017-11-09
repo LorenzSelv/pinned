@@ -7,7 +7,7 @@ from django.utils import timezone
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        exclude = ['participants']
+        exclude = ['participants', 'event_owner']
         widgets = {'latitude': forms.HiddenInput(),
                    'longitude': forms.HiddenInput(),
                    'description': forms.Textarea(),
@@ -15,7 +15,7 @@ class EventForm(forms.ModelForm):
                    'end_date_time': forms.TextInput(attrs={'class': 'date-time-picker'}),
                    'tags': forms.SelectMultiple(attrs={'class': 'select-multiple'}),
                    # TODO hidden input ?
-                   'event_owner': forms.HiddenInput()
+                   # 'event_owner': forms.HiddenInput()
                    }
 
     def clean(self):

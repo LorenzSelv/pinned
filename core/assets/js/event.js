@@ -7,12 +7,12 @@ function sendJoinAjax(element, successHandler, failureHandler){
             // }
         }
     })
-    let id = $(element).parents(".event").find(".event-id").text()[0]
+    let id = $(element).parents(".event").find(".event-id").text()
+    console.log(id)
     $.ajax({
         type: "POST",
         url: id + '/join',
         data: {
-            user_id: 1,
             csrfmiddlewaretoken: window.token
         },
         success: successHandler,
@@ -24,6 +24,11 @@ function sendJoinAjax(element, successHandler, failureHandler){
 function joinSuccessHandler(data) {
 
     data = JSON.parse(data)
+    if(data.result){
+
+    }else{
+
+    }
 
 }
 
