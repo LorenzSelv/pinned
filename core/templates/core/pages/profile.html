@@ -1,13 +1,129 @@
+ 
 {% extends "core/structures/generic.html" %}
 
 {% block title%}Profile{% endblock %}
 {% block content %}
-    <h1>Profile</h1>
-    <ul>
-    {% for user in user_list %}
-        <li>{{ user }}</li>
-    {% empty %}
-        <li>No users!</li>
+
+<html lang="en">
+
+<h1 class="profile-title">Profile</h1>
+
+<!--Profile img/info/events container-->
+<div class="container-fluid">
+  <div class="row">
+
+    <!--Profile img-->
+    <div class="col">
+      <img src="http://bcrbcs.com/wp-content/uploads/2016/03/blank-profile.png" class="img-thumbnail img-fit">
+      <button type="button" class="btn btn-info upload-btn">Upload</button>
+    </div>
+
+    <!--Info cards-->
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          USERNAME
+        </div>
+        <div class="card-block">
+          <blockquote class="card-blockquote">
+            <p class="info-field">{{user.username}}</p>
+          </blockquote>
+      </div>
+      <div class="card">
+        <div class="card-header">
+            EMAIL
+          </div>
+          <div class="card-block">
+            <blockquote class="card-blockquote">
+              <p class="info-field">{{user.email}}</p>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+
+      <!--Modal-->
+      <a href="#update_modal" role="button" class="btn btn-large btn-info update-info-btn" data-toggle="modal">Update Info</a>
+      <div id="update_modal" class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Update Info</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Password</label>
+                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Confirm Password</label>
+                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Interests table/add interest button-->
+      <table class="table" id="interests-table">
+        <thead>
+          <tr>
+            <th>INTERESTS</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="interests_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Add an Interest
+        </button>
+        <div class="dropdown-menu" aria-labelledby="interests_dropdown">
+          <button class="dropdown-item" type="button">Ping Pong</button>
+          <button class="dropdown-item" type="button">Football</button>
+          <button class="dropdown-item" type="button">Gym</button>
+          <button class="dropdown-item" type="button">Tennis</button>
+        </div>
+      </div>
+    </div> 
+  </div>
+
+  <!--Joined/owned event cards-->
+  <div class="row event-card-row">
+    {% for event in owned_events %}
+      <div class="col-sm-4">
+        <div class="card text-white bg-info mb-3" style="max-width: 20rem;">
+          <div class="card-header">
+            <h4> {{event.name}} </h4> {{event.start_date_time}} </div>
+          <div class="card-body">
+            <p class="card-text"> {{event.description}} </p>
+          </div>
+        </div>
+      </div>
     {% endfor %}
-    </ul>
+
+    {% for event in joined_events %}
+      <div class="col-sm-4">
+        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+          <div class="card-header">
+            <h4> {{event.name}} </h4> {{event.start_date_time}} </div>
+          <div class="card-body">
+            <p class="card-text"> {{event.description}} </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
 {% endblock %}

@@ -7,3 +7,5 @@ if($("#map").length)
 require('./utils.js')
 
 require('./events.js')
+
+require('./profile.js')

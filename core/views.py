@@ -1,5 +1,5 @@
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
 from rest_framework import viewsets
 from django.http import HttpResponse
@@ -66,7 +66,7 @@ class EventJoinView(generic.View):
             join_date = timezone.now
             n_participants = len(event.participants.all())
 
-            if n_participants >= event.max_num_participants: 
+            if n_participants >= event.max_num_participants:
                 raise Exception
             else:
                 Join.objects.create(user=user, event=event, join_date=join_date)
@@ -87,9 +87,36 @@ class EventView(generic.DetailView):
     model = Event
 
 
-class ProfileView(generic.ListView):
+class ProfileView(generic.DetailView):
     template_name = 'core/pages/profile.html'
-    model = User
+
+    def get(self, request, *args, **kwargs):
+        uid = self.kwargs['pk']
+        user = User.objects.get(pk=uid)
+        events = Event.objects.all()
+        joined_events = []
+        owned_events = []
+        
+        for event in events:
+            for participant in event.participants.all():
+                if participant.email == user.email:
+                    if event.event_owner != user:
+                        joined_events.append(event)
+
+        for event in events:
+            if event.event_owner == user:
+                owned_events.append(event)
+
+        return render(request, self.template_name, 
+            {'user': user, 'joined_events': joined_events, 'owned_events': owned_events})
+
+    def post(self, request, *args, **kwargs):
+        uid = self.kwargs['pk']
+        user = User.objects.get(pk=uid)
+
+        data = {}
+
+        return HttpResponse(json.dumps(data))
 
 
 # Enables access to all events
