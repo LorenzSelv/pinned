@@ -1,0 +1,33 @@
+.login {
+    &-container {
+        background-color: #da7575;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+    }
+
+    &-card {
+        .card-title {
+            text-align: center;
+        }
+
+        .navbar-brand {
+            display: inline-block;
+            width: auto;
+        }
+
+        .list-group-item {
+            padding: 0;
+        }
+        .btn-login {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background-color: $danger;
+
+            &:hover{
+                box-shadow: inset 0pt 0pt 5px 0px #480000;
+            }
+        }
+    }
+}
