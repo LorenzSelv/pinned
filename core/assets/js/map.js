@@ -136,6 +136,7 @@ module.exports = {
             // Select the 'hand' tool
             drawingManager.set('drawingMode');
 
+            // TODO: pass the current logged in user to the EventForm
             showEventForm(marker.getPosition().lat(), marker.getPosition().lng())
 
             window.currentMarker = marker

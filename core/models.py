@@ -3,11 +3,12 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from colorful.fields import RGBColorField
+from django.contrib.auth.models import AbstractUser
 
 
 # TODO text field vs char field
 
-class User (models.Model):
+class User (AbstractUser):
     # Add a check to ensure max_length isn't exceeded? (for all classes)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)  # (widget=forms.PasswordInput)
@@ -111,7 +112,10 @@ class Tag (models.Model):
     color = RGBColorField()
 
     def __str__(self):
-        return self.name + ' -- ' + str(self.color)
+        return self.name
+    def html(self):
+        return '<span class="badge badge-secondary" style="background-color:#' + \
+                str(self.color) + '">' + self.name + '</span>'
 
 
 class Comment (models.Model):

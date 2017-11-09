@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv, find_dotenv
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'pinned.urls'
 
@@ -135,3 +139,43 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = "/home/pinned/pinned/core/static"
+
+# TODO store Django secret key in the .env file
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+# Social-Auth and Auth0 backend config
+
+SOCIAL_AUTH_TRAILING_SLASH = False
+
+SOCIAL_AUTH_AUTH0_KEY    = os.environ.get('AUTH0_CLIENT_ID')
+SOCIAL_AUTH_AUTH0_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
+SOCIAL_AUTH_AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile'
+]
+
+# TODO refactor bad code
+AUDIENCE = None
+if os.environ.get('AUTH0_AUDIENCE'):
+    AUDIENCE = os.environ.get('AUTH0_AUDIENCE')
+else:
+    if SOCIAL_AUTH_AUTH0_DOMAIN:
+        AUDIENCE = 'https://' + SOCIAL_AUTH_AUTH0_DOMAIN + '/userinfo'
+if AUDIENCE:
+    SOCIAL_AUTH_AUTH0_AUTH_EXTRA_ARGUMENTS = {'audience': AUDIENCE}
+
+AUTHENTICATION_BACKENDS = {
+    'pinned.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+
+
+LOGIN_URL = "/login/auth0"
+LOGIN_REDIRECT_URL = "/map/"
+LOGOUT_REDIRECT_URL = "/"
+
+AUTH_USER_MODEL = 'core.User'

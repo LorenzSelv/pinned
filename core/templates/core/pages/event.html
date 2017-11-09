@@ -1,19 +1,48 @@
-{% extends "core/structures/generic.html" %}
-
-{% block title%}{{ event.name }}{% endblock %}
-{% block content %}
+{% extends "core/structures/generic.html" %} {% block title%}{{ event.name }}{% endblock %} {% block content %}
+<script type="text/javascript">
+window.token = '{{ csrf_token }}'
+</script>
 <div class="event">
-    <h1 class="event-name">{{ event.name }}</h1>
-    <p class="event-description text-justify">{{ event.description }}</p>
-    <table class="table event-participants">
+    <div class="event-heading">
+        {% if joined %}
+        <button class="btn btn-leave">Leave</button>
+        {% else %}
+        <button class="btn btn-join">Join</button>
+        {% endif %}
+        <h1 class="event-name">{{ event.name }}</h1>
+    </div>
+
+    <img class="event-location img-fluid mx-auto d-block" src="https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=1024x300&maptype=roadmap&markers=color:red%7C{{ event.latitude }},{{ event.longitude }}&key=AIzaSyBWcqUczVAtXdcbR6BnnZ0EXilAJsqqhLs">
+
+    <div class="event-info">
+        <p class="event-tags">
+            Tags: 
+            {% for tag in event.tags.all %}
+                {% autoescape off %}
+                {{ tag.html }}
+                {% endautoescape%}
+            {% empty %}
+                <span class="text-info">This event has no tags</span>
+            {% endfor %}
+        </p>
+        <hr>
+        <p class="event-description text-justify">
+            {{ event.description }}
+        </p>
+        <hr>
+        <p class="event-participants-number">
+            Participants: <span class="event-participants-amount">{{ event.participants.all|length }}</span>/{{ event.max_num_participants }}
+        </p>
+    </div>
+    <table class="table event-participants-list">
         {% for p in event.participants.all %}
         <tr>
-            <td>{{ p.username }}</td>
+            <td>{{ p.first_name }}</td>
         </tr>
         {% empty %}
-        <tr>
-            <td>No participant yet!</td>
-        </tr>        
+            <tr>
+               <td>No participant yet</td>
+            </tr>
         {% endfor %}
     </table>
 </div>
