@@ -112,7 +112,10 @@ class Tag (models.Model):
     color = RGBColorField()
 
     def __str__(self):
-        return self.name + ' -- ' + str(self.color)
+        return self.name
+    def html(self):
+        return '<span class="badge badge-secondary" style="background-color:#' + \
+                str(self.color) + '">' + self.name + '</span>'
 
 
 class Comment (models.Model):

@@ -1,24 +1,63 @@
-.event{
-    &-name{
+$positive-color: $success;
+$negative-color: $danger;
+
+.event {
+    &>* {
+        padding: 10px 0;
         border-bottom: 1px solid $input-border-color;
     }
 
-    &-description{
-        padding-bottom: 10px;
-        border-bottom: 1px solid $input-border-color;
+    &-location {
+        border-bottom: none;
+    }
+
+    &-heading {
+        .btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+    }
+
+    &-info{
+        p{
+            margin: 0;
+        }
+    }
+
+    &-tags{
+        .badge{
+            font-size: 100%;
+        }
+    }
+
+    &-description {
         margin-bottom: 10px;
     }
-    &-participants td:first-child{
-        border-top: none;
+
+    &-participants{
+        &-list {
+            td:first-child {
+                border-top: none;
+            }
+        }
+        &-amount{
+            
+            color: $positive-color;
+
+            &.full{
+                color: $negative-color;
+            }
+        }
     }
 
-    .btn{
-        &-join{
-            background-color: green;
+    .btn {
+        &-join {
+            background-color: $positive-color;
         }
 
-        &-leave{
-            background-color: red;
+        &-leave {
+            background-color: $negative-color;
         }
     }
 }
