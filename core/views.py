@@ -38,6 +38,7 @@ class MapView(generic.View):
             form = form_temp.save(commit=False)
             form.event_owner = request.user
             form.save()
+            form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
         except ValueError as e:
             self.context['state'] = "error"
