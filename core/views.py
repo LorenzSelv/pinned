@@ -10,8 +10,14 @@ from .models import Event, User, Tag, Join
 from .forms import EventForm
 from .serializers import EventSerializer
 
+from django.contrib.auth.decorators import login_required
+
 import json
-import django
+
+
+def login(request):
+    return render(request, 'core/pages/login.html')
+
 
 class MapView(generic.View):
     context = {
@@ -19,6 +25,7 @@ class MapView(generic.View):
         "event_list": Event.objects.order_by('start_date_time')[:3]
         }
 
+    @login_required
     def post(self, request):
         form = EventForm(request.POST)
         print(form.fields.keys())
@@ -39,6 +46,8 @@ class MapView(generic.View):
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
 
+    # TODO allow to see events without login
+    # @login_required
     def get(self, request, *args, **kwargs):
         self.context['state'] = "get"
         self.context['form'] = EventForm()
@@ -60,6 +69,7 @@ class EventsView(generic.ListView):
         context['fields'] = Event._meta.get_fields()
         context['joined_events'] = joined_events
         return context
+
 
 class EventJoinView(generic.View):
 
@@ -101,6 +111,7 @@ class EventView(generic.DetailView):
         context = super(EventView, self).get_context_data(**kwargs)
         context['joined'] = Join.objects.filter(user__pk=user_id, event__pk=self.kwargs['pk']).exists()
         return context    
+
 
 class ProfileView(generic.ListView):
     template_name = 'core/pages/profile.html'
