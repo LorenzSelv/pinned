@@ -1,7 +1,7 @@
 {% extends "core/structures/generic.html" %} {% block title%}Events{% endblock %} {% block content %}
 <h1>Events</h1> {% if event_list|length > 0 %}
 <script type="text/javascript">
-    window.token = '{{ csrf_token }}'
+window.token = '{{ csrf_token }}'
 </script>
 <table class="table table-striped table-hover table-responsive events-table">
     <thead class="thead-light">
@@ -11,26 +11,27 @@
             <th>End</th>
             <th>Creator</th>
             <th>Tags</th>
+            <th>Participants</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         {% for event in event_list %}
-        <tr class="event" >
+        <tr class="event">
             <td class="event-id">{{ event.id }}</td>
             <td><a href="{{ event.id }}">{{ event.name }}</a></td>
             <td>{{ event.start_date_time }}</td>
             <td>{{ event.end_date_time }}</td>
             <td>{{ event.event_owner }}</td>
-            <td>{% for tag in event.tags.all %}
-            {% autoescape off %} {{ tag.html }} {% endautoescape %} {% endfor %}</td>
+            <td>{% for tag in event.tags.all %} {% autoescape off %} {{ tag.html }} {% endautoescape %} {% endfor %}
+            </td>
+            <td><span class="event-participants-amount">{{ event.participants.all|length }}</span>/{{ event.max_num_participants }}</td>
             <td>
                 {% if event.id in joined_events %}
-                    <button class="btn btn-leave">Leave</button>
+                <button class="btn btn-leave">Leave</button>
                 {% else %}
-                    <button class="btn btn-join">Join</button>
+                <button class="btn btn-join">Join</button>
                 {% endif %}
-
             </td>
         </tr>
         {% endfor %}
