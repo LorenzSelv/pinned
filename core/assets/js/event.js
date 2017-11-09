@@ -11,13 +11,44 @@ function sendEventAjax(eventId, action, successHandler, failureHandler){
     })
 }
 
-function joinSuccessHandler(data) {
-    data = JSON.parse(data)
+function changeButton(element, action){
+    if(action == 'join'){
+        $(element).removeClass('btn-join').addClass('btn-leave').text("Leave")
+    }
+
+    if(action == 'leave'){
+        $(element).removeClass('btn-leave').addClass('btn-join').text("Join")
+    }
+
+    bindButtons()
 }
 
-function leaveSuccessHandler(data){
-    data = JSON.parse(data)
+function updateParticipants(participants){
+    let tbody = $('.event-participants-list').find('tbody')
+    let amtParticipants = $('.event-participants-amount')
 
+    tbody.empty()
+    if(!participants.length)
+        tbody.append("<tr><td>No participant yet</td></tr>")    
+    for (let i = participants.length - 1; i >= 0; i--) {
+        tbody.append("<tr><td>" + participants[i] + "</td></tr>")
+    }
+
+    amtParticipants.text(participants.length)
+}
+
+function joinSuccessHandler(element, data) {
+    if(data.result){
+        changeButton(element, 'join')
+        updateParticipants(data.participants)
+    }
+}
+
+function leaveSuccessHandler(element, data){
+    if(data.result){
+        changeButton(element, 'leave')
+        updateParticipants(data.participants)
+    }
 }
 
 function failureHandler(firstArgument, error){
@@ -31,11 +62,14 @@ function getEventId(element){
     return id ? id + '/' : ''
 }
 
-$(".btn-join").on("click", function() {
+function bindButtons(){
+    $(".btn-join").off("click").on("click", function() {
+        sendEventAjax(getEventId($(this)), 'join', (data) => {joinSuccessHandler($(this), JSON.parse(data))}, failureHandler)
+    })
 
-    sendEventAjax(getEventId($(this)), 'join', joinSuccessHandler, failureHandler)
-})
+    $(".btn-leave").off("click").on("click", function(){
+        sendEventAjax(getEventId($(this)), 'leave', (data) => {leaveSuccessHandler($(this), JSON.parse(data))}, failureHandler)
+    })
+}
 
-$(".btn-leave").on("click", function(){
-    sendEventAjax(getEventId($(this)), 'leave', leaveSuccessHandler, failureHandler)
-})
+bindButtons()

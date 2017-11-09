@@ -95,6 +95,7 @@ class EventJoinView(generic.View):
                 Join.objects.create(user=request.user, event=event, join_date=join_date)
 
             data['result'] = True
+            data['participants'] = [p.first_name for p in event.participants.all()]
 
             print("{} joined {}".format(request.user, event))
 
@@ -119,7 +120,7 @@ class EventLeaveView(generic.View):
             Join.objects.filter(user=request.user, event=event).delete()
 
             data['result'] = True
-
+            data['participants'] = [p.first_name for p in event.participants.all()]
             print("{} left {}".format(request.user, event))
 
         except IntegrityError as e:
