@@ -25,10 +25,12 @@ class MapView(generic.View):
         "event_list": Event.objects.order_by('start_date_time')[:3]
         }
 
-    @login_required
+    # @login_required
     def post(self, request):
         form = EventForm(request.POST)
+        print('FORM')
         print(form.fields.keys())
+        print(request.session)
 
         if form.is_valid():
             # e = Event(**form.cleaned_data)
@@ -49,6 +51,7 @@ class MapView(generic.View):
     # TODO allow to see events without login
     # @login_required
     def get(self, request, *args, **kwargs):
+        print(request.session.items())
         self.context['state'] = "get"
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
