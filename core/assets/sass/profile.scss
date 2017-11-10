@@ -4,7 +4,7 @@ body{
 
 .profile-title{
 	margin-left: 2%;
-	text-transform: none;
+	text-transform: none !important;
 }
 
 .profile-row{
@@ -30,6 +30,20 @@ body{
 	margin-bottom: 3%;
 }
 
-.event-card-row{
-	margin-top: 2%;
+.event-card{
+	&-row{
+		margin-top: 2%;
+	}
+	&-link{
+		color: white;
+		&:hover{
+			color: white;
+			font-weight: 600;
+			text-decoration: none;
+			h4{
+				font-weight: 600;
+			}
+		}
+	}
+
 }
