@@ -101,33 +101,11 @@
   <!--Joined/owned event cards-->
   <div class="row event-card-row">
     {% for event in owned_events %}
-      <div class="col-sm-4">
-        <div class="card text-white bg-success mb-3" style="max-width: 20rem;">
-          <a class="event-card-link" href="/events/{{ event.id }}/">
-              <div class="card-header">
-                <h4> {{event.name}} </h4> {{event.start_date_time}}
-              </div>
-          </a>
-          <div class="card-body">
-            <p class="card-text"> {{event.description}} </p>
-          </div>
-        </div>
-      </div>
+      {% include "core/partials/event_card.html" with event=event owner="me" %}
     {% endfor %}
 
     {% for event in joined_events %}
-      <div class="col-sm-4">
-        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
-          <a class="event-card-link" href="/events/{{ event.id }}/">
-              <div class="card-header">
-                <h4> {{event.name}} </h4> {{event.start_date_time}}
-              </div>
-          </a>
-          <div class="card-body">
-            <p class="card-text"> {{event.description}} </p>
-          </div>
-        </div>
-      </div>
+      {% include "core/partials/event_card.html" with event=event owner="others" %}
     {% endfor %}
   </div>
 </div>
