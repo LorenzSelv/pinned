@@ -56,7 +56,7 @@ def create_location(name):
     return Location.objects.create(name=name, description=name + ' description')
 
 
-def create_event(name, location, event_owner, start_date_time, end_date_time=None, max_num_participants=5):
+def create_event(name, location, event_owner, tag, start_date_time, end_date_time=None, max_num_participants=5):
     description = name + ' -- The best sport event on campus'
     if end_date_time is None:  # default to 90 minutes
         end_date_time = start_date_time + timezone.timedelta(minutes=90)
@@ -66,13 +66,14 @@ def create_event(name, location, event_owner, start_date_time, end_date_time=Non
                                 latitude=location.latitude,
                                 longitude=location.latitude,
                                 event_owner=event_owner,
+                                tag=tag,
                                 start_date_time=start_date_time,
                                 end_date_time=end_date_time,
                                 max_num_participants=max_num_participants)
 
 
-def create_event_helper(name, location, event_owner, hours_from_now ):
-    return create_event(name, location, event_owner,
+def create_event_helper(name, location, event_owner, tag, hours_from_now):
+    return create_event(name, location, event_owner, tag,
                         start_date_time=timezone.now()+timezone.timedelta(hours=hours_from_now))
 
 
@@ -110,11 +111,11 @@ def main():
     print('Created users')
     print('\n'.join([str(user) for user in users]))
 
-    events_data = [('Ping Pong', create_location('ILC'),   users[0], 4),
-                   ('Basket',    create_location('court'), users[1], 2),
-                   ('Gym',       create_location('opers'), users[2], 5),
-                   ('Football',  create_location('field'), users[3], 3),
-                   ('Rugby',     create_location('field2'), users[4], 18)]
+    events_data = [('Ping Pong', create_location('ILC'),   users[0], tags[0], 4),
+                   ('Basket',    create_location('court'), users[1], tags[3], 2),
+                   ('Gym',       create_location('opers'), users[2], tags[2], 5),
+                   ('Football',  create_location('field'), users[3], tags[1], 3),
+                   ('Rugby',     create_location('field2'), users[4], tags[3], 18)]
 
     events = [create_event_helper(*event_data) for event_data in events_data]
 

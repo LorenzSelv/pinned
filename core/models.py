@@ -61,8 +61,9 @@ class Event (models.Model):
                                     blank=False, validators=[validate_longitude])
 
     # TODO event type: private, public --> hierarchy in django
-    tags = models.ManyToManyField('Tag', related_name='events', blank=True)
 
+    # tags = models.ForeignKey('Tag', related_name='events', blank=True, on_delete=models.CASCADE)
+    tag = models.ForeignKey('Tag', related_name='events', blank=True, on_delete=models.CASCADE)
     event_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
     creation_date = models.DateTimeField(auto_now_add=True)
 

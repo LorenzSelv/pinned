@@ -19,14 +19,15 @@ window.token = '{{ csrf_token }}'
             Creator: {{ event.event_owner }}
         </p>
         <p class="event-tags">
-            Tags: 
-            {% for tag in event.tags.all %}
-                {% autoescape off %}
-                {{ tag.html }}
-                {% endautoescape%}
-            {% empty %}
-                <span class="text-info">This event has no tags</span>
-            {% endfor %}
+            Tags:
+
+{#            {% for tag in event.tags.all %}#}
+            {% autoescape off %}
+            {{ event.tag.html }}
+            {% endautoescape%}
+{#            {% empty %}#}
+{#                <span class="text-info">This event has no tags</span>#}
+{#            {% endfor %}#}
         </p>
         <hr>
         <p class="event-description text-justify">

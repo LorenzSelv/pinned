@@ -13,7 +13,8 @@ class EventForm(forms.ModelForm):
                    'description': forms.Textarea(),
                    'start_date_time': forms.TextInput(attrs={'class': 'date-time-picker'}),
                    'end_date_time': forms.TextInput(attrs={'class': 'date-time-picker'}),
-                   'tags': forms.SelectMultiple(attrs={'class': 'select-multiple'}),
+                   "tag": forms.Select(),
+                   # "tag": forms.SelectMultiple(attrs={'class': 'select-multiple'}),
                    # TODO hidden input ?
                    # 'event_owner': forms.HiddenInput()
                    }
