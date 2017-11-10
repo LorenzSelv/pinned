@@ -5,9 +5,12 @@
 
 require('./event_form.js')
 
+var map;
+var markers = [];
+
 module.exports = {
     initMap: function() {
-        let map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             center: { lat: -34.397, lng: 150.644 },
             zoom: 15,
             // Remove the Map/Satellite option
@@ -50,51 +53,7 @@ module.exports = {
             handleLocationError(false, new google.maps.InfoWindow, map.getCenter());
         }
 
-        // Create marker given event data
-        function createMarker(name, description, coords) {
-            var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(coords.lat, coords.lng),
-                map: map,
-                animation: google.maps.Animation.DROP
-
-            })
-
-            var content = "<div class='map-tooltip'><h1><a>" + name + "</a></h1><hr><div class='description'>" + description + "</div></div>"
-
-            var info = new google.maps.InfoWindow({
-                content: content
-            })
-
-            info.addListener('closeclick', function(){
-                info.fixed = false
-            })
-
-            marker.addListener('click', function(){
-                info.fixed = true
-                info.open(this.map, marker)
-            })
-
-            marker.addListener('mouseover', function() {
-                info.open(this.map, marker)
-            })
-
-            marker.addListener('mouseout', function() {
-                if(!info.fixed){
-                    info.fixed = false
-                    info.close()
-                }
-            })
-
-            return marker
-        }
-
-        // Call to events api endpoint and draw markers
-        $.ajax('/events/api').done(function(events) {
-            for (i = 0; i < events.length; i++) {
-                var data = events[i]
-                createMarker(data.name, data.description, { lat: data.latitude, lng: data.longitude })
-            }
-        })
+        window.map.showAllEvents()
 
         //Google's drawing manager (Marker and Hand tools)
         var drawingManager = new google.maps.drawing.DrawingManager({
@@ -142,6 +101,103 @@ module.exports = {
             window.currentMarker = marker
             // TODO: Bring up prompt to enter event details and create the event
         });
+    },
 
+    // Create marker given event data
+    createMarker: function (name, description, coords) {
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(coords.lat, coords.lng),
+            map: map,
+            animation: google.maps.Animation.DROP
+        })
+
+        var content = "<h1>" + name + "</h1><p>" + description + "</p>"
+
+        var info = new google.maps.InfoWindow({
+            content: content
+        })
+
+        marker.addListener('mouseover', function () {
+            info.open(map, marker)
+        })
+
+        marker.addListener('mouseout', function () {
+            info.close()
+        })
+
+        markers.push(marker)
+
+        return marker
+    },
+
+    //Remove all markers from the map
+    removeMarkers: function() {
+        for (var i = 0; i < markers.length; i++) {
+          console.log(markers[i])
+          markers[i].setMap(null)
+          markers[i] = null
+        }
+        markers = [];
+    },
+
+    //Place markers on the map for all events the user is interested in
+    showInterestedEvents: function () {
+        window.map.removeMarkers()
+        // Call to events api endpoint (returns events specified user is interested in)
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", window.token);
+            }
+        })
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "interest_events/api/",
+            data: {
+                csrfmiddlewaretoken: window.token
+            },
+            success: (events) => {
+                //Create markers on the map depeinding on the events returned
+                for (i = 0; i < events.length; i++) {
+                    var data = events[i]
+                    window.map.createMarker(data.name,
+                                            data.description,
+                                            { lat: data.latitude,
+                                              lng: data.longitude })
+                }
+            },
+            error: function(first, e) {
+                alert(e)
+            }
+        })
+    },
+
+    //Place markers on the map for all the events
+    showAllEvents: function() {
+        window.map.removeMarkers()
+        // Call to events api endpoint (returns all the events)
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", window.token);
+            }
+        })
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "events/api/",
+            success: (events) => {
+                //Create markers on the map depending on the events returned
+                for (i = 0; i < events.length; i++) {
+                    var data = events[i]
+                    window.map.createMarker(data.name,
+                                            data.description,
+                                            { lat: data.latitude,
+                                              lng: data.longitude })
+                }
+            },
+            error: function(first, e) {
+                alert(e)
+            }
+        })
     }
 }

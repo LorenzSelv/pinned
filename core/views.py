@@ -5,10 +5,12 @@ from rest_framework import viewsets
 from django.http import HttpResponse
 from django.utils import timezone
 from django.db.utils import IntegrityError
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from .models import Event, User, Tag, Join
 from .forms import EventForm
-from .serializers import EventSerializer
+from .serializers import EventSerializer, TagSerializer, UserSerializer
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -183,3 +185,25 @@ class ProfileView(generic.DetailView):
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+
+# Enables access to all user profiles
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+# Enables access to all tags
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class InterestedEventsViewSet(APIView):
+    def get(self, request, *args, **kwargs):
+        user_id = request.user.id
+        user = User.objects.get(pk=user_id)
+        tags = user.interest_tags.all()
+        queryset = Event.objects.filter(tags__in=tags)
+        serializer_class = EventSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer_class.data)
