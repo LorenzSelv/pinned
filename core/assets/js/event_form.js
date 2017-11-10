@@ -40,7 +40,6 @@ form.find("input").addClass("form-control")
 form.find("textarea").addClass("form-control")
 
 form.find("#id_tags").attr("data-placeholder", "Select tags for the event").chosen({width: "100%", no_results_text: "No tags with this name", search_contains: true})
-// form.find("#id_event_owner").chosen({width: "100%"}) // No need to make it fancier, will be removed as soon as we intruduce login
 
 let chosen = form.find(".chosen-container")
 chosen.find(".chosen-search-input").attr("style", "width: 100%;")

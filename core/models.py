@@ -28,6 +28,9 @@ class User (AbstractUser):
     def __str__(self):
         return self.username
 
+    def __unicode__(self):
+        return self.first_name
+
 
 # class Rating (models.Model):
 #     pass

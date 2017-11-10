@@ -28,13 +28,15 @@ from core.models import User, Event, Location, Tag, Join, Comment
 
 
 def create_user(username):
+    first_name = username.title()
     password = username + 'Pass'
     email    = username + '@ucsc.edu'
     phone_number = "+123456789"
     return User.objects.create(username=username,
                                password=password,
                                email=email,
-                               phone_number=phone_number)
+                               phone_number=phone_number,
+                               first_name=first_name)
 
 
 def create_some_tags():

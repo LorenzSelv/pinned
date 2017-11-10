@@ -15,6 +15,9 @@ window.token = '{{ csrf_token }}'
     <img class="event-location img-fluid mx-auto d-block" src="https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=1024x300&maptype=roadmap&markers=color:red%7C{{ event.latitude }},{{ event.longitude }}&key=AIzaSyBWcqUczVAtXdcbR6BnnZ0EXilAJsqqhLs">
 
     <div class="event-info">
+        <p class="event-owner">
+            Creator: {{ event.event_owner }}
+        </p>
         <p class="event-tags">
             Tags: 
             {% for tag in event.tags.all %}
