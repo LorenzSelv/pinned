@@ -6,7 +6,7 @@
 
 <html lang="en">
 
-<h1 class="profile-title">Profile</h1>
+<h1 class="profile-title">{{ user.first_name }}</h1>
 
 <!--Profile img/info/events container-->
 <div class="container-fluid">
@@ -14,7 +14,7 @@
 
     <!--Profile img-->
     <div class="col">
-      <img src="http://bcrbcs.com/wp-content/uploads/2016/03/blank-profile.png" class="img-thumbnail img-fit">
+      <img src="{{ user.picture }}" class="img-thumbnail img-fit">
       <button type="button" class="btn btn-info upload-btn">Upload</button>
     </div>
 
@@ -102,7 +102,7 @@
   <div class="row event-card-row">
     {% for event in owned_events %}
       <div class="col-sm-4">
-        <div class="card text-white bg-info mb-3" style="max-width: 20rem;">
+        <div class="card text-white bg-success mb-3" style="max-width: 20rem;">
           <div class="card-header">
             <h4> {{event.name}} </h4> {{event.start_date_time}} </div>
           <div class="card-body">

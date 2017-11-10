@@ -64,7 +64,7 @@ class EventsView(generic.ListView):
     template_name = 'core/pages/events.html'
     model = Event
 
-    def get_context_data(self, **kwargs): # Add field names to the context
+    def get_context_data(self, **kwargs):  # Add field names to the context
         context = super(EventsView, self).get_context_data(**kwargs)
         joined_events = {}
         user_id = self.request.user.id
@@ -149,28 +149,26 @@ class ProfileView(generic.DetailView):
     template_name = 'core/pages/profile.html'
 
     def get(self, request, *args, **kwargs):
-        uid = self.kwargs['pk']
-        user = User.objects.get(pk=uid)
-        events = Event.objects.all()
-        joined_events = []
-        owned_events = []
-        
-        for event in events:
-            for participant in event.participants.all():
-                if participant.email == user.email:
-                    if event.event_owner != user:
-                        joined_events.append(event)
+        user = request.user
 
-        for event in events:
-            if event.event_owner == user:
-                owned_events.append(event)
+        joined_events_id = list(Join.objects.filter(user=user).values_list('event', flat=True))
+        # print(joined_events_id)
+        joined_events = list(Event.objects.filter(id__in=joined_events_id))
+        # print(joined_events)
+        owned_events  = list(Event.objects.filter(event_owner=user))
+        # print(owned_events)
+        auth0user = user.social_auth.get(provider="auth0")
+        user.picture = auth0user.extra_data['picture']
+        user.email = user.username + '@gmail.com'
 
-        return render(request, self.template_name, 
-            {'user': user, 'joined_events': joined_events, 'owned_events': owned_events})
+        context = {'user': user,
+                   'joined_events': joined_events,
+                   'owned_events': owned_events}
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        uid = self.kwargs['pk']
-        user = User.objects.get(pk=uid)
+        # uid = self.kwargs['pk']
+        # user = User.objects.get(pk=uid)
 
         data = {}
 
