@@ -161,9 +161,12 @@ class ProfileView(generic.DetailView):
         user.picture = auth0user.extra_data['picture']
         user.email = user.username + '@gmail.com'
 
+        tags = Tag.objects.all()
+
         context = {'user': user,
                    'joined_events': joined_events,
-                   'owned_events': owned_events}
+                   'owned_events': owned_events,
+                   'tags': tags}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):

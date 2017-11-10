@@ -2,11 +2,11 @@
     <div class="card text-white {% if owner == 'me' %} bg-success {% else %} bg-primary {% endif %} mb-3" style="max-width: 20rem;">
         <a class="event-card-link" href="/events/{{ event.id }}/">
             <div class="card-header">
-                <h4> {{event.name}} </h4> {{event.start_date_time}}
+                <h4> {{ event.name }} </h4> {{ event.start_date_time }}
             </div>
         </a>
         <div class="card-body">
-            <p class="card-text"> {{event.description}} </p>
+            <p class="card-owner">Created by {{ event.event_owner }} </p>
         </div>
     </div>
 </div>

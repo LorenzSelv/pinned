@@ -1,42 +1,6 @@
 @import '~flatpickr/dist/flatpickr.css';
 @import '~chosen-js/chosen.css';
 
-.chosen{
-    &-container{
-        &-active{
-            .chosen-choices, .chosen-single{
-                border: 0;
-                box-shadow: none;
-            }
-        }
-
-        .chosen-choices{
-            border: 0;
-            background-image: none;
-            .search-choice-close{
-                @extend .fa;
-                @extend .fa-times;
-                font-size: inherit !important;
-                right: 5px !important;
-                top: 1px !important;
-                background: none !important;
-            }
-        }
-        
-        &-single{
-            .chosen-single{
-                border: 0;
-                box-shadow: none;
-                font-size: inherit !important;
-                right: 5px !important;
-                top: 1px !important;
-                background: none !important;
-            }    
-        }
-        
-    }
-}
-
 // Event form styling
 #event {
     &-input {

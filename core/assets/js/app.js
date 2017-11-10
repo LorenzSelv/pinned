@@ -1,17 +1,16 @@
-require('./bootstrap.js')
+const bootstrap = require('./bootstrap.js')
 const flatpickr = require("flatpickr")
-
-if($("#map").length)
-    window.map = require('./map.js')
-
 require('./utils.js')
 
-
-require('./events.js')
-
-require('./profile.js')
+if($("#map").length)
+    require('./map-filters.js')
+    window.map = require('./map.js')
 
 if($(".event").length)
     require("./event.js")
 
-require('./events.js')
+if($(".profile-title").length)
+    require('./profile.js')
+
+if($("#event-form").length)
+    require('./events.js')

@@ -1,5 +1,3 @@
-require('chosen-js')
-
 let form = $("#event-form")
 
 // Allow canceling out of the form
@@ -39,12 +37,8 @@ form.find(".btn-cancel").click(hideEventForm)
 form.find("input").addClass("form-control")
 form.find("textarea").addClass("form-control")
 
-form.find("#id_tags").attr("data-placeholder", "Select tags for the event").chosen({width: "100%", no_results_text: "No tags with this name", search_contains: true})
-
-let chosen = form.find(".chosen-container")
-chosen.find(".chosen-search-input").attr("style", "width: 100%;")
-chosen.addClass("form-control")
-chosen.find(".chosen-")
+// Give styling to the tags input
+setupTagsSelect(form.find('#id_tags'))
 
 // Create form field for date time pickers
 form.find(".date-time-picker").each(function(){

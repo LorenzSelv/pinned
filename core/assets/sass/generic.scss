@@ -15,6 +15,10 @@ h3,
     }
 }
 
+.header {
+    text-transform: uppercase;
+}
+
 h4 {
     font-family: 'Josefin Sans', sans-serif;
 }
@@ -68,4 +72,47 @@ h4 {
 // Row styling
 .container.content .container .row {
     margin-bottom: 10px;
+}
+
+.chosen {
+    &-container {
+        &-active {
+            .chosen-choices,
+            .chosen-single {
+                border: 0;
+                box-shadow: none;
+            }
+        }
+
+        .chosen-choices {
+            border: 0;
+            background-image: none;
+
+            .search-choice {
+
+                border: 0 !important;
+                background-image: none !important;
+                line-height: initial !important;
+
+                &-close {
+                    @extend .fa;
+                    @extend .fa-times;
+                    font-size: inherit !important;
+                    right: 5px !important;
+                    background: none !important;
+                }
+            }
+        }
+
+        &-single {
+            .chosen-single {
+                border: 0;
+                box-shadow: none;
+                font-size: inherit !important;
+                right: 5px !important;
+                top: 1px !important;
+                background: none !important;
+            }
+        }
+    }
 }

@@ -1,49 +1,56 @@
-body{
-	position: relative;
+body {
+    position: relative;
 }
 
-.profile-title{
-	margin-left: 2%;
-	text-transform: none !important;
+.profile-title {
+    margin-left: 2%;
+    text-transform: none !important;
 }
 
-.profile-row{
-	height: 300px;
+.profile-row {
+    height: 300px;
 }
 
-.img-fit{
-	height: auto;
-	width: auto;
+.img-fit {
+    height: auto;
+    width: auto;
 }
 
-.upload-btn{
-	margin-top: 3%;
+.info-field {
+    padding: 10px 15px;
+    margin-bottom: 0;
+    font-size: 1rem !important;
 }
 
-.info-field{
-	padding-left: 5%;
-	padding-top: 3%;
+.event-card {
+    &-row {
+        margin-top: 2%;
+    }
+    &-link {
+        color: white;
+        &:hover {
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            h4 {
+                font-weight: 600;
+            }
+        }
+    }
 }
 
-.update-info-btn{
-	margin-top: 3%;
-	margin-bottom: 3%;
+.tags-profile {
+
+    background-image: none !important;
+    border: none !important;
 }
 
-.event-card{
-	&-row{
-		margin-top: 2%;
-	}
-	&-link{
-		color: white;
-		&:hover{
-			color: white;
-			font-weight: 600;
-			text-decoration: none;
-			h4{
-				font-weight: 600;
-			}
-		}
-	}
 
-}
+// TODO: remove commented scss ffrom profile.scss
+// .upload-btn{
+// 	margin-top: 3%;
+// }
+// .update-info-btn{
+// 	margin-top: 3%;
+// 	margin-bottom: 3%;
+// }
