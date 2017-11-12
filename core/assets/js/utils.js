@@ -25,7 +25,7 @@ window.setupTagsSelect = function(element) {
         let className = 'tag-' + params.selected
         let tagName = element.find("[value=" + params.selected + "]").text()
 
-        chosen.find(".search-choice > span:contains('" + tagName + "')").parent().addClass(className + " badge-secondary tags-profile")
+        chosen.find(".search-choice > span:contains('" + tagName + "')").parent().addClass(className + " badge-secondary tags")
 
     })
 }

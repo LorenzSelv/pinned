@@ -11,15 +11,14 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
 # Serializer that prepares data for the api endpoint
 class EventSerializer(serializers.HyperlinkedModelSerializer):
-    tag_names = serializers.SerializerMethodField('get_tags')
+    tag_code = serializers.SerializerMethodField('get_tag')
 
-    def get_tags(self, obj):
-        return obj.tag.name
-        # return (tag.name for tag in obj.tags.all())
+    def get_tag(self, obj):
+        return obj.tag.html()
 
     class Meta:
         model = Event
-        fields = ('name', 'description', 'latitude', 'longitude', 'tag_names')
+        fields = ('id', 'name', 'description', 'latitude', 'longitude', 'tag_code')
 
 
 # Serializer that prepares data about the users for the api endpoint

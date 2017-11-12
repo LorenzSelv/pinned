@@ -8,29 +8,30 @@ require('./event_form.js')
 var map;
 var markers = [];
 
-function sendEventsAjax(scope){
+function sendEventsAjax(scope) {
     $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/events/api/",
-            data: {
-                scope: scope
-            },
-            success: (events) => {
-                //Create markers on the map depending on the events returned
-                for (i = 0; i < events.length; i++) {
-                    var data = events[i]
-                    window.map.createMarker(data.name,
-                        data.description, data.id,{
-                            lat: data.latitude,
-                            lng: data.longitude
-                        })
-                }
-            },
-            error: function(first, e) {
-                alert(e)
+        type: "GET",
+        dataType: "json",
+        url: "/events/api/",
+        data: {
+            scope: scope
+        },
+        success: (events) => {
+            //Create markers on the map depending on the events returned
+            for (i = 0; i < events.length; i++) {
+                var data = events[i]
+                console.log(data)
+                window.map.createMarker(data.name,
+                    data.description, data.id, data.tag_code, {
+                        lat: data.latitude,
+                        lng: data.longitude
+                    })
             }
-        })
+        },
+        error: function(first, e) {
+            alert(e)
+        }
+    })
 }
 
 module.exports = {
@@ -129,14 +130,14 @@ module.exports = {
     },
 
     // Create marker given event data
-    createMarker: function(name, description, id, coords) {
+    createMarker: function(name, description, id, tag, coords) {
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(coords.lat, coords.lng),
             map: map,
             animation: google.maps.Animation.DROP
         })
 
-        var content = "<h1>" + name + "</h1><p>" + description + "</p>"
+        var content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + tag + "<p>" + description + "</p></div>"
 
         var info = new google.maps.InfoWindow({
             content: content
