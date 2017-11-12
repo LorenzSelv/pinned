@@ -1,5 +1,5 @@
 <div class="col-sm-4">
-    <div class="card text-white {% if owner == 'me' %} bg-success {% else %} bg-primary {% endif %} mb-3" style="max-width: 20rem;">
+    <div class="card {% if owner == 'me' %} my-event {% else %} other-event {% endif %} mb-3" style="max-width: 20rem;">
         <a class="event-card-link" href="/events/{{ event.id }}/">
             <div class="card-header">
                 <h4> {{ event.name }} </h4> {{ event.start_date_time }}
