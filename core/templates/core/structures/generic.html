@@ -9,25 +9,14 @@
     <link rel="stylesheet" type="text/css" href="{% static 'core/app.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans|Roboto" rel="stylesheet"> {% if tags %}
     <style type="text/css">
-{
-        % for tag in tags %
-    }
+        {% for tag in tags %}
 
-    .tag- {
+        .tag-{{ tag.pk }}
         {
-            tag.pk
+            background-color: #{{ tag.color }} !important;
         }
-    }
 
-    {
-        background-color: #{{ tag.color }
-    }
-
-    !important;
-}
-{
-    % endfor %
-}
+        {% endfor %}
     </style>
     {% endif %}
 </head>

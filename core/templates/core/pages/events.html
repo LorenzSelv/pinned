@@ -10,7 +10,7 @@ window.token = '{{ csrf_token }}'
             <th>Start</th>
             <th>End</th>
             <th>Creator</th>
-            <th>Tags</th>
+            <th>Category</th>
             <th>Participants</th>
             <th>Actions</th>
         </tr>
@@ -23,8 +23,7 @@ window.token = '{{ csrf_token }}'
             <td>{{ event.start_date_time }}</td>
             <td>{{ event.end_date_time }}</td>
             <td>{{ event.event_owner }}</td>
-            <td>{% for tag in event.tags.all %} {% autoescape off %} {{ tag.html }} {% endautoescape %} {% endfor %}
-            </td>
+            <td>{% autoescape off %} {{ event.tag.html }} {% endautoescape %}</td>
             <td><span class="event-participants-amount">{{ event.participants.all|length }}</span>/{{ event.max_num_participants }}</td>
             <td>
                 {% if event.id in joined_events %}

@@ -79,57 +79,43 @@ class EventsView(generic.ListView):
         return context
 
 
-class EventJoinView(generic.View):
+# View that allows users to join or leave events
+class EventMemberView(generic.View):
 
     @method_decorator(login_decorator)
     def post(self, request, *args, **kwargs):
         event_id = self.kwargs['event_id']
+        action = request.POST['action']
+
         data = {}
+        action_word = 'performed an invalid action on'
 
         try:
             event = Event.objects.get(pk=event_id)
-            join_date = timezone.now
-            n_participants = len(event.participants.all())
+            if action == 'join':
+                action_word = 'joined'
+                n_participants = len(event.participants.all())
 
-            if n_participants >= event.max_num_participants: 
-                raise IntegrityError("max_num_participants reached")
-            else:
-                Join.objects.create(user=request.user, event=event, join_date=join_date)
+                if n_participants >= event.max_num_participants: 
+                    raise IntegrityError("max_num_participants reached")
+                else:
+                    join_date = timezone.now
+                    Join.objects.create(user=request.user, event=event, join_date=join_date)
+            elif action == 'leave':
+                action_word = 'left'
+
+                Join.objects.filter(user=request.user, event=event).delete()
 
             data['result'] = True
             data['participants'] = [p.first_name for p in event.participants.all()]
 
-            print("{} joined {}".format(request.user, event))
+            print("{} {} {}".format(request.user, action_word, event))
 
         except IntegrityError as e:
-            print("[Warning] Exception during join")
+            print("[Warning] Exception during " + action)
             print(str(e))
             data['result'] = False
         
-        return HttpResponse(json.dumps(data))
-
-
-class EventLeaveView(generic.View):
-
-    @method_decorator(login_decorator)
-    def post(self, request, *args, **kwargs):
-        event_id = self.kwargs['event_id']
-        data = {}
-
-        try:
-            event = Event.objects.get(pk=event_id)
-
-            Join.objects.filter(user=request.user, event=event).delete()
-
-            data['result'] = True
-            data['participants'] = [p.first_name for p in event.participants.all()]
-            print("{} left {}".format(request.user, event))
-
-        except IntegrityError as e:
-            print("[Warning] Exception during leave")
-            print(str(e))
-            data['result'] = False
-
         return HttpResponse(json.dumps(data))
 
 
@@ -149,18 +135,19 @@ class EventView(generic.DetailView):
 class ProfileView(generic.DetailView):
     
     template_name = 'core/pages/profile.html'
+    model = User
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
+    def get_context_data(self, **kwargs):
+        user = User.objects.filter(pk=self.kwargs['pk'])[0]
 
-        joined_events_id = list(Join.objects.filter(user=user).values_list('event', flat=True))
-        # print(joined_events_id)
+        joined_events_id = list(Join.objects.filter(user=user).values_list('event', flat=True))        
         joined_events = list(Event.objects.filter(id__in=joined_events_id))
-        # print(joined_events)
+        
         owned_events  = list(Event.objects.filter(event_owner=user))
-        # print(owned_events)
+        
         auth0user = user.social_auth.get(provider="auth0")
         user.picture = auth0user.extra_data['picture']
+
         user.email = user.username + '@gmail.com'
 
         tags = Tag.objects.all()
@@ -169,15 +156,16 @@ class ProfileView(generic.DetailView):
                    'joined_events': joined_events,
                    'owned_events': owned_events,
                    'tags': tags}
-        return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
-        # uid = self.kwargs['pk']
-        # user = User.objects.get(pk=uid)
+        return context
 
-        data = {}
+    # def post(self, request, *args, **kwargs):
+    #     # uid = self.kwargs['pk']
+    #     # user = User.objects.get(pk=uid)
 
-        return HttpResponse(json.dumps(data))
+    #     data = {}
+
+    #     return HttpResponse(json.dumps(data))
 
 
 # Enables access to all events
@@ -185,6 +173,18 @@ class ProfileView(generic.DetailView):
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+    def get(self, request, *args, **kwargs):
+        scope = request.GET['scope']
+
+        if scope == 'interests':
+            user_id = request.user.id
+            user = User.objects.get(pk=user_id)
+            tags = user.interest_tags.all()
+            queryset = Event.objects.filter(tag__in=tags)
+            serializer_class = EventSerializer(queryset, many=True, context={'request': request})
+            
+        return Response(serializer_class.data) 
 
 
 # Enables access to all user profiles
@@ -199,11 +199,11 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
 
 
-class InterestedEventsViewSet(APIView):
-    def get(self, request, *args, **kwargs):
-        user_id = request.user.id
-        user = User.objects.get(pk=user_id)
-        tags = user.interest_tags.all()
-        queryset = Event.objects.filter(tag__in=tags)
-        serializer_class = EventSerializer(queryset, many=True, context={'request': request})
-        return Response(serializer_class.data)
+# class InterestedEventsViewSet(APIView):
+#     def get(self, request, *args, **kwargs):
+#         user_id = request.user.id
+#         user = User.objects.get(pk=user_id)
+#         tags = user.interest_tags.all()
+#         queryset = Event.objects.filter(tag__in=tags)
+#         serializer_class = EventSerializer(queryset, many=True, context={'request': request})
+#         return Response(serializer_class.data)

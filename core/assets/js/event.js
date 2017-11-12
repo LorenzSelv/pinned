@@ -2,8 +2,9 @@
 function sendEventAjax(eventId, action, successHandler, failureHandler) {
     $.ajax({
         type: "POST",
-        url: eventId + action,
+        url: eventId + 'member',
         data: {
+            action: action,
             csrfmiddlewaretoken: window.token
         },
         success: successHandler,
