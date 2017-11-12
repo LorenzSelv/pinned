@@ -16,14 +16,14 @@
         }
     }
 
-    &-info{
-        p{
+    &-info {
+        p {
             margin: 0;
         }
     }
 
-    &-tags{
-        .badge{
+    &-tags {
+        .badge {
             font-size: 100%;
         }
     }
@@ -32,17 +32,17 @@
         margin-bottom: 10px;
     }
 
-    &-participants{
+    &-participants {
         &-list {
             td:first-child {
                 border-top: none;
             }
         }
-        &-amount{
-            
+        &-amount {
+
             color: $positive-background-color;
 
-            &.full{
+            &.full {
                 color: $negative-background-color;
             }
         }
@@ -57,6 +57,40 @@
         &-leave {
             background-color: $negative-background-color;
             color: $negative-text-color;
+        }
+    }
+
+    &-card {
+        color: white;
+
+        .event-card-link {
+            padding-bottom: 0;
+            border-bottom: none;
+            transition: none;
+            &:hover {
+                text-decoration: none;
+                border-bottom: none;
+            }
+        }
+
+        &.other-event {
+            background-color: $primary !important;
+            .event-card-link {
+                color: $primary-links;
+                &:hover {
+                    color: darken($primary-links, 10);
+                }
+            }
+        }
+
+        &.my-event {
+            background-color: $secondary !important;
+            .event-card-link {
+                color: $secondary-links;
+                &:hover {
+                    color: darken($secondary-links, 10);
+                }
+            }
         }
     }
 }

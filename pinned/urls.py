@@ -22,7 +22,6 @@ from core import views
 
 # Route to events api endpoint
 router = routers.DefaultRouter()
-router.register(r'map/events/api', views.EventViewSet)
 router.register(r'users/api', views.UserViewSet)
 router.register(r'tags/api', views.TagViewSet)
 

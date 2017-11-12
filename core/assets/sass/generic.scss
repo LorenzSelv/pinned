@@ -2,18 +2,17 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-a{
+a:not(.navbar-brand) {
     color: $links;
-}
+    padding-bottom: 1pt;
+    border-bottom: 1pt solid transparent;
+    transition: 0.5s border-bottom-color;
 
-.other-event{
-    background-color: $primary !important;
-    color: white;
-}
-
-.my-event{
-    background-color: $secondary !important;
-    color: white;
+    &:hover {
+        color: $links;
+        text-decoration: none;
+        border-bottom-color: darken($links, 10);
+    }
 }
 
 h1,

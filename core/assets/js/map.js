@@ -12,7 +12,7 @@ function sendEventsAjax(scope){
     $.ajax({
             type: "GET",
             dataType: "json",
-            url: "events/api/",
+            url: "/events/api/",
             data: {
                 scope: scope
             },

@@ -170,20 +170,22 @@ class ProfileView(generic.DetailView):
 
 # Enables access to all events
 # @method_decorator(login_decorator)
-class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
+class EventsViewSet(APIView):
 
     def get(self, request, *args, **kwargs):
+        queryset = Event.objects.all()
+        serializer_class = EventSerializer(queryset, many=True, context={'request': request})
+
         scope = request.GET['scope']
 
         if scope == 'interests':
+            print('interests')
             user_id = request.user.id
             user = User.objects.get(pk=user_id)
             tags = user.interest_tags.all()
             queryset = Event.objects.filter(tag__in=tags)
             serializer_class = EventSerializer(queryset, many=True, context={'request': request})
-            
+
         return Response(serializer_class.data) 
 
 
