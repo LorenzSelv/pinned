@@ -130,7 +130,6 @@ class EventView(generic.DetailView):
         context['joined'] = Join.objects.filter(user__pk=user_id, event__pk=self.kwargs['pk']).exists()
         return context    
 
-
 @method_decorator(login_decorator, name='get')
 class ProfileView(generic.DetailView):
     
@@ -152,20 +151,30 @@ class ProfileView(generic.DetailView):
 
         tags = Tag.objects.all()
 
+        interests = user.interest_tags.all()
+        print('All tags')
+        print(tags)
+        print('Users interests')
+        print(interests)
+
         context = {'user': user,
                    'joined_events': joined_events,
                    'owned_events': owned_events,
-                   'tags': tags}
+                   'tags': tags,
+                   'interests': interests}
 
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     # uid = self.kwargs['pk']
-    #     # user = User.objects.get(pk=uid)
+    def post(self, request, *args, **kwargs):
+        data = {}
+        user = User.objects.filter(pk=self.kwargs['pk'])[0]
+        
+        tag_names = request.POST.getlist('selectedTags[]')
+        tags = Tag.objects.filter(name__in=tag_names)
+        user.interest_tags = tags
+        data['result'] = True
 
-    #     data = {}
-
-    #     return HttpResponse(json.dumps(data))
+        return HttpResponse(json.dumps(data))
 
 
 # Enables access to all events

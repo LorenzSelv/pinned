@@ -28,7 +28,7 @@ function updateParticipants(element, participants) {
     let tbody = $('.event-participants-list').find('tbody')
     let amtParticipants = $(element).parents('.event').find('.event-participants-amount')
 
-    if (!getEventId(element)) {
+    if (!EventId(element)) {
         tbody.empty()
         if (!participants.length)
             tbody.append("<tr><td>No participant yet</td></tr>")

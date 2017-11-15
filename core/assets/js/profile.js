@@ -1,53 +1,55 @@
-$('#update_modal').on('shown.bs.modal', function() {
-    $('#updated-input').trigger('focus');
-})
+var count = $("#interests-select :selected").length;
 
-var table = document.getElementById("interests-table");
+/* 
+ * Get csrf cookie
+ */
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
-let select = $("#interests-select")
-
+// set up interests tag dropdown
+let select = $("#interests-select");
 setupTagsSelect(select)
 
-// $("#interests_dropdown").parent().find(".dropdown-item").click(function() {
-//     $.ajaxSetup({
-//         beforeSend: function(xhr, settings) {
-//             xhr.setRequestHeader("X-CSRFToken", window.token);
-//         }
-//     })
+/* 
+ * Send tags to views
+ */
+function sendInterestAjax(selectedTags) {
+	var csrftoken = getCookie('csrftoken');
+    $.ajax({
+        type: "POST",
+        data: {
+        	selectedTags: selectedTags,
+            csrfmiddlewaretoken: csrftoken
+        }
+    })
+}
 
-//  var interest = $(this).text();
-//  if (!interest){
-//      return;
-//  }
+/* 
+ * listen for select-box change
+ * if change send post request to update tags
+ */
+function bindButtons() {
+    document.getElementById("interests-select").onchange = function(){
+    	var selectedTags = [];  
+    	  
+    	$("#interests-select :selected").each(function(){
+        	selectedTags.push($(this).val()); 
+    	});
+    	
+    	sendInterestAjax(selectedTags);
+	}
+}
 
-
-//  $.ajax({
-//         type: "POST",
-//         url: id + '/join',
-//         data: {
-//             user_id: interest,
-//             csrfmiddlewaretoken: window.token
-//         },
-//         success: (data) => {
-//             data = JSON.parse(data)
-//             console.log(data)
-
-//             if(data.result)
-//                 $(this).css('background-color', 'green')
-//             else
-//                 $(this).css('background-color', 'red')
-//         },
-//         error: function(first, e) {
-//             alert(e)
-//         }
-//     })
-
-
-//  var row = table.insertRow(-1);
-//  var cell = row.insertCell(-1);
-//  cell.innerHTML = interest;
-
-
-
-//  return $("#add-interest").val('');
-// })
+bindButtons();
