@@ -4,9 +4,9 @@
             <div class="card-header">
                 <h4> {{ event.name }} </h4> {{ event.start_date_time }}
             </div>
+            <div class="card-body">
+                <p class="card-owner">Created by {{ event.event_owner }} </p>
+            </div>
         </a>
-        <div class="card-body">
-            <p class="card-owner">Created by {{ event.event_owner }} </p>
-        </div>
     </div>
 </div>

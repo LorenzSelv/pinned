@@ -9,6 +9,8 @@ if ($("#map").length) {
 
 if ($(".event").length)
     require("./event.js")
+if($(".event-card").length)
+    require("./event-card.js")
 
 if ($(".profile-title").length)
     require('./profile.js')
