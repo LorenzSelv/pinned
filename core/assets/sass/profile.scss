@@ -27,6 +27,15 @@
     border: none !important;
 }
 
+.profile-pic{
+    filter: grayscale(40%);
+    border-radius: 10%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: block;
+    margin: auto;
+    max-height: 350px;
+}
+
 
 // TODO: remove commented scss ffrom profile.scss
 // .upload-btn{
