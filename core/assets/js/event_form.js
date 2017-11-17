@@ -42,11 +42,12 @@ setupTagsSelect(form.find('#id_tags'))
 
 // Create form field for date time pickers
 form.find(".date-time-picker").each(function(){
+    $(this).attr("data-input", "")
     let destination = $(this).parents("form").find(".date-times")
 
     let text = `<div class='col'>
-                    <div class='input-group date'>
-                        <span class="input-group-addon">
+                    <div class='input-group date flatpickr'>
+                        <span class="input-group-addon" data-toggle>
                             <span class="fa fa-calendar"></span>
                         </span>
                     </div>
@@ -64,10 +65,10 @@ form.find(".date-time-picker").each(function(){
 
     // Append newly genereted element
     destination.append(newInput)
-
     // Enable datetimepicker
-    $(this).flatpickr({
+    newInput.find(".flatpickr").flatpickr({
         enableTime: true,
-        dateFormat: "m/d/y H:i"
+        dateFormat: "m/d/y H:i",
+        minDate: "today"
     })
 })

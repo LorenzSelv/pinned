@@ -34,7 +34,7 @@
     <table class="table event-participants-list">
         {% for p in event.participants.all %}
         <tr>
-            <td>{{ p.first_name }}</td>
+            <td><a href="/profile/{{ p.id }}/">{{ p.first_name }}</a></td>
         </tr>
         {% empty %}
             <tr>
