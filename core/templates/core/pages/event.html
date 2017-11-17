@@ -1,7 +1,5 @@
 {% extends "core/structures/generic.html" %} {% block title%}{{ event.name }}{% endblock %} {% block content %}
-<script type="text/javascript">
-window.token = '{{ csrf_token }}'
-</script>
+{% include "core/partials/save_token.html" %}
 <div class="event">
     <div class="event-heading">
         {% if joined %}

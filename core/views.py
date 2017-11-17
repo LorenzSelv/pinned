@@ -151,17 +151,10 @@ class ProfileView(generic.DetailView):
 
         tags = Tag.objects.all()
 
-        interests = user.interest_tags.all()
-        print('All tags')
-        print(tags)
-        print('Users interests')
-        print(interests)
-
         context = {'user': user,
                    'joined_events': joined_events,
                    'owned_events': owned_events,
-                   'tags': tags,
-                   'interests': interests}
+                   'tags': tags}
 
         return context
 
@@ -169,9 +162,11 @@ class ProfileView(generic.DetailView):
         data = {}
         user = User.objects.filter(pk=self.kwargs['pk'])[0]
         
-        tag_names = request.POST.getlist('selectedTags[]')
-        tags = Tag.objects.filter(name__in=tag_names)
+        tag_ids = map(int, request.POST.getlist('selectedTags[]'))        
+        tags = Tag.objects.filter(pk__in=tag_ids)
+
         user.interest_tags = tags
+        
         data['result'] = True
 
         return HttpResponse(json.dumps(data))
