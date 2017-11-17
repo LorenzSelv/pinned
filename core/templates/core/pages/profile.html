@@ -1,10 +1,10 @@
  {% extends "core/structures/generic.html" %} {% block title%}Profile{% endblock %} {% block content %}
+ {% include "core/partials/save_token.html" %}
 <h1 class="profile-title">{{ user }}</h1>
 <div class="row">
     <!--Profile img-->
     <div class="col-md-6 col-sm-12">
         <img src="{{ user.picture }}" class="profile-pic"> {# img-thumbnail img-fit"> #}
-        <!-- <button type="button" class="btn btn-info upload-btn">Upload</button> ##### Should we keep an upload button for the picture?-->
     </div>
     <!--Info cards-->
     <div class="col-md-6 col-sm-12">
@@ -24,7 +24,6 @@
                 <p class="info-field">{{user.email}}</p>
             </div>
         </div>
-        <!-- <a href="#update_modal" role="button" class="btn btn-large btn-info update-info-btn" data-toggle="modal">Update Info</a> ##### Are we going to let the user update his profile details here? This could involve some heavy changes on the whole auth0 thing -->
         <div class="card card-info">
             <div class="header card-header">
                 Interests
@@ -32,7 +31,7 @@
             <div class="card-block">
                 <select id="interests-select" class="info-field" multiple>
                     {% for tag in tags %}
-                    <option value="{{ tag.pk }}" {% if tag in user.interests %} selected {% endif %}>{{ tag.name }}</option>
+                      <option value="{{ tag.pk }}" {% if tag in user.interest_tags.all %} selected {% endif %}>{{ tag.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -70,6 +69,7 @@
     </div>
     <!--Interests table/add interest button-->
 </div>
+
 <!--Joined/owned event cards-->
 <div class="row event-card-row">
     {% for event in owned_events %} {% include "core/partials/event_card.html" with event=event owner="me" %} {% endfor %} 

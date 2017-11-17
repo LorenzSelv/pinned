@@ -1,53 +1,28 @@
-$('#update_modal').on('shown.bs.modal', function() {
-    $('#updated-input').trigger('focus');
-})
+// Get number of currently selected tags
+let count = $("#interests-select :selected").length;
 
-var table = document.getElementById("interests-table");
-
-let select = $("#interests-select")
-
+// Set up interests tag dropdown
+let select = $("#interests-select");
 setupTagsSelect(select)
 
-// $("#interests_dropdown").parent().find(".dropdown-item").click(function() {
-//     $.ajaxSetup({
-//         beforeSend: function(xhr, settings) {
-//             xhr.setRequestHeader("X-CSRFToken", window.token);
-//         }
-//     })
+// Send tags to view
+function sendInterestAjax(selectedTags) {
+    $.ajax({
+        type: "POST",
+        data: {
+            selectedTags: selectedTags,
+            csrfmiddlewaretoken: window.token
+        }
+    })
+}
 
-//  var interest = $(this).text();
-//  if (!interest){
-//      return;
-//  }
+// Send request when selected tags are changed
+document.getElementById("interests-select").onchange = function() {
+    var selectedTags = [];
 
+    $("#interests-select :selected").each(function() {
+        selectedTags.push($(this).val());
+    });
 
-//  $.ajax({
-//         type: "POST",
-//         url: id + '/join',
-//         data: {
-//             user_id: interest,
-//             csrfmiddlewaretoken: window.token
-//         },
-//         success: (data) => {
-//             data = JSON.parse(data)
-//             console.log(data)
-
-//             if(data.result)
-//                 $(this).css('background-color', 'green')
-//             else
-//                 $(this).css('background-color', 'red')
-//         },
-//         error: function(first, e) {
-//             alert(e)
-//         }
-//     })
-
-
-//  var row = table.insertRow(-1);
-//  var cell = row.insertCell(-1);
-//  cell.innerHTML = interest;
-
-
-
-//  return $("#add-interest").val('');
-// })
+    sendInterestAjax(selectedTags);
+}
