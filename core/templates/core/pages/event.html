@@ -16,7 +16,7 @@ window.token = '{{ csrf_token }}'
 
     <div class="event-info">
         <p class="event-owner">
-            Creator: {{ event.event_owner }}
+            Creator: <a href="/profile/{{ event.event_owner.id }}/">{{ event.event_owner }}</a>
         </p>
         <p class="event-tags">
             Tag:
