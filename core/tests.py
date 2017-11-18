@@ -31,7 +31,7 @@ def get_users_interested_in(tag_name):
     return Tag.objects.get(name=tag_name).interested_users.all()
 
 
-def create_event(name, location, event_owner, start_date_time, end_date_time=None, max_num_participants=5):
+def create_event(name, location, event_owner, tag, start_date_time, end_date_time=None, max_num_participants=5):
     description = name + ' -- The best sport event on campus'
     if end_date_time is None:  # default to 90 minutes
         end_date_time = start_date_time + timezone.timedelta(minutes=90)
@@ -41,6 +41,7 @@ def create_event(name, location, event_owner, start_date_time, end_date_time=Non
                                 latitude=location.latitude,
                                 longitude=location.latitude,
                                 event_owner=event_owner,
+                                tag=tag,
                                 start_date_time=start_date_time,
                                 end_date_time=end_date_time,
                                 max_num_participants=max_num_participants)
@@ -63,6 +64,12 @@ def create_location(name, latitude=None, longitude=None):
                                    description=name + ' -- nice place!',
                                    latitude=latitude,
                                    longitude=longitude)
+
+
+def get_tags():
+    return tags
+
+tags = list(Tag.objects.all())
 
 
 class UserModelTests (TestCase):
@@ -106,12 +113,13 @@ class UserModelTests (TestCase):
         self.assertEqual(len(l.followers.all()), 1)
 
     def test_interest_tags(self):
-        tags = create_some_tags()
         l = create_user('Lorenzo')
         a = create_user('Andrea')
 
         l.interest_tags.add(tags[0])
         l.interest_tags.add(tags[1])
+
+        ltags = list(l.interest_tags.all())
 
         self.assertEqual(list(l.interest_tags.all()), [tags[0], tags[1]])
 
@@ -158,7 +166,7 @@ class EventModelTests (TestCase):
         federico = create_user('Federico')
 
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, lorenzo, tags[0], timezone.now(), max_num_participants=2)
 
         # pp.participants.add(lorenzo)  # NOT POSSIBLE: through='Join'
         Join.objects.create(user=lorenzo, event=pp)
@@ -174,7 +182,7 @@ class EventModelTests (TestCase):
         federico = create_user('Federico')
 
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, lorenzo, tags[0], timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=lorenzo, event=pp)
         Join.objects.create(user=federico, event=pp)
@@ -185,7 +193,7 @@ class EventModelTests (TestCase):
     def test_events_date(self):
         lorenzo = create_user('Lorenzo')
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, lorenzo, tags[0], timezone.now(), max_num_participants=2)
         # Ignore milliseconds
         self.assertEqual(pp.creation_date.strftime("%Y-%m-%d %H:%M:%S"), timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
 
@@ -200,7 +208,7 @@ class EventUserInteractionTests (TestCase):
         f = create_user('Federico')
 
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, tags[0], timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
         Join.objects.create(user=f, event=pp)
@@ -215,7 +223,7 @@ class EventUserInteractionTests (TestCase):
         l = create_user('Lorenzo')
 
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, tags[0], timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
         Join.objects.get(id=l.id).delete()
@@ -225,7 +233,7 @@ class EventUserInteractionTests (TestCase):
         l = create_user('Lorenzo')
 
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, tags[0], timezone.now(), max_num_participants=2)
 
         l.delete()
         # The event should be deleted
@@ -236,7 +244,7 @@ class EventUserInteractionTests (TestCase):
         l = create_user('Lorenzo')
 
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, tags[0], timezone.now(), max_num_participants=2)
 
         pp.delete()
         self.assertEqual(User.objects.get(id=l.id), l)
@@ -287,7 +295,7 @@ class NotificationTests (TestCase):
     def test_notification_creation(self):
         l = create_user('Lorenzo')
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, tags[0], timezone.now(), max_num_participants=2)
         notification = NotificationRating(date=timezone.now(), event=pp, user=l)
 
         self.assertEqual(notification.is_read, False)
@@ -298,7 +306,7 @@ class NotificationTests (TestCase):
 
         l = create_user('Lorenzo')
         ILC = create_location('ILC')
-        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+        pp = create_event('Ping pong', ILC, l, tags[0], timezone.now(), max_num_participants=2)
 
         # Create notification
         notification = NotificationRating(date=timezone.now(), event=pp, user=l)
