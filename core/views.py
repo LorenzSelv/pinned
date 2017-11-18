@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Event, User, Tag, Join
+from .models import Event, User, Tag, Join, UserNotification
 from .forms import EventForm
 from .serializers import EventSerializer, TagSerializer, UserSerializer
 
@@ -19,6 +19,11 @@ import json
 
 
 login_decorator = login_required(login_url='/', redirect_field_name=None)
+
+
+def get_user_notifications(user):
+    notifications = UserNotification.objects.filter(user=user)
+    return [notification.content_object for notification in notifications]
 
 
 def login(request):
@@ -129,6 +134,7 @@ class EventView(generic.DetailView):
         context = super(EventView, self).get_context_data(**kwargs)
         context['joined'] = Join.objects.filter(user__pk=user_id, event__pk=self.kwargs['pk']).exists()
         return context    
+
 
 @method_decorator(login_decorator, name='get')
 class ProfileView(generic.DetailView):

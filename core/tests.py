@@ -277,6 +277,11 @@ class LocationTests (TestCase):
     #         create_location('No-place', latitude=99., longitude=-200.)
 
 
+def get_user_notifications(user):
+    notifications = UserNotification.objects.filter(user=user)
+    return [notification.content_object for notification in notifications]
+
+
 class NotificationTests (TestCase):
 
     def test_notification_creation(self):
@@ -316,6 +321,7 @@ class NotificationTests (TestCase):
         notification_from_query = pingpong_usernotif.content_object
 
         self.assertEqual(notification, notification_from_query)
+
 
 
 
