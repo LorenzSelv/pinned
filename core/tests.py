@@ -2,7 +2,7 @@ import random
 import django
 from django.test import TestCase
 from django.utils import timezone
-from core.models import User, Event, Location, Tag, Join, Comment
+from core.models import User, Event, Location, Tag, Join, Comment, UserNotification, NotificationRating
 from django.core.exceptions import ValidationError
 
 
@@ -144,11 +144,11 @@ class TagModelTests (TestCase):
     def test_long_name(self):
         t1 = Tag.objects.create(name='abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
                                 color=get_random_color())
-        print(t1)
+        # print(t1)
 
     def test_color(self):
         t = Tag.objects.create(name='Gym', color=get_random_color())
-        print(t.color)
+        # print(t.color)
 
 
 class EventModelTests (TestCase):
@@ -246,9 +246,9 @@ class LocationTests (TestCase):
 
     def test_insert_location(self):
         dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
-        print('name    ', dining_hall.name)
-        print('latitude', dining_hall.latitude)
-        print('latitude', dining_hall.longitude)
+        # print('name    ', dining_hall.name)
+        # print('latitude', dining_hall.latitude)
+        # print('latitude', dining_hall.longitude)
 
     def test_unique_name(self):
         dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
@@ -277,6 +277,45 @@ class LocationTests (TestCase):
     #         create_location('No-place', latitude=99., longitude=-200.)
 
 
+class NotificationTests (TestCase):
+
+    def test_notification_creation(self):
+        l = create_user('Lorenzo')
+        ILC = create_location('ILC')
+        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+        notification = NotificationRating(date=timezone.now(), event=pp, user=l)
+
+        self.assertEqual(notification.is_read, False)
+        self.assertEqual(notification.user.username, l.username)
+        self.assertEqual(notification.event, pp)
+
+    def test_notify_user(self):
+
+        l = create_user('Lorenzo')
+        ILC = create_location('ILC')
+        pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
+
+        # Create notification
+        notification = NotificationRating(date=timezone.now(), event=pp, user=l)
+        notification.save()
+
+        # Create link user-notification in the notification interface
+        usernotif = UserNotification(content_object=notification, user=l, object_id=notification.id)
+        usernotif.save()
+
+        assert usernotif
+
+        # Query the notification table
+        notifications_of_l = UserNotification.objects.filter(user=l)
+
+        self.assertEqual(len(notifications_of_l), 1)
+
+        pingpong_usernotif = notifications_of_l[0]
+
+        # Extract the RatingNotification from the UserNotificatio instance
+        notification_from_query = pingpong_usernotif.content_object
+
+        self.assertEqual(notification, notification_from_query)
 
 
 
