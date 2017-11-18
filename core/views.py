@@ -1,3 +1,4 @@
+import datetime
 
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -183,7 +184,7 @@ class ProfileView(generic.DetailView):
 class EventsViewSet(APIView):
 
     def get(self, request, *args, **kwargs):
-        queryset = Event.objects.all()
+        queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now())
         serializer_class = EventSerializer(queryset, many=True, context={'request': request})
 
         scope = request.GET['scope']
