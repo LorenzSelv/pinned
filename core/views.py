@@ -34,7 +34,7 @@ def login(request):
 class MapView(generic.View):
     context = {
         "tags": Tag.objects.all(),
-        "event_list": Event.objects.order_by('start_date_time')[:3]
+        "event_list": Event.objects.filter(end_date_time__gt=datetime.datetime.now()).order_by('start_date_time')[:3]
         }
 
     @method_decorator(login_decorator)
