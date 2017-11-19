@@ -6,7 +6,7 @@ $("#map-filters .dropdown-menu").find(".dropdown-item").click(function() {
     var selColor = $(this).css("background-color")
     if (selText === 'My Interests') {
         window.map.showInterestedEvents()
-    } else if (selText === 'All') {
+    } else if (selText === 'All Events') {
         window.map.showAllEvents()
     } else {
         window.map.showSpecificEvents(selText)

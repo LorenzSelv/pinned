@@ -198,7 +198,7 @@ class EventsViewSet(APIView):
             user_id = request.user.id
             user = User.objects.get(pk=user_id)
             tags = user.interest_tags.all()
-            queryset = Event.objects.filter(tag__in=tags)
+            queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now(), tag__in=tags)
             serializer_class = EventSerializer(queryset, many=True, context={'request': request})
 
         return Response(serializer_class.data) 
