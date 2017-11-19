@@ -6,8 +6,10 @@ $("#map-filters .dropdown-menu").find(".dropdown-item").click(function() {
     var selColor = $(this).css("background-color")
     if (selText === 'My Interests') {
         window.map.showInterestedEvents()
-    } else {
+    } else if (selText === 'All Events') {
         window.map.showAllEvents()
+    } else {
+        window.map.showSpecificEvents(selText)
     }
     $(this).parents('.input-group').find('#dropdownMenuButton').html(selText + ' <span class="caret"></span>').css("background-color", selColor);
 });
