@@ -38,8 +38,6 @@ class MapView(generic.View):
         "event_list": Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now).filter()
                                    .order_by('start_date_time')[:3]
         }
-    events = list(context["event_list"])
-    events2 = Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now).order_by('start_date_time')[:3]
 
     @method_decorator(login_decorator)
     def post(self, request):
