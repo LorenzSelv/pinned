@@ -71,3 +71,10 @@ form.find(".date-time-picker").each(function(){
         dateFormat: "m/d/y H:i"
     })
 })
+
+window.addEventListener('load', function() {
+    var form = document.getElementById('event-form');
+    form.addEventListener('submit', function(event) {
+
+    }, false);
+}, false);

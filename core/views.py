@@ -152,10 +152,6 @@ class ProfileView(generic.DetailView):
         tags = Tag.objects.all()
 
         interests = user.interest_tags.all()
-        print('All tags')
-        print(tags)
-        print('Users interests')
-        print(interests)
 
         context = {'user': user,
                    'joined_events': joined_events,

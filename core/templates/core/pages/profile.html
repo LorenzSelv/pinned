@@ -1,23 +1,31 @@
  {% extends "core/structures/generic.html" %} {% block title%}Profile{% endblock %} {% block content %}
-<h1 class="profile-title">{{ user }}</h1>
+
+<div class="row">
+  <div class="col-md-4 col-sm-12">
+        <h1 class="profile-title">{{ user }}</h1>
+    </div>
+    <div class="col-md-8 col-sm-12">
+    </div>
+</div>
+
 <div class="row">
     <!--Profile img-->
-    <div class="col-md-6 col-sm-12">
-        <img src="{{ user.picture }}" class="img-thumbnail img-fit">
+    <div class="col-md-4 col-sm-12">
+        <img src="{{ user.picture }}" class="rounded-circle img-thumbnail img-fit">
     </div>
     <!--Info cards-->
-    <div class="col-md-6 col-sm-12">
+    <div class="col-md-8 col-sm-12">
         <div class="card card-info">
             <div class="header card-header">
-                Username
+                <strong>Username</strong>
             </div>
             <div class="card-block">
-                <p class="info-field">{{user.username}}</p>
+                <p class="info-field">{{user.first_name}}</p>
             </div>
         </div>
         <div class="card card-info">
             <div class="header card-header">
-                Email
+                <strong>Email</strong>
             </div>
             <div class="card-block">
                 <p class="info-field">{{user.email}}</p>
@@ -25,7 +33,7 @@
         </div>
         <div class="card card-info">
             <div class="header card-header">
-                Interests
+                <strong>Interests</strong>
             </div>
             <div class="card-block">
                 <select id="interests-select" class="info-field" multiple>

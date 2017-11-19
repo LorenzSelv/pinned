@@ -37,7 +37,7 @@
     {% else %} {% endif %}
 </div>
 <div id="event-input" class="invisible d-flex align-items-center justify-content-center">
-    <form id="event-form" action="/map/" method="post" class="">
+    <form id="event-form" action="/map/" method="post">
         <h1>Create new event</h1>
         {% csrf_token %} {{ form.as_p }}
         <div class="date-times form-row"></div>
