@@ -32,10 +32,14 @@ def login(request):
 
 
 class MapView(generic.View):
+    now = datetime.datetime.now()
     context = {
         "tags": Tag.objects.all(),
-        "event_list": Event.objects.filter(end_date_time__gt=datetime.datetime.now()).order_by('start_date_time')[:3]
+        "event_list": Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now).filter()
+                                   .order_by('start_date_time')[:3]
         }
+    events = list(context["event_list"])
+    events2 = Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now).order_by('start_date_time')[:3]
 
     @method_decorator(login_decorator)
     def post(self, request):
