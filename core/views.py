@@ -34,7 +34,6 @@ def login(request):
 class MapView(generic.View):
     now = datetime.datetime.now()
     context = {
-        "tags": Tag.objects.all(),
         "event_list": Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now).filter()
                                    .order_by('start_date_time')[:3]
         }
@@ -66,6 +65,10 @@ class MapView(generic.View):
         # print('REQUEST\n', str(request.user.first_name))
         self.context['state'] = "get"
         self.context['form'] = EventForm()
+        user_id = request.user.id
+        user = User.objects.get(pk=user_id)
+        tags = user.interest_tags.all()
+        self.context['tags'] = tags
         return render(request, 'core/pages/map.html', context=self.context)
 
 
@@ -192,7 +195,6 @@ class EventsViewSet(APIView):
         scope = request.GET['scope']
 
         if scope == 'interests':
-            print('interests')
             user_id = request.user.id
             user = User.objects.get(pk=user_id)
             tags = user.interest_tags.all()

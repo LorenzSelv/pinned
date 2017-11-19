@@ -5,10 +5,10 @@
 
 require('./event_form.js')
 
-var map;
-var markers = [];
+let map;
+let markers = [];
 
-function sendEventsAjax(scope) {
+function sendEventsAjax(scope, tag) {
     $.ajax({
         type: "GET",
         dataType: "json",
@@ -19,12 +19,15 @@ function sendEventsAjax(scope) {
         success: (events) => {
             //Create markers on the map depending on the events returned
             for (i = 0; i < events.length; i++) {
-                var data = events[i]
-                window.map.createMarker(data.name,
-                    data.description, data.id, data.tag_code, {
+                //TODO: Maybe find better way of accessing tag name
+                if (tag === null || events[i].tag_code.indexOf(tag) !== -1) {
+                    let data = events[i]
+                    window.map.createMarker(data.name,
+                        data.description, data.id, data.tag_code, {
                         lat: data.latitude,
                         lng: data.longitude
                     })
+                }
             }
         },
         error: function(first, e) {
@@ -175,13 +178,20 @@ module.exports = {
     showInterestedEvents: function() {
         window.map.removeMarkers()
         // Call to events api endpoint (returns events specified user is interested in)
-        sendEventsAjax('interests')
+        sendEventsAjax('interests', null)
+    },
+
+    //Place markers on the map for events of a specific interest
+    showSpecificEvents: function(tag) {
+        window.map.removeMarkers()
+        // Call to events api endpoint (returns events of the specific tag)
+        sendEventsAjax('interests', tag)
     },
 
     //Place markers on the map for all the events
     showAllEvents: function() {
         window.map.removeMarkers()
         // Call to events api endpoint (returns all the events)
-        sendEventsAjax('all')
+        sendEventsAjax('all', null)
     }
 }
