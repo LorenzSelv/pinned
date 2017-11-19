@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from colorful.fields import RGBColorField
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 # TODO text field vs char field
@@ -62,8 +64,7 @@ class Event (models.Model):
 
     # TODO event type: private, public --> hierarchy in django
 
-    # tags = models.ForeignKey('Tag', related_name='events', blank=True, on_delete=models.CASCADE)
-    tag = models.ForeignKey('Tag', related_name='events', blank=True, on_delete=models.CASCADE)
+    tag = models.ForeignKey('Tag', related_name='events', blank=True, null=True, on_delete=models.CASCADE)
     event_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
     creation_date = models.DateTimeField(auto_now_add=True)
 
@@ -117,6 +118,7 @@ class Tag (models.Model):
 
     def __str__(self):
         return self.name
+
     def html(self):
         return '<span class="badge badge-secondary" style="background-color:#' + \
                 str(self.color) + '">' + self.name + '</span>'
@@ -129,3 +131,63 @@ class Comment (models.Model):
 
     def __str__(self):
         return '[ ' + self.user.username + ' -- ' + self.event.name + ' ]  ' + self.content
+
+
+class Notification (models.Model):
+    """
+    Abstract base class for notifications
+    """
+    # User who gets the notification
+    user = models.ForeignKey('User')
+    # Date when the notification was received
+    date = models.DateTimeField(auto_now_add=True)
+    # Whether or not the notification has been read
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        read = ("NOT " if not self.is_read else "") + "READ"
+        return str(self.date) + " -- " + read
+
+
+class NotificationRating (Notification):
+    """
+    A notification the user gets after each event.
+    Should appear along with a link to a form for rating the participants.
+    """
+    event = models.ForeignKey('Event')
+
+    def __str__(self):
+        return "Rating for " + self.event.name + " " + Notification.__str__(self)
+
+
+class UserNotification (models.Model):
+    """
+    Map each notification to its user.
+    """
+
+    user = models.ForeignKey('User')
+    # Polymorphic reference to a Notification
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    # object_id = models.CharField(max_length=50, null=True)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

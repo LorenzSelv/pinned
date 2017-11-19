@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Event, User, Tag, Join
+from .models import Event, User, Tag, Join, UserNotification
 from .forms import EventForm
 from .serializers import EventSerializer, TagSerializer, UserSerializer
 
@@ -19,6 +19,11 @@ import json
 
 
 login_decorator = login_required(login_url='/', redirect_field_name=None)
+
+
+def get_user_notifications(user):
+    notifications = UserNotification.objects.filter(user=user)
+    return [notification.content_object for notification in notifications]
 
 
 def login(request):
@@ -130,6 +135,7 @@ class EventView(generic.DetailView):
         context['joined'] = Join.objects.filter(user__pk=user_id, event__pk=self.kwargs['pk']).exists()
         return context    
 
+
 @method_decorator(login_decorator, name='get')
 class ProfileView(generic.DetailView):
     
@@ -150,7 +156,6 @@ class ProfileView(generic.DetailView):
         user.email = user.username + '@gmail.com'
 
         tags = Tag.objects.all()
-
         interests = user.interest_tags.all()
 
         context = {'user': user,
@@ -165,9 +170,10 @@ class ProfileView(generic.DetailView):
         data = {}
         user = User.objects.filter(pk=self.kwargs['pk'])[0]
         
-        tag_names = request.POST.getlist('selectedTags[]')
-        tags = Tag.objects.filter(name__in=tag_names)
+        tag_ids = map(int, request.POST.getlist('selectedTags[]'))        
+        tags = Tag.objects.filter(pk__in=tag_ids)
         user.interest_tags = tags
+        
         data['result'] = True
 
         return HttpResponse(json.dumps(data))

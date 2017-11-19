@@ -1,5 +1,5 @@
- {% extends "core/structures/generic.html" %} {% block title%}Profile{% endblock %} {% block content %}
-
+{% extends "core/structures/generic.html" %} {% block title%}Profile{% endblock %} {% block content %}
+{% include "core/partials/save_token.html" %}
 <div class="row">
   <div class="col-md-4 col-sm-12">
         <h1 class="profile-title">{{ user }}</h1>
@@ -38,7 +38,7 @@
             <div class="card-block">
                 <select id="interests-select" class="info-field" multiple>
                     {% for tag in tags %}
-                      <option value="{{ tag.name }}" {% if tag in interests %} selected {% endif %}>{{ tag.name }}</option>
+                      <option value="{{ tag.pk }}" {% if tag in interests %} selected {% endif %}>{{ tag.name }}</option>
                     {% endfor %}
                 </select>
             </div>

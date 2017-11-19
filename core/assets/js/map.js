@@ -20,7 +20,6 @@ function sendEventsAjax(scope) {
             //Create markers on the map depending on the events returned
             for (i = 0; i < events.length; i++) {
                 var data = events[i]
-                console.log(data)
                 window.map.createMarker(data.name,
                     data.description, data.id, data.tag_code, {
                         lat: data.latitude,
@@ -115,10 +114,6 @@ module.exports = {
         });
         // Function called when marker is placed
         google.maps.event.addListener(drawingManager, 'markercomplete', function(marker) {
-            // Just printing out the marker's location
-            console.log(marker.getPosition().lat());
-            console.log(marker.getPosition().lng());
-            // Select the 'hand' tool
             drawingManager.set('drawingMode');
 
             // TODO: pass the current logged in user to the EventForm
@@ -170,7 +165,6 @@ module.exports = {
     //Remove all markers from the map
     removeMarkers: function() {
         for (var i = 0; i < markers.length; i++) {
-            console.log(markers[i])
             markers[i].setMap(null)
             markers[i] = null
         }

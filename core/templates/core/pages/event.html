@@ -1,7 +1,5 @@
 {% extends "core/structures/generic.html" %} {% block title%}{{ event.name }}{% endblock %} {% block content %}
-<script type="text/javascript">
-window.token = '{{ csrf_token }}'
-</script>
+{% include "core/partials/save_token.html" %}
 <div class="event">
     <div class="event-heading">
         {% if joined %}
@@ -16,7 +14,7 @@ window.token = '{{ csrf_token }}'
 
     <div class="event-info">
         <p class="event-owner">
-            Creator: {{ event.event_owner }}
+            Creator: <a href="/profile/{{ event.event_owner.id }}/">{{ event.event_owner }}</a>
         </p>
         <p class="event-tags">
             Tag:
@@ -36,7 +34,7 @@ window.token = '{{ csrf_token }}'
     <table class="table event-participants-list">
         {% for p in event.participants.all %}
         <tr>
-            <td>{{ p.first_name }}</td>
+            <td><a href="/profile/{{ p.id }}/">{{ p.first_name }}</a></td>
         </tr>
         {% empty %}
             <tr>
