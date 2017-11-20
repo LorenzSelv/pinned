@@ -167,9 +167,7 @@ class ProfileView(generic.DetailView):
         
         auth0user = user.social_auth.get(provider="auth0")
         user.picture = auth0user.extra_data['picture']
-
-        user.email = user.username + '@gmail.com'
-
+        
         tags = Tag.objects.all()
         interests = user.interest_tags.all()
 
