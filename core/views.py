@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from .models import Event, User, Tag, Join, UserNotification
 from .forms import EventForm
 from .serializers import EventSerializer, TagSerializer, UserSerializer
+from .tasks import create_notification
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -51,6 +52,7 @@ class MapView(generic.View):
             form.save()
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
+            create_notification.apply_async([request.user.id, form.id], eta=form.end_date_time)
         except ValueError as e:
             self.context['state'] = "error"
             self.context['errors'] = form_temp.errors
@@ -67,13 +69,9 @@ class MapView(generic.View):
         # print('REQUEST\n', str(request.user.first_name))
         self.context['state'] = "get"
         self.context['form'] = EventForm()
-        user_id = request.user.id
-        user = User.objects.get(pk=user_id)
-        tags = user.interest_tags.all()
+        tags = request.user.interest_tags.all()
         self.context['tags'] = tags
-        # TODO: remove! For testing the notification
-        user = User.objects.filter(username='Lorenzo')
-        self.context['notifications'] = get_user_notifications(user)
+        self.context['notifications'] = get_user_notifications(request.user)
         return render(request, 'core/pages/map.html', context=self.context)
 
 
@@ -205,9 +203,7 @@ class EventsViewSet(APIView):
         scope = request.GET['scope']
 
         if scope == 'interests':
-            user_id = request.user.id
-            user = User.objects.get(pk=user_id)
-            tags = user.interest_tags.all()
+            tags = request.user.interest_tags.all()
             queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now(), tag__in=tags)
             serializer_class = EventSerializer(queryset, many=True, context={'request': request})
 

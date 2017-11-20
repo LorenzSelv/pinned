@@ -7,3 +7,4 @@ python-jose
 six
 python-dotenv
 auth0-python
+celery

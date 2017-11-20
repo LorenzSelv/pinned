@@ -179,3 +179,5 @@ LOGIN_REDIRECT_URL = "/map/"
 LOGOUT_REDIRECT_URL = "/"
 
 AUTH_USER_MODEL = 'core.User'
+
+CELERY_BROKER_URL = 'amqp://localhost'
