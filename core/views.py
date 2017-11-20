@@ -52,7 +52,7 @@ class MapView(generic.View):
             form.save()
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
-            create_notification.apply_async([request.user.id, form.id], eta=form.end_date_time)
+            create_notification.apply_async([form.id], eta=form.end_date_time)
         except ValueError as e:
             self.context['state'] = "error"
             self.context['errors'] = form_temp.errors
