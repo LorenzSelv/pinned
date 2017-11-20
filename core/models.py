@@ -143,13 +143,15 @@ class Notification (models.Model):
     date = models.DateTimeField(auto_now_add=True)
     # Whether or not the notification has been read
     is_read = models.BooleanField(default=False)
+    # String representation of the type
+    type = models.CharField(max_length=15, default='Base')
 
     class Meta:
         abstract = True
 
     def __str__(self):
-        read = ("NOT " if not self.is_read else "") + "READ"
-        return str(self.date) + " -- " + read
+        read = (" NOT " if not self.is_read else " ") + "READ"
+        return self.type + " " + str(self.date) + " -- " + read
 
 
 class NotificationRating (Notification):
@@ -158,9 +160,10 @@ class NotificationRating (Notification):
     Should appear along with a link to a form for rating the participants.
     """
     event = models.ForeignKey('Event')
+    type = 'Rating'
 
     def __str__(self):
-        return "Rating for " + self.event.name + " " + Notification.__str__(self)
+        return self.type + " " + self.event.name + " " + Notification.__str__(self)
 
 
 class UserNotification (models.Model):

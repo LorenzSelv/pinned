@@ -24,7 +24,7 @@ django.setup()
 divider = "---------------------------------------------------------------------------"
 
 from django.utils import timezone
-from core.models import User, Event, Location, Tag, Join, Comment
+from core.models import User, Event, Location, Tag, Join, Comment, UserNotification, NotificationRating
 
 
 def create_user(username):
@@ -96,6 +96,18 @@ def create_location(name, latitude=None, longitude=None):
                                    longitude=longitude)
 
 
+def create_notification(user, event):
+
+    # Create notification
+    notification = NotificationRating(date=timezone.now(), event=event, user=user)
+    notification.save()
+
+    # Create link user-notification in the notification interface
+    usernotif = UserNotification(content_object=notification, user=user, object_id=notification.id)
+    usernotif.save()
+    return usernotif.content_object
+
+
 def main():
     tags = create_some_tags()
 
@@ -122,6 +134,14 @@ def main():
     print(divider)
     print('Created events')
     print('\n'.join([str(event) for event in events]))
+
+    notifications_data = [(users[0], events[0])]
+    notifications = [create_notification(*notification_data) for notification_data in notifications_data]
+
+    print(divider)
+    print('Created notifications')
+    print('\n'.join([str(notification) for notification in notifications]))
+
 
 if __name__ == '__main__':
     main()
