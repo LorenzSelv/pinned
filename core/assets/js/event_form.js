@@ -69,7 +69,8 @@ form.find(".date-time-picker").each(function(){
     newInput.find(".flatpickr").flatpickr({
         enableTime: true,
         dateFormat: "m/d/y H:i",
-        minDate: "today"
+        minDate: "today",
+        wrap: true
     })
 })
 
