@@ -24,7 +24,9 @@ login_decorator = login_required(login_url='/', redirect_field_name=None)
 
 def get_user_notifications(user):
     notifications = UserNotification.objects.filter(user=user)
-    return [notification.content_object for notification in notifications]
+    result = [notification.content_object for notification in notifications]
+    print(result)
+    return result
 
 
 def login(request):
@@ -69,6 +71,9 @@ class MapView(generic.View):
         user = User.objects.get(pk=user_id)
         tags = user.interest_tags.all()
         self.context['tags'] = tags
+        # TODO: remove! For testing the notification
+        user = User.objects.filter(username='Lorenzo')
+        self.context['notifications'] = get_user_notifications(user)
         return render(request, 'core/pages/map.html', context=self.context)
 
 
@@ -87,6 +92,8 @@ class EventsView(generic.ListView):
                 joined_events[event.id] = True
         context['fields'] = Event._meta.get_fields()
         context['joined_events'] = joined_events
+
+        context['notifications'] = get_user_notifications(self.request.user)
         return context
 
 
@@ -139,6 +146,8 @@ class EventView(generic.DetailView):
         user_id = self.request.user.id
         context = super(EventView, self).get_context_data(**kwargs)
         context['joined'] = Join.objects.filter(user__pk=user_id, event__pk=self.kwargs['pk']).exists()
+
+        context['notifications'] = get_user_notifications(self.request.user)
         return context    
 
 
@@ -168,8 +177,8 @@ class ProfileView(generic.DetailView):
                    'joined_events': joined_events,
                    'owned_events': owned_events,
                    'tags': tags,
-                   'interests': interests}
-
+                   'interests': interests,
+                   'notifications': get_user_notifications(self.request.user)}
         return context
 
     def post(self, request, *args, **kwargs):

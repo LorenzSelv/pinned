@@ -282,6 +282,21 @@ def get_user_notifications(user):
     return [notification.content_object for notification in notifications]
 
 
+def create_notification(username, eventname, location='ILC'):
+    user = create_user(username)
+    location = create_location('ILC')
+    event = create_event(eventname, location, l, timezone.now(), max_num_participants=2)
+
+    # Create notification
+    notification = NotificationRating(date=timezone.now(), event=event, user=user)
+    notification.save()
+
+    # Create link user-notification in the notification interface
+    usernotif = UserNotification(content_object=notification, user=user, object_id=notification.id)
+    usernotif.save()
+    return usernotif
+
+
 class NotificationTests (TestCase):
 
     def test_notification_creation(self):
