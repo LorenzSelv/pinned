@@ -30,7 +30,7 @@ DEBUG = bool(os.getenv('PINNED_DJANGO_DEBUG_MODE', True))
 # force https connection when running on the server
 SECURE_SSL_REDIRECT = bool(os.getenv('PINNED_DJANGO_SSL_REDIRECT', False))
 
-ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com', 'mysterious-fjord-69687.herokuapp.com']
 
 # Application definition
 
