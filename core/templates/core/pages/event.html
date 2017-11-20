@@ -16,12 +16,14 @@
         <p class="event-owner">
             Creator: <a href="/profile/{{ event.event_owner.id }}/">{{ event.event_owner }}</a>
         </p>
-        <p class="event-tags">
-            Tag:
-            {% autoescape off %}
-            {{ event.tag.html }}
-            {% endautoescape%}
-        </p>
+        {% if event.tag %}
+            <p class="event-tags">
+                Tag:
+                {% autoescape off %}
+                {{ event.tag.html }}
+                {% endautoescape%}
+            </p>
+        {% endif %}
         <hr>
         <p class="event-description text-justify">
             {{ event.description }}

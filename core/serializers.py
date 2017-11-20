@@ -14,7 +14,8 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     tag_code = serializers.SerializerMethodField('get_tag')
 
     def get_tag(self, obj):
-        return obj.tag.html()
+        if obj.tag != None:
+            return obj.tag.html()
 
     class Meta:
         model = Event

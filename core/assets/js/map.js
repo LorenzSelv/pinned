@@ -135,7 +135,7 @@ module.exports = {
             animation: google.maps.Animation.DROP
         })
 
-        var content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + tag + "<p>" + description + "</p></div>"
+        var content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + (tag ? tag : '')  + "<p>" + description + "</p></div>"
 
         var info = new google.maps.InfoWindow({
             content: content
