@@ -1,0 +1,23 @@
+
+<div id = "rating-form">
+    <h1>How would you rate this user?</h1>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,width=device-width">
+    <link rel="stylesheet" href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <x-star-rating value="0" number="5"></x-star-rating>
+
+    <form id="rating_form" method="post" action="/rate/">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            {{ field.errors }}
+            {{ field.help_text }}
+            <br>
+            <div>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <div>
+            <input type="submit" name="submit" value="Submit rating"/>
+        </div>
+    </form>
+</div>

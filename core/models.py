@@ -20,9 +20,9 @@ class User (AbstractUser):
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits "
                                          "allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True)  # validators should be a list
-
-    # TODO rating
-
+    
+    #rating = models.FloatField(null=True)
+    
     interest_tags = models.ManyToManyField('Tag', related_name='interested_users')
 
     followers = models.ManyToManyField('self', symmetrical=False, related_name='following')

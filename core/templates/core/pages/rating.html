@@ -1,0 +1,13 @@
+{% extends "core/structures/generic.html" %} {% block title %}Rating{% endblock %} {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            {% if rated %}
+                <h1>You have already rated this user!</h1>
+            {% else %}
+                {% include "core/partials/rating_form.html" %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

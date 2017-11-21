@@ -13,6 +13,8 @@ from .models import Event, User, Tag, Join, UserNotification
 from .forms import EventForm
 from .serializers import EventSerializer, TagSerializer, UserSerializer
 
+from .forms import RatingForm
+
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -81,6 +83,7 @@ class MapView(generic.View):
 class EventsView(generic.ListView):
     template_name = 'core/pages/events.html'
     model = Event
+    
 
     def get_context_data(self, **kwargs):  # Add field names to the context
         context = super(EventsView, self).get_context_data(**kwargs)
@@ -232,3 +235,30 @@ class TagViewSet(viewsets.ModelViewSet):
 #         queryset = Event.objects.filter(tag__in=tags)
 #         serializer_class = EventSerializer(queryset, many=True, context={'request': request})
 #         return Response(serializer_class.data)
+
+class RatingView(generic.View):
+    
+    @method_decorator(login_decorator)
+    def get(self, request, *args, **kwargs):
+        #user_id = request.GET['user_id']
+        #user to rate
+        #user = User.objects.get(pk=user_id) 
+        #event_id = request.GET['event_id']
+        #event = Event.objects.get(pk=event_id)
+        #current user
+        #request.user 
+        context = {'rated': False, 'form': RatingForm()}
+        return render(request, 'core/pages/rating.html', context=context)
+    
+    def rating_form(request):
+        form = RatingForm()
+        if request.method == 'POST':
+            form = RatingForm(request.POST)
+
+            if form.is_valid():
+                form.save(commit=True)
+                return 
+            else:
+                print(form.errors)
+
+        return render(request, 'core/partials/rating_form.html', {'form': form})

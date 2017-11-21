@@ -1,5 +1,6 @@
 from django import forms
 from .models import Event
+from .models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -33,3 +34,13 @@ class EventForm(forms.ModelForm):
         else:
             raise ValidationError("Missing date and time for the event!")
         return cleaned_data
+    
+
+class RatingForm(forms.ModelForm):
+    #rating = forms.FloatField()
+    review = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Write your review here..'}), required=False)
+    
+    class Meta:
+        model = User
+        fields = ('review',)
+    
