@@ -15,6 +15,7 @@ class User (AbstractUser):
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)  # (widget=forms.PasswordInput)
     email    = models.EmailField()
+    picture = models.CharField(max_length=255, default='')
 
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits "

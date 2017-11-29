@@ -25,7 +25,6 @@ login_decorator = login_required(login_url='/', redirect_field_name=None)
 def get_user_notifications(user):
     notifications = UserNotification.objects.filter(user=user)
     result = [notification.content_object for notification in notifications]
-    print(result)
     return result
 
 
@@ -164,10 +163,7 @@ class ProfileView(generic.DetailView):
         joined_events = list(Event.objects.filter(id__in=joined_events_id))
         
         owned_events  = list(Event.objects.filter(event_owner=user))
-        
-        auth0user = user.social_auth.get(provider="auth0")
-        user.picture = auth0user.extra_data['picture']
-        
+                
         tags = Tag.objects.all()
         interests = user.interest_tags.all()
 
