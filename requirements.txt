@@ -2,6 +2,7 @@ auth0-python==3.1.4
 certifi==2017.11.5
 chardet==3.0.4
 click==6.7
+dj-database-url==0.4.2
 Django==1.11.6
 django-colorful==1.2
 djangorestframework==3.7.1
