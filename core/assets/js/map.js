@@ -3,7 +3,10 @@
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
-require('./event-form.js')
+if($("#map-filters").length)
+    require('./map-filters.js')
+if($("#event-form").length)
+    require('./event-form.js')
 
 let map;
 let markers = [];

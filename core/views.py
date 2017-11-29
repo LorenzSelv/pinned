@@ -61,19 +61,22 @@ class MapView(generic.View):
         return render(request, 'core/pages/map.html', context=self.context)
 
     # TODO allow to see events without login
-    @method_decorator(login_decorator)
+    # @method_decorator(login_decorator)
     def get(self, request, *args, **kwargs):
         # print('SESSION\n', request.session.items())
         # print('REQUEST\n', str(request.user.first_name))
         self.context['state'] = "get"
-        self.context['form'] = EventForm()
-        user_id = request.user.id
-        user = User.objects.get(pk=user_id)
-        tags = user.interest_tags.all()
-        self.context['tags'] = tags
-        # TODO: remove! For testing the notification
-        user = User.objects.filter(username='Lorenzo')
-        self.context['notifications'] = get_user_notifications(user)
+        if request.user.is_authenticated():
+            self.context['form'] = EventForm()
+            user_id = request.user.id
+            user = User.objects.get(pk=user_id)
+            tags = user.interest_tags.all()
+            self.context['tags'] = tags
+                # TODO: remove! For testing the notification
+            user = User.objects.filter(username='Lorenzo')
+            self.context['notifications'] = get_user_notifications(user)
+        else:
+            self.context['not_logged_in'] = True
         return render(request, 'core/pages/map.html', context=self.context)
 
 
@@ -222,13 +225,3 @@ class UserViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-
-
-# class InterestedEventsViewSet(APIView):
-#     def get(self, request, *args, **kwargs):
-#         user_id = request.user.id
-#         user = User.objects.get(pk=user_id)
-#         tags = user.interest_tags.all()
-#         queryset = Event.objects.filter(tag__in=tags)
-#         serializer_class = EventSerializer(queryset, many=True, context={'request': request})
-#         return Response(serializer_class.data)

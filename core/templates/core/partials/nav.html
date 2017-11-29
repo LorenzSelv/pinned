@@ -25,15 +25,17 @@
                 <a class="nav-link" href="{% url 'core:events' %}" title="Events list">Events</a>
             </li>
         </ul>
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:profile' pk=request.user.pk %}" title="User profile">Profile</a>
-            </li>
-        </ul>
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="/logout" title="Logout">Logout</a>
-            </li>
-        </ul>
+        {% if not not_logged_in %}     
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'core:profile' pk=request.user.pk %}" title="User profile">Profile</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout" title="Logout">Logout</a>
+                </li>
+            </ul>
+        {% endif %} 
     </div>
 </nav>

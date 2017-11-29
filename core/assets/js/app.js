@@ -5,7 +5,6 @@ require('./utils.js')
 // Require map related files
 if ($("#map").length) {
     const flatpickr = require("flatpickr")
-    require('./map-filters.js')
     window.map = require('./map.js')
 }
 
