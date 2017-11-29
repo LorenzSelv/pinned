@@ -42,7 +42,6 @@ class MapView(generic.View):
 
     @method_decorator(login_decorator)
     def post(self, request):
-        # form = EventForm(request.POST, initial={'event_owner': request.user.id})
 
         try:
             form_temp = EventForm(request.POST)
@@ -63,8 +62,6 @@ class MapView(generic.View):
     # TODO allow to see events without login
     # @method_decorator(login_decorator)
     def get(self, request, *args, **kwargs):
-        # print('SESSION\n', request.session.items())
-        # print('REQUEST\n', str(request.user.first_name))
         self.context['state'] = "get"
         if request.user.is_authenticated():
             self.context['form'] = EventForm()
