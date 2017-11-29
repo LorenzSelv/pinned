@@ -3,7 +3,7 @@
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
-require('./event_form.js')
+require('./event-form.js')
 
 let map;
 let markers = [];
@@ -58,12 +58,12 @@ module.exports = {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
 
-                var pos = {
+                let pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
 
-                var marker = new google.maps.Marker({
+                let marker = new google.maps.Marker({
                     position: new google.maps.LatLng(pos.lat, pos.lng),
                     map: map,
                     animation: google.maps.Animation.DROP,
@@ -84,7 +84,7 @@ module.exports = {
         window.map.showAllEvents()
 
         //Google's drawing manager (Marker and Hand tools)
-        var drawingManager = new google.maps.drawing.DrawingManager({
+        let drawingManager = new google.maps.drawing.DrawingManager({
             drawingControl: true,
             drawingControlOptions: {
                 position: google.maps.ControlPosition.TOP_LEFT,
@@ -129,15 +129,15 @@ module.exports = {
 
     // Create marker given event data
     createMarker: function(name, description, id, tag, coords) {
-        var marker = new google.maps.Marker({
+        let marker = new google.maps.Marker({
             position: new google.maps.LatLng(coords.lat, coords.lng),
             map: map,
             animation: google.maps.Animation.DROP
         })
 
-        var content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + (tag ? tag : '')  + "<p>" + description + "</p></div>"
+        let content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + (tag ? tag : '')  + "<p>" + description + "</p></div>"
 
-        var info = new google.maps.InfoWindow({
+        let info = new google.maps.InfoWindow({
             content: content
         })
         info.addListener('closeclick', function() {
@@ -167,7 +167,7 @@ module.exports = {
 
     //Remove all markers from the map
     removeMarkers: function() {
-        for (var i = 0; i < markers.length; i++) {
+        for (let i = 0; i < markers.length; i++) {
             markers[i].setMap(null)
             markers[i] = null
         }

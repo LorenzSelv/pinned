@@ -1,7 +1,6 @@
 let form = $("#event-form")
 
-// Allow canceling out of the form
-
+// Allow closing the form by clicking outside of the modal
 hideEventForm = function() {
     $("#event-form")[0].reset()
     $("#event-input").addClass("invisible")
@@ -9,25 +8,25 @@ hideEventForm = function() {
     window.currentMarker.setMap(null)
     window.currentMarker = null
 
-    // Find a better way instead of removing the handler, for example
-    // a generic key handler in which keys can be registered and unregistered
-    $(document).off('keydown') 
+    $(document).off('keydown')
 }
 
-showEventForm = function(lat, lng){
+// Show event form and initialize hidden fields
+showEventForm = function(lat, lng) {
     $("#event-input").removeClass("invisible")
     $("#event-form #id_latitude").val(lat.toFixed(8))
     $("#event-form #id_longitude").val(lng.toFixed(8))
-    $(document).keydown(function(e){
-        if(e.keyCode == 27){ // Esc key
+    $(document).keydown(function(e) {
+        if (e.keyCode == 27) { // Esc key
             hideEventForm()
-        } 
+        }
     })
 }
 
 $("#event-input").click(hideEventForm)
 
-form.click(function(e){
+// Prevent form from closing on click
+form.click(function(e) {
     e.stopPropagation()
 })
 
@@ -41,7 +40,7 @@ form.find("textarea").addClass("form-control")
 setupTagsSelect(form.find('#id_tags'))
 
 // Create form field for date time pickers
-form.find(".date-time-picker").each(function(){
+form.find(".date-time-picker").each(function() {
     $(this).attr("data-input", "")
     let destination = $(this).parents("form").find(".date-times")
 
@@ -63,7 +62,7 @@ form.find(".date-time-picker").each(function(){
 
     pTag.remove()
 
-    // Append newly genereted element
+    // Append newly generated element
     destination.append(newInput)
     // Enable datetimepicker
     newInput.find(".flatpickr").flatpickr({
@@ -74,8 +73,18 @@ form.find(".date-time-picker").each(function(){
     })
 })
 
+form.find("#id_start_date_time").change(function() {
+    let start = $(this).text()
+    form.find("#id_end_date_time").parent().flatpickr({
+        enableTime: true,
+        dateFormat: "m/d/y H:i",
+        minDate: start,
+        wrap: true
+    })
+})
+
 window.addEventListener('load', function() {
-    var form = document.getElementById('event-form');
+    let form = document.getElementById('event-form');
     form.addEventListener('submit', function(event) {
 
     }, false);
