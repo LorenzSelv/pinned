@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import dj_database_url
 from dotenv import load_dotenv, find_dotenv
 
 
@@ -30,7 +31,7 @@ DEBUG = bool(os.getenv('PINNED_DJANGO_DEBUG_MODE', True))
 # force https connection when running on the server
 SECURE_SSL_REDIRECT = bool(os.getenv('PINNED_DJANGO_SSL_REDIRECT', False))
 
-ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com', 'pinned-app-deploy.herokuapp.com']
 
 # Application definition
 
@@ -184,3 +185,6 @@ LOGIN_REDIRECT_URL = "/map/"
 LOGOUT_REDIRECT_URL = "/"
 
 AUTH_USER_MODEL = 'core.User'
+
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
