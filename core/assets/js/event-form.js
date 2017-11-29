@@ -37,7 +37,8 @@ form.find("input").addClass("form-control")
 form.find("textarea").addClass("form-control")
 
 // Give styling to the tags input
-setupTagsSelect(form.find('#id_tags'))
+form.find('#id_tag').addClass("form-control")
+form.find('#id_tag').find("option[value='']").text("None")
 
 // Create form field for date time pickers
 let pickers = []
@@ -68,7 +69,7 @@ form.find(".date-time-picker").each(function() {
     destination.append(newInput)
     // Enable and savev datetimepicker
     element = $(this).is("#id_start_date_time") ? 'start' : 'end'
-    
+
     pickers[element] = {
         'picker': newInput.find(".flatpickr").flatpickr({
             enableTime: true,
