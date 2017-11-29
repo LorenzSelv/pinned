@@ -40,6 +40,8 @@ form.find("textarea").addClass("form-control")
 setupTagsSelect(form.find('#id_tags'))
 
 // Create form field for date time pickers
+let pickers = []
+
 form.find(".date-time-picker").each(function() {
     $(this).attr("data-input", "")
     let destination = $(this).parents("form").find(".date-times")
@@ -64,23 +66,23 @@ form.find(".date-time-picker").each(function() {
 
     // Append newly generated element
     destination.append(newInput)
-    // Enable datetimepicker
-    newInput.find(".flatpickr").flatpickr({
-        enableTime: true,
-        dateFormat: "m/d/y H:i",
-        minDate: "today",
-        wrap: true
-    })
+    // Enable and savev datetimepicker
+    element = $(this).is("#id_start_date_time") ? 'start' : 'end'
+    
+    pickers[element] = {
+        'picker': newInput.find(".flatpickr").flatpickr({
+            enableTime: true,
+            dateFormat: "m/d/y H:i",
+            minDate: "today",
+            wrap: true
+        }),
+        'element': $(this)
+    }
 })
 
-form.find("#id_start_date_time").change(function() {
-    let start = $(this).text()
-    form.find("#id_end_date_time").parent().flatpickr({
-        enableTime: true,
-        dateFormat: "m/d/y H:i",
-        minDate: start,
-        wrap: true
-    })
+// Update minimum date for end picker
+pickers.start.element.change(function() {
+    pickers.end.picker.config.minDate = pickers.start.element.val()
 })
 
 window.addEventListener('load', function() {
