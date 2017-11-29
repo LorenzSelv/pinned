@@ -125,7 +125,7 @@ class EventMemberView(generic.View):
                 Join.objects.filter(user=request.user, event=event).delete()
 
             data['result'] = True
-            data['participants'] = [p.first_name for p in event.participants.all()]
+            data['participants'] = [{'name': p.first_name, 'id': p.id} for p in event.participants.all()]
 
             print("{} {} {}".format(request.user, action_word, event))
 
