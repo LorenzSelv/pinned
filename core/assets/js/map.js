@@ -148,8 +148,9 @@ module.exports = {
         })
 
         marker.addListener('click', function() {
-            info.fixed = true
-            info.open(this.map, marker)
+            //info.fixed = true
+            //info.open(this.map, marker)
+            location.href = "/events/" + id
         })
 
         marker.addListener('mouseover', function() {

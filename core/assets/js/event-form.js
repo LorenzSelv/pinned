@@ -74,7 +74,7 @@ form.find(".date-time-picker").each(function() {
         'picker': newInput.find(".flatpickr").flatpickr({
             enableTime: true,
             dateFormat: "m/d/y H:i",
-            minDate: "today",
+            minDate: new Date(),
             wrap: true
         }),
         'element': $(this)
@@ -86,9 +86,20 @@ pickers.start.element.change(function() {
     pickers.end.picker.config.minDate = pickers.start.element.val()
 })
 
-window.addEventListener('load', function() {
-    let form = document.getElementById('event-form');
-    form.addEventListener('submit', function(event) {
+form.submit(function( event ) {
+    var start = pickers.start.picker
+    var end = pickers.end.picker
+    if (start.selectedDates == "" || end.selectedDates == "") {
+        event.preventDefault()
+        alert("Please fill out both date fields!")
+    } else if(invalidStartDate(start)) {
+        event.preventDefault()
+        alert("Start date cannot be before the current time!")
+    }
+})
 
-    }, false);
-}, false);
+function invalidStartDate(start){
+    let currentTime = new Date()
+    let selectedTime = new Date(start.selectedDates[0])
+    return selectedTime < currentTime 
+}
