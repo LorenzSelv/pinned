@@ -68,13 +68,15 @@ form.find(".date-time-picker").each(function() {
     // Append newly generated element
     destination.append(newInput)
     // Enable and savev datetimepicker
-    element = $(this).is("#id_start_date_time") ? 'start' : 'end'
+    let element = $(this).is("#id_start_date_time") ? 'start' : 'end'
+
+    let now = new Date()
 
     pickers[element] = {
         'picker': newInput.find(".flatpickr").flatpickr({
             enableTime: true,
             dateFormat: "m/d/y H:i",
-            minDate: new Date(),
+            minDate: now.setTime(now.getTime() + 3600 * 1000),
             wrap: true
         }),
         'element': $(this)
@@ -83,23 +85,30 @@ form.find(".date-time-picker").each(function() {
 
 // Update minimum date for end picker
 pickers.start.element.change(function() {
-    pickers.end.picker.config.minDate = pickers.start.element.val()
+    let start = new Date(pickers.start.element.val())
+    let minEnd = start.setTime(start.getTime() + 15 * 60 * 1000)
+
+    pickers.end.picker.config.minDate = minEnd
+    let end = new Date(pickers.end.element.val())
+    if (end < minEnd) {
+        pickers.end.element.val("")
+    }
 })
 
-form.submit(function( event ) {
+form.submit(function(event) {
     var start = pickers.start.picker
     var end = pickers.end.picker
     if (start.selectedDates == "" || end.selectedDates == "") {
         event.preventDefault()
         alert("Please fill out both date fields!")
-    } else if(invalidStartDate(start)) {
+    } else if (invalidStartDate(start)) {
         event.preventDefault()
         alert("Start date cannot be before the current time!")
     }
 })
 
-function invalidStartDate(start){
+function invalidStartDate(start) {
     let currentTime = new Date()
     let selectedTime = new Date(start.selectedDates[0])
-    return selectedTime < currentTime 
+    return selectedTime < currentTime
 }
