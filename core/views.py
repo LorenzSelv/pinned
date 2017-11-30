@@ -58,8 +58,6 @@ class MapView(generic.View):
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
 
-    # TODO allow to see events without login
-    # @method_decorator(login_decorator)
     def get(self, request, *args, **kwargs):
         self.context['state'] = "get"
         if request.user.is_authenticated():

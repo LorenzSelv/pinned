@@ -22,7 +22,6 @@ function sendEventsAjax(scope, tag) {
         success: (events) => {
             //Create markers on the map depending on the events returned
             for (i = 0; i < events.length; i++) {
-                //TODO: Maybe find better way of accessing tag name
                 if (tag === null || events[i].tag_code.indexOf(tag) !== -1) {
                     let data = events[i]
                     window.map.createMarker(data.name,
@@ -122,11 +121,9 @@ module.exports = {
         google.maps.event.addListener(drawingManager, 'markercomplete', function(marker) {
             drawingManager.set('drawingMode');
 
-            // TODO: pass the current logged in user to the EventForm
             showEventForm(marker.getPosition().lat(), marker.getPosition().lng())
 
             window.currentMarker = marker
-            // TODO: Bring up prompt to enter event details and create the event
         });
     },
 
