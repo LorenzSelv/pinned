@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import dj_database_url
 from dotenv import load_dotenv, find_dotenv
 
 
@@ -30,7 +31,7 @@ DEBUG = bool(os.getenv('PINNED_DJANGO_DEBUG_MODE', True))
 # force https connection when running on the server
 SECURE_SSL_REDIRECT = bool(os.getenv('PINNED_DJANGO_SSL_REDIRECT', False))
 
-ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com', 'pinned-app-deploy.herokuapp.com']
 
 # Application definition
 
@@ -136,9 +137,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
-STATIC_ROOT = "/home/pinned/pinned/core/static"
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # TODO store Django secret key in the .env file
 ENV_FILE = find_dotenv()
@@ -146,6 +152,18 @@ if ENV_FILE:
     load_dotenv(ENV_FILE)
 
 # Social-Auth and Auth0 backend config
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'core.pipeline.get_avatar',
+)
 
 SOCIAL_AUTH_TRAILING_SLASH = False
 
@@ -181,3 +199,5 @@ LOGOUT_REDIRECT_URL = "/"
 AUTH_USER_MODEL = 'core.User'
 
 CELERY_BROKER_URL = 'amqp://localhost'
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)

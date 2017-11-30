@@ -13,8 +13,9 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 class User (AbstractUser):
     # Add a check to ensure max_length isn't exceeded? (for all classes)
     username = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=50)  # (widget=forms.PasswordInput)
+    password = models.CharField(max_length=50)  
     email    = models.EmailField()
+    picture = models.CharField(max_length=255, default='')
 
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits "
@@ -52,7 +53,6 @@ class Event (models.Model):
     name        = models.CharField(max_length=150)
     description = models.CharField(max_length=1000)
     # TODO check that events can't have the same date_time AND location
-    # TODO ensure that the end_date_time > start_date_time. Is it possible to do at the model level?
     start_date_time = models.DateTimeField()
     end_date_time   = models.DateTimeField()
 

@@ -3,7 +3,10 @@
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
-require('./event_form.js')
+if($("#map-filters").length)
+    require('./map-filters.js')
+if($("#event-form").length)
+    require('./event-form.js')
 
 let map;
 let markers = [];
@@ -19,7 +22,6 @@ function sendEventsAjax(scope, tag) {
         success: (events) => {
             //Create markers on the map depending on the events returned
             for (i = 0; i < events.length; i++) {
-                //TODO: Maybe find better way of accessing tag name
                 if (tag === null || events[i].tag_code.indexOf(tag) !== -1) {
                     let data = events[i]
                     window.map.createMarker(data.name,
@@ -58,12 +60,12 @@ module.exports = {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
 
-                var pos = {
+                let pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
 
-                var marker = new google.maps.Marker({
+                let marker = new google.maps.Marker({
                     position: new google.maps.LatLng(pos.lat, pos.lng),
                     map: map,
                     animation: google.maps.Animation.DROP,
@@ -84,7 +86,7 @@ module.exports = {
         window.map.showAllEvents()
 
         //Google's drawing manager (Marker and Hand tools)
-        var drawingManager = new google.maps.drawing.DrawingManager({
+        let drawingManager = new google.maps.drawing.DrawingManager({
             drawingControl: true,
             drawingControlOptions: {
                 position: google.maps.ControlPosition.TOP_LEFT,
@@ -119,25 +121,23 @@ module.exports = {
         google.maps.event.addListener(drawingManager, 'markercomplete', function(marker) {
             drawingManager.set('drawingMode');
 
-            // TODO: pass the current logged in user to the EventForm
             showEventForm(marker.getPosition().lat(), marker.getPosition().lng())
 
             window.currentMarker = marker
-            // TODO: Bring up prompt to enter event details and create the event
         });
     },
 
     // Create marker given event data
     createMarker: function(name, description, id, tag, coords) {
-        var marker = new google.maps.Marker({
+        let marker = new google.maps.Marker({
             position: new google.maps.LatLng(coords.lat, coords.lng),
             map: map,
             animation: google.maps.Animation.DROP
         })
 
-        var content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + (tag ? tag : '')  + "<p>" + description + "</p></div>"
+        let content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + (tag ? tag : '')  + "<p>" + description + "</p></div>"
 
-        var info = new google.maps.InfoWindow({
+        let info = new google.maps.InfoWindow({
             content: content
         })
         info.addListener('closeclick', function() {
@@ -145,8 +145,9 @@ module.exports = {
         })
 
         marker.addListener('click', function() {
-            info.fixed = true
-            info.open(this.map, marker)
+            //info.fixed = true
+            //info.open(this.map, marker)
+            location.href = "/events/" + id
         })
 
         marker.addListener('mouseover', function() {
@@ -167,7 +168,7 @@ module.exports = {
 
     //Remove all markers from the map
     removeMarkers: function() {
-        for (var i = 0; i < markers.length; i++) {
+        for (let i = 0; i < markers.length; i++) {
             markers[i].setMap(null)
             markers[i] = null
         }

@@ -26,7 +26,6 @@ login_decorator = login_required(login_url='/', redirect_field_name=None)
 def get_user_notifications(user):
     notifications = UserNotification.objects.filter(user=user)
     result = [notification.content_object for notification in notifications]
-    print(result)
     return result
 
 
@@ -43,7 +42,6 @@ class MapView(generic.View):
 
     @method_decorator(login_decorator)
     def post(self, request):
-        # form = EventForm(request.POST, initial={'event_owner': request.user.id})
 
         try:
             form_temp = EventForm(request.POST)
@@ -62,16 +60,24 @@ class MapView(generic.View):
         self.context['form'] = EventForm()
         return render(request, 'core/pages/map.html', context=self.context)
 
-    # TODO allow to see events without login
-    @method_decorator(login_decorator)
     def get(self, request, *args, **kwargs):
-        # print('SESSION\n', request.session.items())
-        # print('REQUEST\n', str(request.user.first_name))
         self.context['state'] = "get"
         self.context['form'] = EventForm()
         tags = request.user.interest_tags.all()
         self.context['tags'] = tags
         self.context['notifications'] = get_user_notifications(request.user)
+        if request.user.is_authenticated():
+            self.context['form'] = EventForm()
+            user_id = request.user.id
+            user = User.objects.get(pk=user_id)
+            tags = user.interest_tags.all()
+            self.context['tags'] = tags
+                # TODO: remove! For testing the notification
+            user = User.objects.filter(username='Lorenzo')
+            self.context['notifications'] = get_user_notifications(user)
+            self.context.pop('not_logged_in', None)
+        else:
+            self.context['not_logged_in'] = True
         return render(request, 'core/pages/map.html', context=self.context)
 
 
@@ -123,7 +129,7 @@ class EventMemberView(generic.View):
                 Join.objects.filter(user=request.user, event=event).delete()
 
             data['result'] = True
-            data['participants'] = [p.first_name for p in event.participants.all()]
+            data['participants'] = [{'name': p.first_name, 'id': p.id} for p in event.participants.all()]
 
             print("{} {} {}".format(request.user, action_word, event))
 
@@ -159,15 +165,10 @@ class ProfileView(generic.DetailView):
         user = User.objects.filter(pk=self.kwargs['pk'])[0]
 
         joined_events_id = list(Join.objects.filter(user=user).values_list('event', flat=True))        
-        joined_events = list(Event.objects.filter(id__in=joined_events_id))
+        joined_events = list(Event.objects.filter(id__in=joined_events_id).exclude(event_owner=user))
         
         owned_events  = list(Event.objects.filter(event_owner=user))
-        
-        auth0user = user.social_auth.get(provider="auth0")
-        user.picture = auth0user.extra_data['picture']
-
-        user.email = user.username + '@gmail.com'
-
+                
         tags = Tag.objects.all()
         interests = user.interest_tags.all()
 
@@ -220,13 +221,3 @@ class UserViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-
-
-# class InterestedEventsViewSet(APIView):
-#     def get(self, request, *args, **kwargs):
-#         user_id = request.user.id
-#         user = User.objects.get(pk=user_id)
-#         tags = user.interest_tags.all()
-#         queryset = Event.objects.filter(tag__in=tags)
-#         serializer_class = EventSerializer(queryset, many=True, context={'request': request})
-#         return Response(serializer_class.data)

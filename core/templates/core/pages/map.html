@@ -1,10 +1,12 @@
-{% extends "core/structures/generic.html" %} {% block title %}Home{% endblock %} {% block top_content %} {% include "core/partials/event_form.html" %} {% endblock %} {% block content %}
+{% extends "core/structures/generic.html" %} {% block title %}Home{% endblock %} {% block top_content %} {% if form %} {% include "core/partials/event_form.html" %} {% endif %} {% endblock %} {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-sm-12">
-            {% include "core/partials/map_filters.html" %}
+    {% if tags %}
+        <div class="row">
+            <div class="col-sm-12">
+                {% include "core/partials/map_filters.html" %}
+            </div>
         </div>
-    </div>
+    {% endif %}
     <div class="row">
         <div class="col-sm-12">
             <div id="map"></div>

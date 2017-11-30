@@ -14,9 +14,6 @@ class EventForm(forms.ModelForm):
                    'start_date_time': forms.TextInput(attrs={'class': 'date-time-picker'}),
                    'end_date_time': forms.TextInput(attrs={'class': 'date-time-picker'}),
                    "tag": forms.Select(),
-                   # "tag": forms.SelectMultiple(attrs={'class': 'select-multiple'}),
-                   # TODO hidden input ?
-                   # 'event_owner': forms.HiddenInput()
                    }
 
     def clean(self):

@@ -48,7 +48,11 @@ function updateParticipants(element, participants) {
         if (!participants.length)
             tbody.append("<tr><td>No participant yet</td></tr>")
         for (let i = participants.length - 1; i >= 0; i--) {
-            tbody.append("<tr><td>" + participants[i] + "</td></tr>")
+            let text = `<tr>
+                            <td><a href="/profile/${participants[i].id}/">${participants[i].name}</a></td>
+                        </tr>`
+
+            tbody.append(text)
         }
 
     }

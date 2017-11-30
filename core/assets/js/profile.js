@@ -18,7 +18,7 @@ function sendInterestAjax(selectedTags) {
 
 // Send request when selected tags are changed
 document.getElementById("interests-select").onchange = function() {
-    var selectedTags = [];
+    let selectedTags = [];
 
     $("#interests-select :selected").each(function() {
         selectedTags.push($(this).val());

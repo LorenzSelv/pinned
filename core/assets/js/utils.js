@@ -2,8 +2,8 @@ require('chosen-js')
 
 // Enable map-filters dropdown selection
 $("#map-filters .dropdown-menu").find(".dropdown-item").click(function() {
-    var selText = $(this).text();
-    var selColor = $(this).css("background-color")
+    let selText = $(this).text();
+    let selColor = $(this).css("background-color")
     if (selText === 'My Interests') {
         window.map.showInterestedEvents()
     } else if (selText === 'All Events') {
@@ -30,7 +30,7 @@ window.setupTagsSelect = function(element) {
         // Called when chosen is activated on the select field, styles already present tags
         .on("chosen:ready", function(e, params) {
 
-            for (var i = params.chosen.results_data.length - 1; i >= 0; i--) {
+            for (let i = params.chosen.results_data.length - 1; i >= 0; i--) {
                 let tag = params.chosen.results_data[i]
                 if (tag.selected)
                     styleTag(tag.value)
