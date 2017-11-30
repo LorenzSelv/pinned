@@ -71,6 +71,7 @@ class MapView(generic.View):
                 # TODO: remove! For testing the notification
             user = User.objects.filter(username='Lorenzo')
             self.context['notifications'] = get_user_notifications(user)
+            self.context.pop('not_logged_in', None)
         else:
             self.context['not_logged_in'] = True
         return render(request, 'core/pages/map.html', context=self.context)
@@ -160,7 +161,7 @@ class ProfileView(generic.DetailView):
         user = User.objects.filter(pk=self.kwargs['pk'])[0]
 
         joined_events_id = list(Join.objects.filter(user=user).values_list('event', flat=True))        
-        joined_events = list(Event.objects.filter(id__in=joined_events_id))
+        joined_events = list(Event.objects.filter(id__in=joined_events_id).exclude(event_owner=user))
         
         owned_events  = list(Event.objects.filter(event_owner=user))
                 
