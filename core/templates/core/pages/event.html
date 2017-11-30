@@ -14,7 +14,7 @@
 
     <div class="event-info">
         <p class="event-owner">
-            Creator: <a href="/profile/{{ event.event_owner.id }}/">{{ event.event_owner }}</a>
+            Creator: <a href="/profile/{{ event.event_owner.id }}/">{{ event.event_owner.first_name }}</a>
         </p>
         {% if event.tag %}
             <p class="event-tags">
