@@ -29,6 +29,8 @@ def get_user_notifications(user):
 
 
 def login(request):
+    if request.user.is_authenticated():
+        return redirect('map/')
     return render(request, 'core/pages/login.html')
 
 
