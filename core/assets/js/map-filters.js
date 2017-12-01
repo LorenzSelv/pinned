@@ -7,6 +7,11 @@ $("#map-filters").find("#datepicker").find("input").flatpickr({
     dateFormat: "m/d/y"
 })
 
+
+$("#map-filters").find(".input-group-addon").click(function(){
+    $(this).siblings().focus()
+})
+
 // Enable map-filters dropdown selection
 $("#map-filters").find("#filter-dropdown").find(".dropdown-item").click(function() {
     let selText = $(this).text()
