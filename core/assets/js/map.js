@@ -3,33 +3,46 @@
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
-if($("#map-filters").length)
+if ($("#map-filters").length)
     require('./map-filters.js')
-if($("#event-form").length)
+if ($("#event-form").length)
     require('./event-form.js')
 
 let map;
 let markers = [];
 
-function sendEventsAjax(scope, tag) {
+function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, date = undefined) {
+    let scopes = []
+
+    if (scope)
+        scopes.push(scope)
+    if (tag)
+        scopes.push('tag')
+    if (text)
+        scopes.push('name')
+    if (date)
+        scopes.push('date')
+
     $.ajax({
         type: "GET",
         dataType: "json",
         url: "/events/api/",
         data: {
-            scope: scope
+            scopes: scopes,
+            tag: tag,
+            text: text,
+            date: date
         },
         success: (events) => {
+
             //Create markers on the map depending on the events returned
             for (i = 0; i < events.length; i++) {
-                if (tag === null || events[i].tag_code.indexOf(tag) !== -1) {
-                    let data = events[i]
-                    window.map.createMarker(data.name,
-                        data.description, data.id, data.tag_code, {
+                let data = events[i]
+                window.map.createMarker(data.name,
+                    data.description, data.id, data.tag_code, {
                         lat: data.latitude,
                         lng: data.longitude
                     })
-                }
             }
         },
         error: function(first, e) {
@@ -83,7 +96,7 @@ module.exports = {
             handleLocationError(false, new google.maps.InfoWindow, map.getCenter());
         }
 
-        window.map.showAllEvents()
+        window.map.showEvents({ scope: 'all' })
 
         //Google's drawing manager (Marker and Hand tools)
         let drawingManager = new google.maps.drawing.DrawingManager({
@@ -135,7 +148,7 @@ module.exports = {
             animation: google.maps.Animation.DROP
         })
 
-        let content = "<h1><div class='event-info'><a href='/events/" + id + "'>" + name + "</a></h1>" + (tag ? tag : '')  + "<p>" + description + "</p></div>"
+        let content = "<h1><div class='event-info'>" + name + "</h1>" + (tag ? tag : '') + "<p>" + description + "</p></div>"
 
         let info = new google.maps.InfoWindow({
             content: content
@@ -145,8 +158,6 @@ module.exports = {
         })
 
         marker.addListener('click', function() {
-            //info.fixed = true
-            //info.open(this.map, marker)
             location.href = "/events/" + id
         })
 
@@ -155,10 +166,7 @@ module.exports = {
         })
 
         marker.addListener('mouseout', function() {
-            if (!info.fixed) {
-                info.fixed = false
-                info.close()
-            }
+            info.close()
         })
 
         markers.push(marker)
@@ -176,23 +184,9 @@ module.exports = {
     },
 
     //Place markers on the map for all events the user is interested in
-    showInterestedEvents: function() {
+    showEvents: function(opts) {
         window.map.removeMarkers()
         // Call to events api endpoint (returns events specified user is interested in)
-        sendEventsAjax('interests', null)
+        sendEventsAjax(opts.scope, opts.tag, opts.name, opts.date)
     },
-
-    //Place markers on the map for events of a specific interest
-    showSpecificEvents: function(tag) {
-        window.map.removeMarkers()
-        // Call to events api endpoint (returns events of the specific tag)
-        sendEventsAjax('interests', tag)
-    },
-
-    //Place markers on the map for all the events
-    showAllEvents: function() {
-        window.map.removeMarkers()
-        // Call to events api endpoint (returns all the events)
-        sendEventsAjax('all', null)
-    }
 }

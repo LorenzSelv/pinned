@@ -8,7 +8,7 @@
           <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%; border-radius: 0;">
             All Events
           </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div id="filter-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="#">All Events</a>
               <a class="dropdown-item" href="#">My Interests</a>
             {% for tag in tags %}
@@ -21,13 +21,13 @@
       <div class="col-sm-4">
         <div class="input-group">
           <span class="input-group-addon" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>
-          <input type="text" class="form-control" aria-label="Location"/>
+          <input id="filter-search" type="text" class="form-control"/>
         </div>
       </div>
       <div class="col-sm-4">
         <div class="input-group" id="datepicker">
           <span class="input-group-addon" id="basic-addon1"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-          <input class="form-control"/>
+          <input id="filter-date" class="form-control"/>
         </div>
       </div>
     </div>

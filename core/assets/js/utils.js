@@ -1,19 +1,5 @@
 require('chosen-js')
 
-// Enable map-filters dropdown selection
-$("#map-filters .dropdown-menu").find(".dropdown-item").click(function() {
-    let selText = $(this).text();
-    let selColor = $(this).css("background-color")
-    if (selText === 'My Interests') {
-        window.map.showInterestedEvents()
-    } else if (selText === 'All Events') {
-        window.map.showAllEvents()
-    } else {
-        window.map.showSpecificEvents(selText)
-    }
-    $(this).parents('.input-group').find('#dropdownMenuButton').html(selText + ' <span class="caret"></span>').css("background-color", selColor);
-});
-
 // Setup tag select styling on element
 window.setupTagsSelect = function(element) {
 

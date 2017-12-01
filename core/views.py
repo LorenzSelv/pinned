@@ -187,22 +187,44 @@ class ProfileView(generic.DetailView):
         return HttpResponse(json.dumps(data))
 
 
-# Enables access to all events
-# @method_decorator(login_decorator)
 class EventsViewSet(APIView):
 
     def get(self, request, *args, **kwargs):
+        # Get all events that have not ended yet
         queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now())
-        serializer_class = EventSerializer(queryset, many=True, context={'request': request})
 
-        scope = request.GET['scope']
-
-        if scope == 'interests':
+        # Obtain the list of user scopes (interests, single tag, text filtering and date filtering)
+        scopes = request.GET.getlist('scopes[]')
+        print(request.GET)
+        # Filter on user's interests
+        if 'interests' in scopes:
             user_id = request.user.id
             user = User.objects.get(pk=user_id)
             tags = user.interest_tags.all()
-            queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now(), tag__in=tags)
-            serializer_class = EventSerializer(queryset, many=True, context={'request': request})
+
+            queryset = queryset.filter(tag__in=tags)
+
+        # Filter to just one tag
+        elif 'tag' in scopes:
+            selected_tag = request.GET['tag']
+            tag = Tag.objects.get(name=selected_tag)
+
+            queryset = queryset.filter(tag=tag)
+
+        # Filter by text contained in event name
+        if 'name' in scopes:
+            text = request.GET['text']
+
+            queryset = queryset.filter(name__icontains=text)
+        
+        # Filter by start date
+        if 'date' in scopes:
+            date = request.GET['date']
+            datetime_object = datetime.datetime.strptime(date, '%m/%d/%y')
+
+            queryset = queryset.filter(start_date_time__gt=datetime_object)
+
+        serializer_class = EventSerializer(queryset, many=True, context={'request': request})
 
         return Response(serializer_class.data) 
 
