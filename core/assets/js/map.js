@@ -8,8 +8,8 @@ if ($("#map-filters").length)
 if ($("#event-form").length)
     require('./event-form.js')
 
-let map;
-let markers = [];
+let map
+let markers = []
 
 function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, date = undefined) {
     let scopes = []
@@ -62,11 +62,11 @@ module.exports = {
         })
 
         function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-            infoWindow.setPosition(pos);
+            infoWindow.setPosition(pos)
             infoWindow.setContent(browserHasGeolocation ?
                 'Error: The Geolocation service failed.' :
-                'Error: Your browser doesn\'t support geolocation.');
-            infoWindow.open(map);
+                'Error: Your browser doesn\'t support geolocation.')
+            infoWindow.open(map)
         }
 
         // Try HTML5 geolocation.
@@ -76,24 +76,24 @@ module.exports = {
                 let pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
-                };
+                }
 
                 let marker = new google.maps.Marker({
                     position: new google.maps.LatLng(pos.lat, pos.lng),
                     map: map,
                     animation: google.maps.Animation.DROP,
                     label: 'Pinned HQ.'
-                });
+                })
 
-                map.setCenter(pos);
+                map.setCenter(pos)
 
             }, function() {
-                handleLocationError(true, new google.maps.InfoWindow, map.getCenter());
-            });
+                handleLocationError(true, new google.maps.InfoWindow, map.getCenter())
+            }, {timeout:10000})
 
         } else {
             // Browser doesn't support Geolocation
-            handleLocationError(false, new google.maps.InfoWindow, map.getCenter());
+            handleLocationError(false, new google.maps.InfoWindow, map.getCenter())
         }
 
         window.map.showEvents({ scope: 'all' })
@@ -109,9 +109,9 @@ module.exports = {
             },
             //Marker should be draggable
             markerOptions: { draggable: true }
-        });
+        })
 
-        drawingManager.setMap(map);
+        drawingManager.setMap(map)
 
         // Change the text that appears when hovering over the hand or marker
         $(map.getDiv()).one('mouseover', 'img[src="https://maps.gstatic.com/mapfiles/drawing.png"]', function(e) {
@@ -119,25 +119,23 @@ module.exports = {
                 $(this).closest('div[title]').attr('title', function() {
                     switch (this.title) {
                         case 'Add a marker':
-                            return 'Add me to the map and create an event!';
-                            break;
+                            return 'Add me to the map and create an event!'
                         case 'Stop drawing':
-                            return '';
-                            break;
+                            return ''
                         default:
-                            return this.title;
+                            return this.title
                     }
-                });
-            });
-        });
+                })
+            })
+        })
         // Function called when marker is placed
         google.maps.event.addListener(drawingManager, 'markercomplete', function(marker) {
-            drawingManager.set('drawingMode');
+            drawingManager.set('drawingMode')
 
             showEventForm(marker.getPosition().lat(), marker.getPosition().lng())
 
             window.currentMarker = marker
-        });
+        })
     },
 
     // Create marker given event data
@@ -180,7 +178,7 @@ module.exports = {
             markers[i].setMap(null)
             markers[i] = null
         }
-        markers = [];
+        markers = []
     },
 
     //Place markers on the map for all events the user is interested in

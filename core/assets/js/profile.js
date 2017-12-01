@@ -1,8 +1,8 @@
 // Get number of currently selected tags
-let count = $("#interests-select :selected").length;
+let count = $("#interests-select :selected").length
 
 // Set up interests tag dropdown
-let select = $("#interests-select");
+let select = $("#interests-select")
 setupTagsSelect(select)
 
 // Send tags to view
@@ -18,11 +18,11 @@ function sendInterestAjax(selectedTags) {
 
 // Send request when selected tags are changed
 document.getElementById("interests-select").onchange = function() {
-    let selectedTags = [];
+    let selectedTags = []
 
     $("#interests-select :selected").each(function() {
-        selectedTags.push($(this).val());
-    });
+        selectedTags.push($(this).val())
+    })
 
-    sendInterestAjax(selectedTags);
+    sendInterestAjax(selectedTags)
 }

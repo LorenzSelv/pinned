@@ -1,12 +1,6 @@
 // Contains the options for selecting events
 let eventsOptions = {}
 
-// Enable map-filters dropdown selection
-$("#map-filters .dropdown-menu").find(".dropdown-item").click(function() {
-    let selText = $(this).text();
-    $(this).parents('.input-group').find('#dropdownMenuButton').html(selText + ' <span class="caret"></span>')
-})
-
 // Enable map-filters datetimepicker
 $("#map-filters").find("#datepicker").find("input").flatpickr({
     minDate: "today",
@@ -15,7 +9,7 @@ $("#map-filters").find("#datepicker").find("input").flatpickr({
 
 // Enable map-filters dropdown selection
 $("#map-filters").find("#filter-dropdown").find(".dropdown-item").click(function() {
-    let selText = $(this).text();
+    let selText = $(this).text()
     let selColor = $(this).css("background-color")
     if (selText === 'My Interests') {
         eventsOptions.scope = 'interests'
@@ -29,7 +23,7 @@ $("#map-filters").find("#filter-dropdown").find(".dropdown-item").click(function
         eventsOptions.tag = undefined
     
     window.map.showEvents(eventsOptions)
-    $(this).parents('.input-group').find('#dropdownMenuButton').html(selText + ' <span class="caret"></span>').css("background-color", selColor);
+    $(this).parents('.input-group').find('#dropdownMenuButton').html(selText + ' <span class="caret"></span>').css("background-color", selColor)
 })
 
 // Enable map-filters name search
