@@ -3,15 +3,19 @@ body {
 }
 
 a:not(.navbar-brand) {
-    color: $links;
-    padding-bottom: 1pt;
-    border-bottom: 1pt solid transparent;
-    transition: 0.5s border-bottom-color;
-
     &:hover {
-        color: $links;
         text-decoration: none;
-        border-bottom-color: darken($links, 10);
+    }
+
+    &:not(.nav-link) {
+        color: $links;
+        transition: 0.5s border-bottom-color;
+        padding-bottom: 1pt;
+        border-bottom: 1pt solid transparent;
+        &:hover {
+            color: $links;
+            border-bottom-color: darken($links, 10);
+        }
     }
 }
 
@@ -38,7 +42,7 @@ h4 {
 
 // Navbar styling
 .navbar {
-    z-index: 2;
+    z-index: 5;
     box-shadow: black 0pt 8pt 5pt -5pt;
     margin-bottom: 20pt;
 
@@ -60,11 +64,15 @@ h4 {
 
     .nav-item {
         text-align: right;
-        padding-right: 5px;
+        transition: 0.3s box-shadow;
+        box-shadow: 0 0 darken($links, 10) inset;
         &:hover {
             background-color: #ececec;
+            box-shadow: 0 -4pt darken($links, 10) inset;
         }
     }
+
+
 }
 
 // Map styling
@@ -74,6 +82,11 @@ h4 {
     &-filters {
         .input-group {
             width: 100%;
+            &-addon{
+                &:hover{
+                    cursor: pointer;
+                }
+            }
         }
         .col-sm-4 {
             margin-top: 5px;

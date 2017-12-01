@@ -1,6 +1,6 @@
-{% extends "core/structures/generic.html" %} {% block title %}Home{% endblock %} {% block top_content %} {% if form %} {% include "core/partials/event_form.html" %} {% endif %} {% endblock %} {% block content %}
+{% extends "core/structures/generic.html" %} {% block title %}Home{% endblock %} {% block top_content %} {% if not not_logged_in %} {% include "core/partials/event_form.html" %} {% endif %} {% endblock %} {% block content %}
 <div class="container">
-    {% if tags %}
+    {% if not not_logged_in %}
         <div class="row">
             <div class="col-sm-12">
                 {% include "core/partials/map_filters.html" %}
