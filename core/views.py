@@ -1,4 +1,3 @@
-import datetime
 
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -17,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 import json
+import datetime
 
 
 login_decorator = login_required(login_url='/', redirect_field_name=None)
@@ -35,7 +35,7 @@ def login(request):
 
 
 class MapView(generic.View):
-    now = datetime.datetime.now()
+    now = timezone.now()
     context = {
         "event_list": Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now).filter()
                                    .order_by('start_date_time')[:3]
@@ -193,7 +193,7 @@ class EventsViewSet(APIView):
 
     def get(self, request, *args, **kwargs):
         # Get all events that have not ended yet
-        queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now())
+        queryset = Event.objects.filter(end_date_time__gt=timezone.now())
 
         # Obtain the list of user scopes (interests, single tag, text filtering and date filtering)
         scopes = request.GET.getlist('scopes[]')
