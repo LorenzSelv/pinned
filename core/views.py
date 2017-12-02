@@ -199,16 +199,7 @@ class EventsViewSet(APIView):
 
     def get(self, request, *args, **kwargs):
         # Get all events that have not ended yet
-
-        queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now())
-        if scope == 'interests':
-            tags = request.user.interest_tags.all()
-            queryset = Event.objects.filter(end_date_time__gt=datetime.datetime.now(), tag__in=tags)
-            serializer_class = EventSerializer(queryset, many=True, context={'request': request})
-
         queryset = Event.objects.filter(end_date_time__gt=timezone.now())
-
-
         # Obtain the list of user scopes (interests, single tag, text filtering and date filtering)
         scopes = request.GET.getlist('scopes[]')
         print(request.GET)
