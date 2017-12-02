@@ -32,11 +32,14 @@ def create_user(username):
     password = username + 'Pass'
     email    = username + '@ucsc.edu'
     phone_number = "+123456789"
+    location = create_location(username)
     return User.objects.create(username=username,
                                password=password,
                                email=email,
                                phone_number=phone_number,
-                               first_name=first_name)
+                               first_name=first_name,
+                               latitude=location.latitude,
+                               longitude=location.longitude)
 
 
 def create_some_tags():
@@ -64,7 +67,7 @@ def create_event(name, location, event_owner, tag, start_date_time, end_date_tim
     return Event.objects.create(name=name,
                                 description=description,
                                 latitude=location.latitude,
-                                longitude=location.latitude,
+                                longitude=location.longitude,
                                 event_owner=event_owner,
                                 tag=tag,
                                 start_date_time=start_date_time,

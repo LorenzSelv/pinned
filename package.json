@@ -4,10 +4,10 @@
   "description": "0) install `virtualenvwrapper`, `python 3.6` 1) ```mkvirutalenv pinned --python=    `which python3.6` ```  2) `git clone git@github.com:LorenzSelv/pinned.git` 3) `cd pinned` 4) `pip install -r requirements.txt # make sure the virutalenv pinned is activated` 5) `export PINNED_DJANGO_SECRET_KEY='<ask lorenzo>' # SINGLE quotes are important` 6) `make db` 7) `make tests`",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "hot": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "dev": "SET NODE_ENV=development & cross-env node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "SET NODE_ENV=development & cross-env node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "SET NODE_ENV=development & webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "SET NODE_ENV=production & cross-env node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "postinstall": "npm run production"
   },
   "repository": {
@@ -24,6 +24,7 @@
   "devDependencies": {
     "bootstrap": "^4.0.0-beta.2",
     "chosen-js": "^1.8.2",
+    "cross-env": "^5.1.1",
     "flatpickr": "^4.0.6",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
@@ -39,5 +40,4 @@
     "laravel-mix": "^1.5.1",
     "popper.js": "^1.12.6"
   }
-
 }

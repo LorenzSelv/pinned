@@ -1,3 +1,4 @@
+import datetime
 
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -11,13 +12,12 @@ from rest_framework.response import Response
 from .models import Event, User, Tag, Join, UserNotification
 from .forms import EventForm
 from .serializers import EventSerializer, TagSerializer, UserSerializer
-from .tasks import create_notification
+from .tasks import create_rating_notification
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 import json
-import datetime
 
 
 login_decorator = login_required(login_url='/', redirect_field_name=None)
@@ -52,7 +52,7 @@ class MapView(generic.View):
             form.save()
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
-            create_notification.apply_async([form.id], eta=form.end_date_time)
+            create_rating_notification.apply_async([form.id], eta=form.end_date_time)
         except ValueError as e:
             self.context['state'] = "error"
             self.context['errors'] = form_temp.errors
@@ -65,17 +65,15 @@ class MapView(generic.View):
     def get(self, request, *args, **kwargs):
         self.context['state'] = "get"
         self.context['form'] = EventForm()
-        tags = request.user.interest_tags.all()
-        self.context['tags'] = tags
-        self.context['notifications'] = get_user_notifications(request.user)
+        # tags = request.user.interest_tags.all()
+        # self.context['tags'] = tags
+        # self.context['notifications'] = get_user_notifications(request.user)
         if request.user.is_authenticated():
             self.context['form'] = EventForm()
             user_id = request.user.id
             user = User.objects.get(pk=user_id)
             tags = user.interest_tags.all()
             self.context['tags'] = tags
-                # TODO: remove! For testing the notification
-            user = User.objects.filter(username='Lorenzo')
             self.context['notifications'] = get_user_notifications(user)
             self.context.pop('not_logged_in', None)
         else:
@@ -203,10 +201,15 @@ class EventsViewSet(APIView):
         # Obtain the list of user scopes (interests, single tag, text filtering and date filtering)
         scopes = request.GET.getlist('scopes[]')
         print(request.GET)
+        user_id = request.user.id
+        user = User.objects.get(pk=user_id)
+        # user.latitude = request.GET['lat']
+        # user.longitude = request.GET['long']
+        # print("LAT ---> " + user.latitude)
+        #
+        # print("LONG ---> " + user.longitude)
         # Filter on user's interests
         if 'interests' in scopes:
-            user_id = request.user.id
-            user = User.objects.get(pk=user_id)
             tags = user.interest_tags.all()
 
             queryset = queryset.filter(tag__in=tags)

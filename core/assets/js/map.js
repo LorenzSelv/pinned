@@ -10,6 +10,8 @@ if ($("#event-form").length)
 
 let map
 let markers = []
+let latitude
+let longitude
 
 function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, date = undefined) {
     let scopes = []
@@ -22,6 +24,12 @@ function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, da
         scopes.push('name')
     if (date)
         scopes.push('date')
+    if (latitude)
+        scopes.push('lat')
+    if (longitude)
+        scopes.push('long')
+    console.log(latitude)
+    console.log(longitude)
 
     $.ajax({
         type: "GET",
@@ -31,7 +39,9 @@ function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, da
             scopes: scopes,
             tag: tag,
             text: text,
-            date: date
+            date: date,
+            lat: latitude,
+            long: longitude
         },
         success: (events) => {
 
@@ -73,17 +83,20 @@ module.exports = {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
 
+                latitude = position.coords.latitude
+                longitude = position.coords.longitude
+
                 let pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 }
 
-                let marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(pos.lat, pos.lng),
-                    map: map,
-                    animation: google.maps.Animation.DROP,
-                    label: 'Pinned HQ.'
-                })
+                // let marker = new google.maps.Marker({
+                //     position: new google.maps.LatLng(pos.lat, pos.lng),
+                //     map: map,
+                //     animation: google.maps.Animation.DROP,
+                //     label: 'Pinned HQ.'
+                // })
 
                 map.setCenter(pos)
 

@@ -13,7 +13,9 @@ def create_user(username):
     return User.objects.create(username=username,
                                password=password,
                                email=email,
-                               phone_number=phone_number)
+                               phone_number=phone_number,
+                               latitude=ILC.latitude,
+                               longitude=ILC.longitude)
 
 
 def get_random_color():
@@ -63,6 +65,7 @@ def create_location(name, latitude=None, longitude=None):
                                    description=name + ' -- nice place!',
                                    latitude=latitude,
                                    longitude=longitude)
+ILC = create_location('ILC')
 
 
 class UserModelTests (TestCase):
@@ -156,8 +159,6 @@ class EventModelTests (TestCase):
     def test_insert_event(self):
         lorenzo = create_user('Lorenzo')
         federico = create_user('Federico')
-
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
 
         # pp.participants.add(lorenzo)  # NOT POSSIBLE: through='Join'
@@ -172,8 +173,6 @@ class EventModelTests (TestCase):
     def test_join_twice(self):
         lorenzo = create_user('Lorenzo')
         federico = create_user('Federico')
-
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=lorenzo, event=pp)
@@ -184,7 +183,6 @@ class EventModelTests (TestCase):
 
     def test_events_date(self):
         lorenzo = create_user('Lorenzo')
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, lorenzo, timezone.now(), max_num_participants=2)
         # Ignore milliseconds
         self.assertEqual(pp.creation_date.strftime("%Y-%m-%d %H:%M:%S"), timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -198,8 +196,6 @@ class EventUserInteractionTests (TestCase):
     def test_delete_participant(self):
         l = create_user('Lorenzo')
         f = create_user('Federico')
-
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
@@ -213,8 +209,6 @@ class EventUserInteractionTests (TestCase):
     # Should this work? Discuss..
     def test_delete_event_owner_as_participant(self):
         l = create_user('Lorenzo')
-
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         Join.objects.create(user=l, event=pp)
@@ -223,8 +217,6 @@ class EventUserInteractionTests (TestCase):
 
     def test_delete_event_owner(self):
         l = create_user('Lorenzo')
-
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         l.delete()
@@ -234,8 +226,6 @@ class EventUserInteractionTests (TestCase):
 
     def test_delete_event_not_symmetric(self):
         l = create_user('Lorenzo')
-
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         pp.delete()
@@ -243,21 +233,18 @@ class EventUserInteractionTests (TestCase):
 
 
 class LocationTests (TestCase):
+    dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
 
-    def test_insert_location(self):
-        dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
+    # def test_insert_location(self):
         # print('name    ', dining_hall.name)
         # print('latitude', dining_hall.latitude)
         # print('latitude', dining_hall.longitude)
 
     def test_unique_name(self):
-        dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
-
         with self.assertRaises(django.db.utils.IntegrityError):
             create_location('Dining Hall', latitude=0, longitude=0)
 
     def test_unique_lat_long(self):
-        dining_hall = create_location('Dining Hall', latitude=37.001435, longitude=-122.057775)
 
         with self.assertRaises(django.db.utils.IntegrityError):
             create_location('Same place', latitude=37.001435, longitude=-122.057775)
@@ -284,8 +271,7 @@ def get_user_notifications(user):
 
 def create_notification(username, eventname, location='ILC'):
     user = create_user(username)
-    location = create_location('ILC')
-    event = create_event(eventname, location, l, timezone.now(), max_num_participants=2)
+    event = create_event(eventname, ILC, user, timezone.now(), max_num_participants=2)
 
     # Create notification
     notification = NotificationRating(date=timezone.now(), event=event, user=user)
@@ -301,7 +287,6 @@ class NotificationTests (TestCase):
 
     def test_notification_creation(self):
         l = create_user('Lorenzo')
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
         notification = NotificationRating(date=timezone.now(), event=pp, user=l)
 
@@ -310,9 +295,7 @@ class NotificationTests (TestCase):
         self.assertEqual(notification.event, pp)
 
     def test_notify_user(self):
-
         l = create_user('Lorenzo')
-        ILC = create_location('ILC')
         pp = create_event('Ping pong', ILC, l, timezone.now(), max_num_participants=2)
 
         # Create notification
