@@ -1,5 +1,5 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;    
 }
 
 a:not(.navbar-brand) {
@@ -70,8 +70,6 @@ h4 {
             box-shadow: 0 -4pt darken($links, 10) inset;
         }
     }
-
-
 }
 
 // Map styling
@@ -81,8 +79,8 @@ h4 {
     &-filters {
         .input-group {
             width: 100%;
-            &-addon{
-                &:hover{
+            &-addon {
+                &:hover {
                     cursor: pointer;
                 }
             }
@@ -106,6 +104,25 @@ h4 {
             .chosen-single {
                 border: 0;
                 box-shadow: none;
+            }
+
+            &.chosen-with-drop {
+                .chosen-single {
+                    border: 0;
+                    box-shadow: none;
+                }
+            }
+
+            .create-tag{
+                margin-left: 10px;
+                .fa-plus{
+                    transition: 0.3s color;
+                    cursor: pointer;
+                    margin-left: 5px;
+                    &:hover{
+                        color: $links;
+                    }
+                }
             }
         }
 
@@ -137,6 +154,8 @@ h4 {
                 right: 5px !important;
                 top: 1px !important;
                 background: none !important;
+                color: black !important;
+                border-bottom: none !important;
             }
         }
     }

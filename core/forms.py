@@ -13,7 +13,7 @@ class EventForm(forms.ModelForm):
                    'description': forms.Textarea(),
                    'start_date_time': forms.TextInput(attrs={'class': 'date-time-picker'}),
                    'end_date_time': forms.TextInput(attrs={'class': 'date-time-picker'}),
-                   "tag": forms.Select(),
+                   'tag': forms.Select(),
                    }
 
     def clean(self):

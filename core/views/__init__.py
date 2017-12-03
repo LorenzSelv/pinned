@@ -10,6 +10,7 @@ from .events_view import *
 from .profile_view import *
 
 from .event_member_view import *
+from .tag_create_view import *
 
 def login(request):
     if request.user.is_authenticated():
