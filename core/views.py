@@ -18,6 +18,7 @@ from django.utils.decorators import method_decorator
 
 import json
 import random
+import string
 
 
 login_decorator = login_required(login_url='/', redirect_field_name=None)
@@ -49,16 +50,6 @@ class MapView(generic.View):
             form_temp = EventForm(request.POST)
             form = form_temp.save(commit=False)
             form.event_owner = request.user
-
-            try:
-                tag = Tag.objects.get(name=form.custom_tag)
-            except Tag.DoesNotExist:
-                tag = None
-
-            if (tag == None):
-                tag = Tag.objects.create(name=form.custom_tag, color=str(random.randint(0, 0xFFFFF)))
-            
-            form.tag = tag 
             form.save()
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
@@ -147,6 +138,19 @@ class EventMemberView(generic.View):
         
         return HttpResponse(json.dumps(data))
 
+
+@method_decorator(login_decorator, name='post')
+class TagCreateView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+        tag_name= request.POST['tagName']
+        color = ''.join(random.choice(string.hexdigits) for _ in range(6))
+        tag = Tag.objects.create(name=tag_name, color=color)
+
+        return HttpResponse(json.dumps({'id': tag.id}))
+
+
+    
 
 @method_decorator(login_decorator, name='get')
 class EventView(generic.DetailView):

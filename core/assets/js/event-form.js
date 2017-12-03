@@ -36,14 +36,67 @@ form.find(".btn-cancel").click(hideEventForm)
 form.find("input").addClass("form-control")
 form.find("textarea").addClass("form-control")
 
-document.getElementsByName('name')[0].placeholder='e.g. Soccer'
-document.getElementsByName('description')[0].placeholder='a short description of your event'
-document.getElementsByName('custom_tag')[0].placeholder='add a tag!'
-document.getElementsByName('max_num_participants')[0].placeholder='how many players?'
-
 // Give styling to the tags input
-//form.find('#id_tag').addClass("form-control")
-//form.find('#id_tag').find("option[value='']").text("None")
+chosenSettings = { width: "100%", no_results_text: "No tags with name", search_contains: true }
+
+tagField = form.find('#id_tag')
+tagField.find("option[value='']").text("None")
+tagField.chosen(chosenSettings)
+
+// Give styling to container
+let chosen = tagField.parent().find(".chosen-container")
+
+function styleChosen() {
+    chosen.find(".chosen-search-input").attr("style", "width: 100%;")
+
+    chosen.find(".chosen-results").on("DOMSubtreeModified", function() {
+        let drop = $(this).parents(".chosen-drop")
+        let noResults = drop.find(".no-results")
+
+        if (noResults.length) {
+            let tagName = $(".chosen-search-input").val()
+            let span = noResults.find("span")
+            let createTag = $(`<span class="create-tag">Create new tag with this name? <i class="fa fa-plus" aria-hidden="true"></i>`)
+
+            if (!drop.find(".create-tag").length) {
+
+                function creationHandler(data) {
+                    data = JSON.parse(data)
+                    tagField.append($("<option selected value=" + data.id + ">" + tagName + "</option>"))
+
+                    tagField.chosen('destroy')
+                    tagField.chosen(chosenSettings)
+                    chosen = tagField.parent().find(".chosen-container")
+                    styleChosen()
+                }
+
+                drop.append(createTag)
+                createTag.find(".fa.fa-plus").on("click", function() {
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/tag/create",
+                        data: {
+                            tagName: tagName,
+                            csrfmiddlewaretoken: window.token
+                        },
+                        success: creationHandler
+                    })
+                })
+            }
+        } else {
+            let createTag = drop.find(".create-tag")
+            if (createTag.length) {
+                createTag.remove()
+            }
+        }
+
+    })
+
+    chosen.addClass("form-control")
+}
+
+styleChosen()
 
 // Create form field for date time pickers
 let pickers = []
