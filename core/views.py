@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 import json
+import random
 
 
 login_decorator = login_required(login_url='/', redirect_field_name=None)
@@ -48,6 +49,16 @@ class MapView(generic.View):
             form_temp = EventForm(request.POST)
             form = form_temp.save(commit=False)
             form.event_owner = request.user
+
+            try:
+                tag = Tag.objects.get(name=form.custom_tag)
+            except Tag.DoesNotExist:
+                tag = None
+
+            if (tag == None):
+                tag = Tag.objects.create(name=form.custom_tag, color=str(random.randint(0, 0xFFFFF)))
+            
+            form.tag = tag 
             form.save()
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
@@ -165,7 +176,7 @@ class ProfileView(generic.DetailView):
         
         owned_events  = list(Event.objects.filter(event_owner=user))
                 
-        tags = Tag.objects.all()
+        tags = Tag.objects.order_by('name')
         interests = user.interest_tags.all()
 
         context = {'user': user,

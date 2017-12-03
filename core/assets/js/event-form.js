@@ -36,9 +36,14 @@ form.find(".btn-cancel").click(hideEventForm)
 form.find("input").addClass("form-control")
 form.find("textarea").addClass("form-control")
 
+document.getElementsByName('name')[0].placeholder='e.g. Soccer'
+document.getElementsByName('description')[0].placeholder='a short description of your event'
+document.getElementsByName('custom_tag')[0].placeholder='add a tag!'
+document.getElementsByName('max_num_participants')[0].placeholder='how many players?'
+
 // Give styling to the tags input
-form.find('#id_tag').addClass("form-control")
-form.find('#id_tag').find("option[value='']").text("None")
+//form.find('#id_tag').addClass("form-control")
+//form.find('#id_tag').find("option[value='']").text("None")
 
 // Create form field for date time pickers
 let pickers = []

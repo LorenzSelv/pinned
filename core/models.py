@@ -65,6 +65,7 @@ class Event (models.Model):
     # TODO event type: private, public --> hierarchy in django
 
     tag = models.ForeignKey('Tag', related_name='events', blank=True, null=True, on_delete=models.CASCADE)
+    custom_tag = models.CharField(max_length=20)
     event_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
     creation_date = models.DateTimeField(auto_now_add=True)
 
