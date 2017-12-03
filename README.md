@@ -1,7 +1,10 @@
+## Link to hosted app
+https://pinned-app-deploy.herokuapp.com/
+
 ## Initial setup (assuming linux - bash):
 
-0) install `virtualenvwrapper`, `python 3.6`
-1) ```mkvirutalenv pinned --python=    `which python3.6` ``` 
+0) install `virtualenvwrapper`, `python 3.5`
+1) ```mkvirutalenv pinned --python=    `which python3.5` ```
 2) `git clone git@github.com:LorenzSelv/pinned.git`
 3) `cd pinned`
 4) `pip install -r requirements.txt # make sure the virutalenv pinned is activated`

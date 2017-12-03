@@ -17,7 +17,11 @@
                     Notifications
                   </a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        {% for notif in notifications %} {% include "core/partials/notification.html" with notification=notif %} {% endfor %}
+                        {% if notifications %}
+                            {% for notif in notifications %} {% include "core/partials/notification.html" with notification=notif %} {% endfor %}
+                        {% else %}
+                            <center>No notifications</center>
+                        {% endif %}
                     </div>
                 </div>
             </li>

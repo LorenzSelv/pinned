@@ -68,8 +68,6 @@ class MapView(generic.View):
             user = User.objects.get(pk=user_id)
             tags = user.interest_tags.all()
             self.context['tags'] = tags
-                # TODO: remove! For testing the notification
-            user = User.objects.filter(username='Lorenzo')
             self.context['notifications'] = get_user_notifications(user)
             self.context.pop('not_logged_in', None)
         else:
