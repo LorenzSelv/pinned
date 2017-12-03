@@ -165,6 +165,7 @@ class NotificationRating (Notification):
     """
     event = models.ForeignKey('Event')
     type = 'Rating'
+    text = ' - rate users!'
 
     def __str__(self):
         return self.type + " " + self.event.name + " " + Notification.__str__(self)
@@ -177,6 +178,7 @@ class NotificationEvent (Notification):
     """
     event = models.ForeignKey('Event')
     type = 'Event'
+    text = ' - near you!'
 
     def __str__(self):
         return self.type + " " + self.event.name + " " + Notification.__str__(self)

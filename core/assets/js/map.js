@@ -26,8 +26,12 @@ function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, da
         scopes.push('date')
     if (latitude)
         scopes.push('lat')
+    else
+        scopes.push('fake_lat')
     if (longitude)
         scopes.push('long')
+    else
+        scopes.push('fake_long')
     console.log(latitude)
     console.log(longitude)
 
@@ -41,7 +45,9 @@ function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, da
             text: text,
             date: date,
             lat: latitude,
-            long: longitude
+            long: longitude,
+            fake_lat: 37.0031124,
+            fake_long: -122.05833899999999
         },
         success: (events) => {
 
@@ -91,12 +97,14 @@ module.exports = {
                     lng: position.coords.longitude
                 }
 
-                // let marker = new google.maps.Marker({
-                //     position: new google.maps.LatLng(pos.lat, pos.lng),
-                //     map: map,
-                //     animation: google.maps.Animation.DROP,
-                //     label: 'Pinned HQ.'
-                // })
+                // let iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+                let iconBase = 'http://maps.gstatic.com/mapfiles/ms2/micons/'
+                let marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(pos.lat, pos.lng),
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                    icon: iconBase + 'blue.png'
+                })
 
                 map.setCenter(pos)
 
@@ -153,10 +161,12 @@ module.exports = {
 
     // Create marker given event data
     createMarker: function(name, description, id, tag, coords) {
+        let iconBase = 'http://maps.gstatic.com/mapfiles/ms2/micons/'
         let marker = new google.maps.Marker({
             position: new google.maps.LatLng(coords.lat, coords.lng),
             map: map,
-            animation: google.maps.Animation.DROP
+            animation: google.maps.Animation.DROP,
+            icon: iconBase + 'red-pushpin.png'
         })
 
         let content = "<h1><div class='event-info'>" + name + "</h1>" + (tag ? tag : '') + "<p>" + description + "</p></div>"

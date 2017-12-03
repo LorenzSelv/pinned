@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from .models import Event, User, Tag, Join, UserNotification
 from .forms import EventForm
 from .serializers import EventSerializer, TagSerializer, UserSerializer
-from .tasks import create_rating_notification
+from .tasks import create_rating_notification, create_event_notification
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -53,6 +53,7 @@ class MapView(generic.View):
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
             create_rating_notification.apply_async([form.id], eta=form.end_date_time)
+            create_event_notification.apply_async([form.id])
         except ValueError as e:
             self.context['state'] = "error"
             self.context['errors'] = form_temp.errors
@@ -203,11 +204,11 @@ class EventsViewSet(APIView):
         print(request.GET)
         user_id = request.user.id
         user = User.objects.get(pk=user_id)
+        user.latitude = request.GET['fake_lat']
+        user.longitude = request.GET['fake_long']
+        user.save()
         # user.latitude = request.GET['lat']
         # user.longitude = request.GET['long']
-        # print("LAT ---> " + user.latitude)
-        #
-        # print("LONG ---> " + user.longitude)
         # Filter on user's interests
         if 'interests' in scopes:
             tags = user.interest_tags.all()
