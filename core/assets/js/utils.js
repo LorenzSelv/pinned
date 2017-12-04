@@ -1,68 +1,32 @@
 require('chosen-js')
 
-// Setup tag select styling on element
-window.setupTagsSelect = function(element) {
+// Save user's location
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
 
-    // Give the appropriate class to a tag element
-    function styleTag(value) {
-        let className = 'tag-' + value
-        let tagName = element.find("[value=" + value + "]").text()
-        element.parent().find(".search-choice > span:contains('" + tagName + "')").parent().addClass(className + " badge-secondary tags")
-    }
+        // If the page is not allowed to save location, just return
+        if (!window.token)
+            return
 
-    element = $(element)
-
-    element
-        // Called when chosen is activated on the select field, styles already present tags
-        .on("chosen:ready", function(e, params) {
-
-            for (let i = params.chosen.results_data.length - 1; i >= 0; i--) {
-                let tag = params.chosen.results_data[i]
-                if (tag.selected)
-                    styleTag(tag.value)
+        // Get coordinates
+        let latitude = position.coords.latitude
+        let longitude = position.coords.longitude
+        $.ajax({
+            type: "POST",
+            url: "/profile/save_location",
+            data: {
+                lat: latitude,
+                long: longitude,
+                csrfmiddlewaretoken: window.token
+            },
+            error: function(first, e) {
+                alert(e)
             }
         })
-        // Called when tags get changed, styles newly added tags
-        .on("change", function(e, params) {
-            if (params.selected)
-                styleTag(params.selected)
-        })
+    }, function() { console.log("Unable to obtain coordinates") })
 
-    // Enable chosen js on the select input field
-    element.chosen({ width: "100%", no_results_text: "No tags with this name", search_contains: true })
-
-    // Give styling to container
-    let chosen = element.parent().find(".chosen-container")
-    chosen.find(".chosen-search-input").attr("style", "width: 100%;")
-    chosen.addClass("form-control")
-
+} else {
+    console.log("Unable to save user coordinates, geolocation error")
 }
 
-navigator.geolocation.getCurrentPosition(function(position) {
-    if (!window.token)
-        return
-    let latitude = position.coords.latitude
-    let longitude = position.coords.longitude
-    $.ajax({
-        type: "POST",
-        url: "/profile/save_location",
-        data: {
-            lat: latitude,
-            long: longitude,
-            csrfmiddlewaretoken: window.token
-        },
-        error: function(first, e) {
-            alert(e)
-        }
-    })
-})
-
-$('.notifications.dropdown').find(".dropdown-item").on("click", function(){
-    if(!$(this).siblings().length){
-        $(this).parent().append("<center>No notifications</center>")
-    }
-
-    // TODO: add ajax call to save reading notification
-
-    $(this).remove()
-})
+require("./notifications.js")

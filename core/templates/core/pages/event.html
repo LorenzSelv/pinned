@@ -24,6 +24,12 @@
                 {% endautoescape%}
             </p>
         {% endif %}
+        <p>
+            Starts: {{ event.start_date_time }}
+        </p>
+        <p>
+            Ends: {{ event.end_date_time }}
+        </p>
         <hr>
         <p class="event-description text-justify">
             {{ event.description }}
