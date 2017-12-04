@@ -1,0 +1,12 @@
+<div class="col-sm-4">
+    <div class="card event-card {% if owner == 'me' %} my-event {% else %} other-event {% endif %} mb-3" style="max-width: 20rem;">
+        <a class="event-card-link" href="/events/{{ event.id }}/">
+            <div class="card-header">
+                <h4> {{ event.name }} </h4> {{ event.start_date_time }}
+            </div>
+            <div class="card-body">
+                <p class="card-owner">Created by {{ event.event_owner.first_name }} </p>
+            </div>
+        </a>
+    </div>
+</div>

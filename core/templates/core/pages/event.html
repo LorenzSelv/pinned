@@ -1,0 +1,48 @@
+{% extends "core/structures/generic.html" %} {% block title%}{{ event.name }}{% endblock %} {% block content %}
+{% include "core/partials/save_token.html" %}
+<div class="event">
+    <div class="event-heading">
+        {% if joined %}
+        <button class="btn btn-leave">Leave</button>
+        {% else %}
+        <button class="btn btn-join">Join</button>
+        {% endif %}
+        <h1 class="event-name">{{ event.name }}</h1>
+    </div>
+
+    <img class="event-location img-fluid mx-auto d-block" src="https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=1024x300&maptype=roadmap&markers=color:red%7C{{ event.latitude }},{{ event.longitude }}&key=AIzaSyBWcqUczVAtXdcbR6BnnZ0EXilAJsqqhLs">
+
+    <div class="event-info">
+        <p class="event-owner">
+            Creator: <a href="/profile/{{ event.event_owner.id }}/">{{ event.event_owner.first_name }}</a>
+        </p>
+        {% if event.tag %}
+            <p class="event-tags">
+                Tag:
+                {% autoescape off %}
+                {{ event.tag.html }}
+                {% endautoescape%}
+            </p>
+        {% endif %}
+        <hr>
+        <p class="event-description text-justify">
+            {{ event.description }}
+        </p>
+        <hr>
+        <p class="event-participants-number">
+            Participants: <span class="event-participants-amount">{{ event.participants.all|length }}</span>/{{ event.max_num_participants }}
+        </p>
+    </div>
+    <table class="table event-participants-list">
+        {% for p in event.participants.all %}
+        <tr>
+            <td><a href="/profile/{{ p.id }}/">{{ p.first_name }}</a></td>
+        </tr>
+        {% empty %}
+            <tr>
+               <td>No participant yet</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

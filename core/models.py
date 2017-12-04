@@ -1,14 +1,30 @@
 from django.db import models
 from django import forms
-from django.core.validators import RegexValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from colorful.fields import RGBColorField
+from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
+def validate_latitude(latitude):
+    if not -90 <= latitude <= +90:
+        raise ValidationError('%(latitude) is not in the range [-90, +90]', params={'value': latitude})
+
+
+def validate_longitude(longitude):
+    if not -180 <= longitude <= +180:
+        raise ValidationError('%(longitude) is not in the range [-180, +180]', params={'value': longitude})
 # TODO text field vs char field
 
-class User (models.Model):
+
+class User (AbstractUser):
+    # Add a check to ensure max_length isn't exceeded? (for all classes)
     username = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=50)  # (widget=forms.PasswordInput)
+    password = models.CharField(max_length=50)  
     email    = models.EmailField()
+    picture = models.CharField(max_length=255, default='')
 
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits "
@@ -21,13 +37,16 @@ class User (models.Model):
 
     followers = models.ManyToManyField('self', symmetrical=False, related_name='following')
 
+    latitude = models.DecimalField('Latitude', max_digits=10, decimal_places=8,
+                                   null=True, validators=[validate_latitude])
+    longitude = models.DecimalField('Longitude', max_digits=11, decimal_places=8,
+                                    null=True, validators=[validate_longitude])
+
     def __str__(self):
         return self.username
 
-# store the follow date?
-# class Follow (models.Model):
-#     followed = models.ForeignKey(User)
-#     following = models.ForeignKey(User)
+    def __unicode__(self):
+        return self.first_name
 
 
 # class Rating (models.Model):
@@ -37,16 +56,23 @@ class User (models.Model):
 class Event (models.Model):
     name        = models.CharField(max_length=150)
     description = models.CharField(max_length=1000)
-    date_time   = models.DateTimeField(auto_now_add=True, blank=True)
-    location    = models.ForeignKey('Location', on_delete=models.CASCADE)
+    # TODO check that events can't have the same date_time AND location
+    start_date_time = models.DateTimeField()
+    end_date_time   = models.DateTimeField()
+
+    # location = models.ForeignKey('Location', on_delete=models.CASCADE)
+    latitude = models.DecimalField('Latitude', max_digits=10, decimal_places=8,
+                                   blank=False, validators=[validate_latitude])
+    longitude = models.DecimalField('Longitude', max_digits=11, decimal_places=8,
+                                    blank=False, validators=[validate_longitude])
 
     # TODO event type: private, public --> hierarchy in django
-    tags = models.ManyToManyField('Tag', related_name='events')
 
+    tag = models.ForeignKey('Tag', related_name='events', blank=True, null=True, on_delete=models.CASCADE)
     event_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
     creation_date = models.DateTimeField(auto_now_add=True)
 
-    participants = models.ManyToManyField('User', through='Join')
+    participants = models.ManyToManyField('User', through='Join', blank=True)
     max_num_participants = models.IntegerField(
         validators=[MinValueValidator(2, message='At least two people are allowed to join')])
 
@@ -69,9 +95,20 @@ class Join (models.Model):
 
 
 class Location (models.Model):
-    # Note: change the field according to Google maps API specs
     name = models.CharField(max_length=200, unique=True)
     description = models.CharField(max_length=1000)
+    # location coordinates w/ google API
+    # https://stackoverflow.com/questions/6345601/django-and-keeping-coordinates
+
+    latitude  = models.DecimalField('Latitude',  max_digits=10, decimal_places=8,
+                                    blank=False, validators=[validate_latitude])
+    longitude = models.DecimalField('Longitude', max_digits=11, decimal_places=8,
+                                    blank=False, validators=[validate_longitude])
+
+    class Meta:
+        # avoid inserting the same location multiple times
+        unique_together = ('latitude', 'longitude')
+
     # TODO location images
     # TODO link google reviews?
 
@@ -81,9 +118,14 @@ class Location (models.Model):
 
 class Tag (models.Model):
     name = models.CharField(max_length=20, unique=True)
+    color = RGBColorField()
 
     def __str__(self):
         return self.name
+
+    def html(self):
+        return '<span class="badge badge-secondary" style="background-color:#' + \
+                str(self.color) + '">' + self.name + '</span>'
 
 
 class Comment (models.Model):
@@ -93,3 +135,80 @@ class Comment (models.Model):
 
     def __str__(self):
         return '[ ' + self.user.username + ' -- ' + self.event.name + ' ]  ' + self.content
+
+
+class Notification (models.Model):
+    """
+    Abstract base class for notifications
+    """
+    # User who gets the notification
+    user = models.ForeignKey('User')
+    # Date when the notification was received
+    date = models.DateTimeField(auto_now_add=True)
+    # Whether or not the notification has been read
+    is_read = models.BooleanField(default=False)
+    # String representation of the type
+    type = models.CharField(max_length=15, default='Base')
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        read = (" NOT " if not self.is_read else " ") + "READ"
+        return self.type + " " + str(self.date) + " -- " + read
+
+
+class NotificationRating (Notification):
+    """
+    A notification the user gets after each event.
+    Should appear along with a link to a form for rating the participants.
+    """
+    event = models.ForeignKey('Event')
+    type = 'Rating'
+    text = ' - rate users!'
+
+    def __str__(self):
+        return self.type + " " + self.event.name + " " + Notification.__str__(self)
+
+
+class NotificationEvent (Notification):
+    """
+    A notification the user gets after each event.
+    Should appear along with a link to a form for rating the participants.
+    """
+    event = models.ForeignKey('Event')
+    type = 'Event'
+    text = ' - near you!'
+
+    def __str__(self):
+        return self.type + " " + self.event.name + " " + Notification.__str__(self)
+
+
+class UserNotification (models.Model):
+    """
+    Map each notification to its user.
+    """
+
+    user = models.ForeignKey('User')
+    # Polymorphic reference to a Notification
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    # object_id = models.CharField(max_length=50, null=True)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

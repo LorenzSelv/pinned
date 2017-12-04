@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import dj_database_url
+from dotenv import load_dotenv, find_dotenv
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,25 +23,29 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
 SECRET_KEY = os.environ['PINNED_DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.getenv('PINNED_DJANGO_DEBUG_MODE', True))
 
-ALLOWED_HOSTS = []
+# force https connection when running on the server
+SECURE_SSL_REDIRECT = bool(os.getenv('PINNED_DJANGO_SSL_REDIRECT', False))
 
+ALLOWED_HOSTS = ['127.0.0.1', 'pinned.pythonanywhere.com', 'pinned-app-deploy.herokuapp.com']
 
 # Application definition
 
 INSTALLED_APPS = [
     'core',
+    'colorful',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -51,7 +58,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'pinned.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
 
 TEMPLATES = [
     {
@@ -119,5 +137,66 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+# TODO store Django secret key in the .env file
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+# Social-Auth and Auth0 backend config
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'core.pipeline.get_avatar',
+)
+
+SOCIAL_AUTH_TRAILING_SLASH = False
+
+SOCIAL_AUTH_AUTH0_KEY    = os.environ.get('AUTH0_CLIENT_ID')
+SOCIAL_AUTH_AUTH0_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
+SOCIAL_AUTH_AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile'
+]
+
+# TODO refactor bad code
+AUDIENCE = None
+if os.environ.get('AUTH0_AUDIENCE'):
+    AUDIENCE = os.environ.get('AUTH0_AUDIENCE')
+else:
+    if SOCIAL_AUTH_AUTH0_DOMAIN:
+        AUDIENCE = 'https://' + SOCIAL_AUTH_AUTH0_DOMAIN + '/userinfo'
+if AUDIENCE:
+    SOCIAL_AUTH_AUTH0_AUTH_EXTRA_ARGUMENTS = {'audience': AUDIENCE}
+
+AUTHENTICATION_BACKENDS = {
+    'pinned.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+
+
+LOGIN_URL = "/login/auth0"
+LOGIN_REDIRECT_URL = "/map/"
+LOGOUT_REDIRECT_URL = "/"
+
+AUTH_USER_MODEL = 'core.User'
+
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)

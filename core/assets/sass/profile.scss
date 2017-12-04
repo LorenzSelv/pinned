@@ -1,0 +1,36 @@
+.profile-title {
+    text-align: center;
+    text-transform: none !important;
+}
+
+.img-fit {
+    border: none; 
+    width: 300px;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+
+.info-field {
+    padding: 10px 15px;
+    margin-bottom: 0;
+    font-size: 1rem !important;
+}
+
+.event-card-row {
+    margin-top: 2em;
+}
+
+.tags {
+    background-image: none !important;
+    border: none !important;
+}
+
+.profile-pic{
+    filter: grayscale(40%);
+    border-radius: 10%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: block;
+    margin: auto;
+    max-height: 350px;
+}

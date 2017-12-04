@@ -1,0 +1,19 @@
+{% extends "core/structures/generic.html" %} {% block title %}Home{% endblock %} {% block top_content %} {% if not not_logged_in %} {% include "core/partials/save_token.html" %}{% include "core/partials/event_form.html" %} {% endif %} {% endblock %} {% block content %} 
+<div class="container">
+    {% if not not_logged_in %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% include "core/partials/map_filters.html" %}
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+<!-- Include the upcoming events below the map -->
+{% include "core/partials/upcoming_events.html" %} {% endblock %} {% block extrascripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_xk05N3ropf_O38JXYVvW5yALj09jwuU&libraries=drawing&callback=map.initMap" async defer></script>
+{% endblock extrascripts %}

@@ -1,10 +1,17 @@
+from django.conf.urls import url, include
 
-from django.conf.urls import url
 from . import views
 
-
+app_name = 'core'
 urlpatterns = [
-    url(r'^$', views.index, name="index"),
-    url(r'^events/$', views.events, name="index"),
-    # url(r'^$', views.index, name="index"),
+    url('^$', views.login),
+    url(r'^map/$', views.MapView.as_view(), name="map"),
+    url(r'^events/$', views.EventsView.as_view(), name="events"),
+    url(r'^events/api', views.EventViewSet.as_view()), 
+    url(r'^events/(?P<event_id>[0-9]+)/member$', views.EventMemberView.as_view(), name="event_join"),
+    url(r'^events/(?P<pk>[0-9]+)/$', views.EventView.as_view(), name="event"),
+    # url(r'^profile/$', views.ProfileView.as_view(), name="profile"),
+    url(r'^profile/(?P<pk>[0-9]+)/$', views.ProfileView.as_view(), name="profile"),
+    url(r'^profile/save_location$', views.UserUpdateLocationView.as_view(), name="save_location"),
+    url(r'^tag/create$', views.TagCreateView.as_view(), name="tag_create"),
 ]

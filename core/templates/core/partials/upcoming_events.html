@@ -1,0 +1,6 @@
+<h2 class="text-center">Upcoming events...</h2>
+<div class="row">
+    {% for event in event_list %}
+      {% include "core/partials/event_card.html" with owner="others" %}
+    {% endfor %}
+</div>

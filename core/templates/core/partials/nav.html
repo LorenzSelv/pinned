@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="{% url 'core:map' %}">Pinned <i class="fa fa-map-marker" aria-hidden="true"></i></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:events' %}" title="Events list">Events</a>
+            </li>
+        </ul>
+        {% if not not_logged_in %}
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <div class="notifications dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notifications
+                  </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% if notifications %}
+                            {% for notif in notifications %} {% include "core/partials/notification.html" with notification=notif %} {% endfor %}
+                        {% else %}
+                            <center>No notifications</center>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:profile' pk=request.user.pk %}" title="User profile">Profile</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/logout" title="Logout">Logout</a>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+</nav>

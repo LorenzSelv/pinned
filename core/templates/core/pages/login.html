@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pinned</title>
+    <!-- CSS -->
+    {% include "core/collections/css.html" %}
+</head>
+
+<body>
+    <div class="container login-container">
+        <div class="card" style="height: 200px; width: 400px; margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0;">
+            <div class="card-body login-card">
+                <div class="card-title">
+                    <span class="navbar-brand">Pinned <i class="fa fa-map-marker" aria-hidden="true"></i></span>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="/login/auth0"><button class="btn btn-danger btn-login">Login</button></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- SCRIPTS -->
+    {% load static %}
+    <script type="text/javascript" src="{% static 'core/app.js' %}"></script>
+</body>
+
+</html>

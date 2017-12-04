@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pinned - {% block title %}{% endblock %}</title>
+    <!-- CSS -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'core/app.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans|Roboto" rel="stylesheet"> 
+    {% if tags %} 
+    <style type="text/css">
+        {% for tag in tags %}
+
+        .tag-{{ tag.pk }}
+        {
+            background-color: #{{ tag.color }} !important;
+        }
+
+        {% endfor %}
+    </style>
+    {% endif %}
+</head>
+
+<body>
+    <!-- Include navbar -->
+    {% include "core/partials/nav.html" %} {% block top_content %}{% endblock %}
+    <div class="container content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Get content from child template -->
+                {% block content %}
+                <h1>Dummy content</h1> {% endblock %}
+            </div>
+        </div>
+    </div>
+    <!-- SCRIPTS -->
+    <script type="text/javascript" src="{% static 'core/app.js' %}"></script>
+    {% block extrascripts %} {% endblock extrascripts %}
+</body>
+
+</html>

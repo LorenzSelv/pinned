@@ -1,0 +1,73 @@
+{% extends "core/structures/generic.html" %} {% block title%}Profile{% endblock %} {% block content %} {% include "core/partials/save_token.html" %}
+<div class="row">
+    <div class="col-md-4 col-sm-12">
+        <h1 class="profile-title">{{ user.first_name }}</h1>
+    </div>
+    <div class="col-md-8 col-sm-12">
+    </div>
+</div>
+<div class="row">
+    <!--Profile img-->
+    <div class="col-md-4 col-sm-12">
+        <img src="{% if user.picture %}{{ user.picture }}{% else %}https://www.vccircle.com/wp-content/uploads/2017/03/default-profile.png{% endif %}" class="profile-pic rounded-circle img-thumbnail img-fit">
+    </div>
+    <!--Info cards-->
+    <div class="col-md-8 col-sm-12">
+        <div class="card card-info">
+            <div class="header card-header">
+                <strong>Username</strong>
+            </div>
+            <div class="card-block">
+                <p class="info-field">{{user.username}}</p>
+            </div>
+        </div>
+        <div class="card card-info">
+            <div class="header card-header">
+                <strong>Interests</strong>
+            </div>
+            <div class="card-block">
+                <select id="interests-select" class="info-field" multiple>
+                    {% for tag in tags %}
+                    <option value="{{ tag.pk }}" {% if tag in interests %} selected {% endif %}>{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <!--Modal-->
+    <div id="update_modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Update Info</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Email address</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Confirm Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Interests table/add interest button-->
+</div>
+<!--Joined/owned event cards-->
+<div class="row event-card-row">
+    {% for event in owned_events %} {% include "core/partials/event_card.html" with event=event owner="me" %} {% endfor %} {% for event in joined_events %} {% include "core/partials/event_card.html" with event=event owner="others" %} {% endfor %}
+</div>
+{% endblock %}
