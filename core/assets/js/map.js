@@ -1,8 +1,3 @@
-// Note: This example requires that you consent to location sharing when
-// prompted by your browser. If you see the error "The Geolocation service
-// failed.", it means you probably did not give permission for the browser to
-// locate you.
-
 if ($("#map-filters").length)
     require('./map-filters.js')
 if ($("#event-form").length)
@@ -77,7 +72,6 @@ module.exports = {
                     lng: position.coords.longitude
                 }
 
-                // let iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
                 let iconBase = 'http://maps.gstatic.com/mapfiles/ms2/micons/'
                 let marker = new google.maps.Marker({
                     position: new google.maps.LatLng(pos.lat, pos.lng),
@@ -90,7 +84,7 @@ module.exports = {
 
             }, function() {
                 handleLocationError(true, new google.maps.InfoWindow, map.getCenter())
-            }, {timeout:10000})
+            }, { timeout: 10000 })
 
         } else {
             // Browser doesn't support Geolocation
@@ -129,6 +123,7 @@ module.exports = {
                 })
             })
         })
+
         // Function called when marker is placed
         google.maps.event.addListener(drawingManager, 'markercomplete', function(marker) {
             drawingManager.set('drawingMode')
@@ -154,14 +149,13 @@ module.exports = {
         let info = new google.maps.InfoWindow({
             content: content
         })
-        info.addListener('closeclick', function() {
-            info.fixed = false
-        })
 
+        // Redirect to event page on click
         marker.addListener('click', function() {
             location.href = "/events/" + id
         })
 
+        // Show infowindow on hover
         marker.addListener('mouseover', function() {
             info.open(this.map, marker)
         })

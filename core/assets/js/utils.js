@@ -38,31 +38,33 @@ window.setupTagsSelect = function(element) {
 
 }
 
-navigator.geolocation.getCurrentPosition(function(position) {
-    if (!window.token)
-        return
-    let latitude = position.coords.latitude
-    let longitude = position.coords.longitude
-    $.ajax({
-        type: "POST",
-        url: "/profile/save_location",
-        data: {
-            lat: latitude,
-            long: longitude,
-            csrfmiddlewaretoken: window.token
-        },
-        error: function(first, e) {
-            alert(e)
-        }
-    })
-})
+// Save user's location
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
 
-$('.notifications.dropdown').find(".dropdown-item").on("click", function(){
-    if(!$(this).siblings().length){
-        $(this).parent().append("<center>No notifications</center>")
-    }
+        // If the page is not allowed to save location, just return
+        if (!window.token)
+            return
 
-    // TODO: add ajax call to save reading notification
+        // Get coordinates
+        let latitude = position.coords.latitude
+        let longitude = position.coords.longitude
+        $.ajax({
+            type: "POST",
+            url: "/profile/save_location",
+            data: {
+                lat: latitude,
+                long: longitude,
+                csrfmiddlewaretoken: window.token
+            },
+            error: function(first, e) {
+                alert(e)
+            }
+        })
+    }, function() { console.log("Unable to obtain coordinates") })
 
-    $(this).remove()
-})
+} else {
+    console.log("Unable to save user coordinates, geolocation error")
+}
+
+require("./notifications.js")

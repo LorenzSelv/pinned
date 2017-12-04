@@ -47,19 +47,26 @@ tagField.chosen(chosenSettings)
 let chosen = tagField.parent().find(".chosen-container")
 
 function styleChosen() {
+    // Style the chosen input
     chosen.find(".chosen-search-input").attr("style", "width: 100%;")
 
+    // Check for changes on the results
     chosen.find(".chosen-results").on("DOMSubtreeModified", function() {
+
         let drop = $(this).parents(".chosen-drop")
         let noResults = drop.find(".no-results")
 
+        // If no tag was found with the searched name, ask for tag creation
         if (noResults.length) {
-            let tagName = $(".chosen-search-input").val()
-            let span = noResults.find("span")
-            let createTag = $(`<span class="create-tag">Create new tag with this name? <i class="fa fa-plus" aria-hidden="true"></i>`)
 
+            // If tag creation row is not present create it
             if (!drop.find(".create-tag").length) {
 
+                let tagName = $(".chosen-search-input").val()
+                let span = noResults.find("span")
+                let createTag = $(`<span class="create-tag">Create new tag with this name? <i class="fa fa-plus" aria-hidden="true"></i>`)
+
+                // Restyle the component after tag creation
                 function creationHandler(data) {
                     data = JSON.parse(data)
                     tagField.append($("<option selected value=" + data.id + ">" + tagName + "</option>"))
@@ -71,8 +78,8 @@ function styleChosen() {
                 }
 
                 drop.append(createTag)
+
                 createTag.find(".fa.fa-plus").on("click", function() {
-                    
                     $.ajax({
                         type: "POST",
                         url: "/tag/create",
@@ -85,6 +92,7 @@ function styleChosen() {
                 })
             }
         } else {
+            // Remove the row for tag creation when it's not needed
             let createTag = drop.find(".create-tag")
             if (createTag.length) {
                 createTag.remove()
@@ -141,7 +149,7 @@ form.find(".date-time-picker").each(function() {
     }
 })
 
-// Update minimum date for end picker
+// Update minimum date for end picker when start gets changed
 pickers.start.element.change(function() {
     let start = new Date(pickers.start.element.val())
     let minEnd = start.setTime(start.getTime() + 15 * 60 * 1000)
@@ -153,7 +161,13 @@ pickers.start.element.change(function() {
     }
 })
 
+// Form checking before submission
 form.submit(function(event) {
+    function invalidStartDate(start) {
+        let currentTime = new Date()
+        let selectedTime = new Date(start.selectedDates[0])
+        return selectedTime < currentTime
+    }
     var start = pickers.start.picker
     var end = pickers.end.picker
     if (start.selectedDates == "" || end.selectedDates == "") {
@@ -164,9 +178,3 @@ form.submit(function(event) {
         alert("Start date cannot be before the current time!")
     }
 })
-
-function invalidStartDate(start) {
-    let currentTime = new Date()
-    let selectedTime = new Date(start.selectedDates[0])
-    return selectedTime < currentTime
-}
