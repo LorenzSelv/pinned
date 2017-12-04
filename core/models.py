@@ -8,7 +8,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 
+def validate_latitude(latitude):
+    if not -90 <= latitude <= +90:
+        raise ValidationError('%(latitude) is not in the range [-90, +90]', params={'value': latitude})
+
+
+def validate_longitude(longitude):
+    if not -180 <= longitude <= +180:
+        raise ValidationError('%(longitude) is not in the range [-180, +180]', params={'value': longitude})
 # TODO text field vs char field
+
 
 class User (AbstractUser):
     # Add a check to ensure max_length isn't exceeded? (for all classes)
@@ -28,6 +37,11 @@ class User (AbstractUser):
 
     followers = models.ManyToManyField('self', symmetrical=False, related_name='following')
 
+    latitude = models.DecimalField('Latitude', max_digits=10, decimal_places=8,
+                                   null=True, validators=[validate_latitude])
+    longitude = models.DecimalField('Longitude', max_digits=11, decimal_places=8,
+                                    null=True, validators=[validate_longitude])
+
     def __str__(self):
         return self.username
 
@@ -37,16 +51,6 @@ class User (AbstractUser):
 
 # class Rating (models.Model):
 #     pass
-
-
-def validate_latitude(latitude):
-    if not -90 <= latitude <= +90:
-        raise ValidationError('%(latitude) is not in the range [-90, +90]', params={'value': latitude})
-
-
-def validate_longitude(longitude):
-    if not -180 <= longitude <= +180:
-        raise ValidationError('%(longitude) is not in the range [-180, +180]', params={'value': longitude})
 
 
 class Event (models.Model):
@@ -161,6 +165,20 @@ class NotificationRating (Notification):
     """
     event = models.ForeignKey('Event')
     type = 'Rating'
+    text = ' - rate users!'
+
+    def __str__(self):
+        return self.type + " " + self.event.name + " " + Notification.__str__(self)
+
+
+class NotificationEvent (Notification):
+    """
+    A notification the user gets after each event.
+    Should appear along with a link to a form for rating the participants.
+    """
+    event = models.ForeignKey('Event')
+    type = 'Event'
+    text = ' - near you!'
 
     def __str__(self):
         return self.type + " " + self.event.name + " " + Notification.__str__(self)

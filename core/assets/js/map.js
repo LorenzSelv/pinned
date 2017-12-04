@@ -72,17 +72,18 @@ module.exports = {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-
                 let pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 }
 
+                // let iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+                let iconBase = 'http://maps.gstatic.com/mapfiles/ms2/micons/'
                 let marker = new google.maps.Marker({
                     position: new google.maps.LatLng(pos.lat, pos.lng),
                     map: map,
                     animation: google.maps.Animation.DROP,
-                    label: 'Pinned HQ.'
+                    icon: iconBase + 'blue.png'
                 })
 
                 map.setCenter(pos)
@@ -140,10 +141,12 @@ module.exports = {
 
     // Create marker given event data
     createMarker: function(name, description, id, tag, coords) {
+        let iconBase = 'http://maps.gstatic.com/mapfiles/ms2/micons/'
         let marker = new google.maps.Marker({
             position: new google.maps.LatLng(coords.lat, coords.lng),
             map: map,
-            animation: google.maps.Animation.DROP
+            animation: google.maps.Animation.DROP,
+            icon: iconBase + 'red-pushpin.png'
         })
 
         let content = "<h1><div class='event-info'>" + name + "</h1>" + (tag ? tag : '') + "<p>" + description + "</p></div>"

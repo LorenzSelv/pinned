@@ -12,5 +12,6 @@ urlpatterns = [
     url(r'^events/(?P<pk>[0-9]+)/$', views.EventView.as_view(), name="event"),
     # url(r'^profile/$', views.ProfileView.as_view(), name="profile"),
     url(r'^profile/(?P<pk>[0-9]+)/$', views.ProfileView.as_view(), name="profile"),
+    url(r'^profile/save_location$', views.UserUpdateLocationView.as_view(), name="save_location"),
     url(r'^tag/create$', views.TagCreateView.as_view(), name="tag_create"),
 ]

@@ -1,13 +1,16 @@
+from math import sin, cos, radians, degrees, acos 
+
 from django.views import generic
 from django.shortcuts import render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 
-from ..models import Event, User
+from ..models import Event, User, NotificationEvent, UserNotification
 from ..forms import EventForm
 
 from .decorators import login_decorator
 from .utils import get_user_notifications
+
 
 class MapView(generic.View):
     now = timezone.now()
@@ -19,6 +22,29 @@ class MapView(generic.View):
     @method_decorator(login_decorator)
     def post(self, request):
 
+        def create_event_notification(event):
+
+            def distance(user, event):
+                user_lat = radians(user.latitude)
+                event_lat = radians(event.latitude)
+                longitude_diff = radians(user.longitude - event.longitude)
+                dist = (sin(user_lat) * sin(event_lat) + cos(user_lat) * cos(event_lat) * cos(longitude_diff))
+                return degrees(acos(dist)) * 69.09
+
+            # Create notification for every participant
+            if event.tag is not None:
+                for user in User.objects.filter(interest_tags__name__contains=event.tag.name):
+                    # Check if user is less than or equal to 15 miles away from created event
+                    if user.latitude is not None and user.longitude is not None and distance(user, event) <= 15:
+                        # Create notification
+                        notification = NotificationEvent(date=timezone.now(), event=event, user=user)
+                        notification.save()
+
+                        # Create link user-notification in the notification interface
+                        user_notification = UserNotification(content_object=notification, user=user,
+                                                             object_id=notification.id)
+                        user_notification.save()
+
         try:
             form_temp = EventForm(request.POST)
             form = form_temp.save(commit=False)
@@ -26,6 +52,8 @@ class MapView(generic.View):
             form.save()
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
+            create_event_notification(form)
+            self.context['notifications'] = get_user_notifications(request.user)
         except ValueError as e:
             self.context['state'] = "error"
             self.context['errors'] = form_temp.errors

@@ -37,3 +37,22 @@ window.setupTagsSelect = function(element) {
     chosen.addClass("form-control")
 
 }
+
+navigator.geolocation.getCurrentPosition(function(position) {
+    if (!window.token)
+        return
+    let latitude = position.coords.latitude
+    let longitude = position.coords.longitude
+    $.ajax({
+        type: "POST",
+        url: "/profile/save_location",
+        data: {
+            lat: latitude,
+            long: longitude,
+            csrfmiddlewaretoken: window.token
+        },
+        error: function(first, e) {
+            alert(e)
+        }
+    })
+})
