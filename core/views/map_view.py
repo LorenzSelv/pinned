@@ -14,6 +14,7 @@ from .utils import get_user_notifications
 
 class MapView(generic.View):
 
+    @staticmethod
     def get_default_context():
         now = timezone.now()
         context = {

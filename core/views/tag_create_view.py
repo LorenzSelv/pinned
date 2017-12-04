@@ -11,15 +11,16 @@ from ..models import Tag
 
 from .decorators import login_decorator
 
+
 @method_decorator(login_decorator, name='post')
 class TagCreateView(generic.View):
 
     def post(self, request, *args, **kwargs):
-        tag_name= request.POST['tagName']
+        tag_name = request.POST['tagName']
         color = ''.join(random.choice(string.hexdigits) for _ in range(6))
         try:
             tag = Tag.objects.create(name=tag_name, color=color)
         except IntegrityError:
-            tag = {}
-            tag['id'] = -1
+            tag = {'id': -1}
+
         return HttpResponse(json.dumps({'id': tag.id}))

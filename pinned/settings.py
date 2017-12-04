@@ -146,7 +146,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-# TODO store Django secret key in the .env file
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
@@ -176,7 +175,6 @@ SOCIAL_AUTH_AUTH0_SCOPE = [
     'profile'
 ]
 
-# TODO refactor bad code
 AUDIENCE = None
 if os.environ.get('AUTH0_AUDIENCE'):
     AUDIENCE = os.environ.get('AUTH0_AUDIENCE')

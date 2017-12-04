@@ -72,6 +72,3 @@ class EventModelTests (TestCase):
         pp = create_event('Ping pong', lorenzo, timezone.now(), max_num_participants=2)
         # Ignore milliseconds
         self.assertEqual(pp.creation_date.strftime("%Y-%m-%d %H:%M:%S"), timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
-
-    # TODO: test overlapping events at the same location, as soon as we have defined what a location is (Google MAP API)
-    # TODO: test event dates with different time zones
