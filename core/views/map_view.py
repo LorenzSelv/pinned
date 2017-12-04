@@ -33,7 +33,7 @@ class MapView(generic.View):
 
             # Create notification for every participant
             if event.tag is not None:
-                for user in User.objects.filter(interest_tags__name__contains=event.tag.name):
+                for user in User.objects.filter(interest_tags__name__contains=event.tag.name).exclude(pk=request.user.pk):
                     # Check if user is less than or equal to 15 miles away from created event
                     if user.latitude is not None and user.longitude is not None and distance(user, event) <= 15:
                         # Create notification

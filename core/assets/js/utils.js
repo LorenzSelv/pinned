@@ -56,3 +56,13 @@ navigator.geolocation.getCurrentPosition(function(position) {
         }
     })
 })
+
+$('.notifications.dropdown').find(".dropdown-item").on("click", function(){
+    if(!$(this).siblings().length){
+        $(this).parent().append("<center>No notifications</center>")
+    }
+
+    // TODO: add ajax call to save reading notification
+
+    $(this).remove()
+})

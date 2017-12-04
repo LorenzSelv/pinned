@@ -69,6 +69,12 @@ h4 {
             background-color: #ececec;
             box-shadow: 0 -4pt darken($links, 10) inset;
         }
+
+        .notifications{
+            a{
+                border-bottom: none !important;
+            }
+        }
     }
 }
 
