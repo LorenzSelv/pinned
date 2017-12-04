@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^events/(?P<pk>[0-9]+)/$', views.EventView.as_view(), name="event"),
     # url(r'^profile/$', views.ProfileView.as_view(), name="profile"),
     url(r'^profile/(?P<pk>[0-9]+)/$', views.ProfileView.as_view(), name="profile"),
+    url(r'^profile/save_location$', views.UpdateUserLocationView.as_view(), name="save_location"),
 ]

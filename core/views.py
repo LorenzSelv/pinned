@@ -8,11 +8,12 @@ from django.utils import timezone
 from django.db.utils import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from math import sin, cos, radians, degrees, acos
 
-from .models import Event, User, Tag, Join, UserNotification
+from .models import Event, User, Tag, Join, UserNotification, NotificationEvent
 from .forms import EventForm
 from .serializers import EventSerializer, TagSerializer, UserSerializer
-from .tasks import create_rating_notification, create_event_notification
+from .tasks import create_rating_notification
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -45,6 +46,29 @@ class MapView(generic.View):
     @method_decorator(login_decorator)
     def post(self, request):
 
+        def create_event_notification(event):
+
+            def distance(user, event):
+                user_lat = radians(user.latitude)
+                event_lat = radians(event.latitude)
+                longitude_diff = radians(user.longitude - event.longitude)
+                dist = (sin(user_lat) * sin(event_lat) + cos(user_lat) * cos(event_lat) * cos(longitude_diff))
+                return degrees(acos(dist)) * 69.09
+
+            # Create notification for every participant
+            if event.tag is not None:
+                for user in User.objects.filter(interest_tags__name__contains=event.tag.name):
+                    # Check if user is less than or equal to 15 miles away from created event
+                    if user.latitude is not None and user.longitude is not None and distance(user, event) <= 15:
+                        # Create notification
+                        notification = NotificationEvent(date=timezone.now(), event=event, user=user)
+                        notification.save()
+
+                        # Create link user-notification in the notification interface
+                        user_notification = UserNotification(content_object=notification, user=user,
+                                                             object_id=notification.id)
+                        user_notification.save()
+
         try:
             form_temp = EventForm(request.POST)
             form = form_temp.save(commit=False)
@@ -53,7 +77,8 @@ class MapView(generic.View):
             form_temp.save_m2m() # Needed for saving tags, added by using "commit=False"
             self.context['state'] = "saved"
             create_rating_notification.apply_async([form.id], eta=form.end_date_time)
-            create_event_notification.apply_async([form.id])
+            create_event_notification(form)
+            self.context['notifications'] = get_user_notifications(request.user)
         except ValueError as e:
             self.context['state'] = "error"
             self.context['errors'] = form_temp.errors
@@ -66,9 +91,6 @@ class MapView(generic.View):
     def get(self, request, *args, **kwargs):
         self.context['state'] = "get"
         self.context['form'] = EventForm()
-        # tags = request.user.interest_tags.all()
-        # self.context['tags'] = tags
-        # self.context['notifications'] = get_user_notifications(request.user)
         if request.user.is_authenticated():
             self.context['form'] = EventForm()
             user_id = request.user.id
@@ -201,14 +223,8 @@ class EventsViewSet(APIView):
         queryset = Event.objects.filter(end_date_time__gt=timezone.now())
         # Obtain the list of user scopes (interests, single tag, text filtering and date filtering)
         scopes = request.GET.getlist('scopes[]')
-        print(request.GET)
         user_id = request.user.id
         user = User.objects.get(pk=user_id)
-        user.latitude = request.GET['fake_lat']
-        user.longitude = request.GET['fake_long']
-        user.save()
-        # user.latitude = request.GET['lat']
-        # user.longitude = request.GET['long']
         # Filter on user's interests
         if 'interests' in scopes:
             tags = user.interest_tags.all()
@@ -250,3 +266,22 @@ class UserViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+
+@method_decorator(login_decorator, name='post')
+class UpdateUserLocationView(generic.View):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        response = None
+        try:
+            latitude = float(request.POST['lat'])
+            longitude = float(request.POST['long'])
+            user.latitude = latitude
+            user.longitude = longitude
+            user.save()
+            response = HttpResponse('success')
+            response.status_code = 200
+        except ValueError:
+            response = HttpResponse('failure')
+            response.status_code = 400
+        return response

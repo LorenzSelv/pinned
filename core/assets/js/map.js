@@ -10,8 +10,6 @@ if ($("#event-form").length)
 
 let map
 let markers = []
-let latitude
-let longitude
 
 function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, date = undefined) {
     let scopes = []
@@ -24,16 +22,6 @@ function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, da
         scopes.push('name')
     if (date)
         scopes.push('date')
-    if (latitude)
-        scopes.push('lat')
-    else
-        scopes.push('fake_lat')
-    if (longitude)
-        scopes.push('long')
-    else
-        scopes.push('fake_long')
-    console.log(latitude)
-    console.log(longitude)
 
     $.ajax({
         type: "GET",
@@ -43,11 +31,7 @@ function sendEventsAjax(scope = undefined, tag = undefined, text = undefined, da
             scopes: scopes,
             tag: tag,
             text: text,
-            date: date,
-            lat: latitude,
-            long: longitude,
-            fake_lat: 37.0031124,
-            fake_long: -122.05833899999999
+            date: date
         },
         success: (events) => {
 
@@ -88,10 +72,6 @@ module.exports = {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-
-                latitude = position.coords.latitude
-                longitude = position.coords.longitude
-
                 let pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
