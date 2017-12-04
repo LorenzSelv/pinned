@@ -1,9 +1,8 @@
 {% extends "core/structures/generic.html" %} {% block title%}Profile{% endblock %} {% block content %} {% include "core/partials/save_token.html" %}
+<div id="same-user" class="d-none">{{ same_user }}</div>
 <div class="row">
     <div class="col-md-4 col-sm-12">
         <h1 class="profile-title">{{ user.first_name }}</h1>
-    </div>
-    <div class="col-md-8 col-sm-12">
     </div>
 </div>
 <div class="row">
@@ -13,7 +12,7 @@
     </div>
     <!--Info cards-->
     <div class="col-md-8 col-sm-12">
-        <div class="card card-info">
+        <div class="card card-info card-username">
             <div class="header card-header">
                 <strong>Username</strong>
             </div>
@@ -21,7 +20,7 @@
                 <p class="info-field">{{user.username}}</p>
             </div>
         </div>
-        <div class="card card-info">
+        <div class="card card-info card-interests">
             <div class="header card-header">
                 <strong>Interests</strong>
             </div>
@@ -34,37 +33,6 @@
             </div>
         </div>
     </div>
-    <!--Modal-->
-    <div id="update_modal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Update Info</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Email address</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Confirm Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Interests table/add interest button-->
 </div>
 <!--Joined/owned event cards-->
 <div class="row event-card-row">

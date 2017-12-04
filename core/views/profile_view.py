@@ -1,3 +1,4 @@
+import json
 from django.views import generic
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
@@ -29,17 +30,20 @@ class ProfileView(generic.DetailView):
                    'owned_events': owned_events,
                    'tags': tags,
                    'interests': interests,
-                   'notifications': get_user_notifications(self.request.user)}
+                   'notifications': get_user_notifications(self.request.user),
+                   'same_user': user == self.request.user}
         return context
 
     def post(self, request, *args, **kwargs):
         data = {}
         user = User.objects.filter(pk=self.kwargs['pk'])[0]
-        
-        tag_ids = map(int, request.POST.getlist('selectedTags[]'))        
-        tags = Tag.objects.filter(pk__in=tag_ids)
-        user.interest_tags = tags
-        
-        data['result'] = True
+        if user != request.user:
+          data['result'] = False
+        else:
+          tag_ids = map(int, request.POST.getlist('selectedTags[]'))        
+          tags = Tag.objects.filter(pk__in=tag_ids)
+          user.interest_tags = tags
+          
+          data['result'] = True
 
         return HttpResponse(json.dumps(data))
