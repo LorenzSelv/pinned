@@ -1,5 +1,6 @@
 from django.views import generic
 from django.utils.decorators import method_decorator
+from django.http import HttpResponse
 
 from ..models import User, Join, Event, Tag
 
@@ -20,7 +21,7 @@ class ProfileView(generic.DetailView):
         
         owned_events  = list(Event.objects.filter(event_owner=user))
                 
-        tags = Tag.objects.all()
+        tags = Tag.objects.order_by('name') 
         interests = user.interest_tags.all()
 
         context = {'user': user,
