@@ -13,14 +13,20 @@ from .utils import get_user_notifications
 
 
 class MapView(generic.View):
-    now = timezone.now()
-    context = {
-        "event_list": Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now).filter()
-                                   .order_by('start_date_time')[:3]
-        }
+
+    @staticmethod
+    def get_default_context():
+        now = timezone.now()
+        context = {
+            "event_list": Event.objects.filter(end_date_time__gt=now, start_date_time__gt=now)
+                                       .order_by('start_date_time')[:3]
+            }
+        return context
 
     @method_decorator(login_decorator)
     def post(self, request):
+
+        self.context = MapView.get_default_context()
 
         def create_event_notification(event):
 
@@ -64,6 +70,8 @@ class MapView(generic.View):
         return render(request, 'core/pages/map.html', context=self.context)
 
     def get(self, request, *args, **kwargs):
+
+        self.context = MapView.get_default_context()
         self.context['state'] = "get"
         if request.user.is_authenticated():
             self.context['form'] = EventForm()

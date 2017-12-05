@@ -16,7 +16,7 @@ def validate_latitude(latitude):
 def validate_longitude(longitude):
     if not -180 <= longitude <= +180:
         raise ValidationError('%(longitude) is not in the range [-180, +180]', params={'value': longitude})
-# TODO text field vs char field
+
 
 
 class User (AbstractUser):
@@ -56,7 +56,7 @@ class User (AbstractUser):
 class Event (models.Model):
     name        = models.CharField(max_length=150)
     description = models.CharField(max_length=1000)
-    # TODO check that events can't have the same date_time AND location
+
     start_date_time = models.DateTimeField()
     end_date_time   = models.DateTimeField()
 

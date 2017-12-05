@@ -69,6 +69,10 @@ function styleChosen() {
                 // Restyle the component after tag creation
                 function creationHandler(data) {
                     data = JSON.parse(data)
+                    
+                    if (data.id == -1)
+                        return
+
                     tagField.append($("<option selected value=" + data.id + ">" + tagName + "</option>"))
 
                     tagField.chosen('destroy')
